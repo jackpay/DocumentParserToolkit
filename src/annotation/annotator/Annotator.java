@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import javax.swing.text.Document;
 
-import annotation.annotation.Annotation;
+import annotation.annotations.Annotation;
 
 public interface Annotator {
 	
