@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import javax.swing.text.Document;
 
-import annotation.Annotation;
-import annotation.Annotator;
+import annotation.annotation.Annotation;
+import annotation.annotator.Annotator;
 
 public class ChunkTagAnnotator implements Annotator{
 

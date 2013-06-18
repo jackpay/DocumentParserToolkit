@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import javax.swing.text.Document;
 
-import annotation.Annotation;
-import annotation.Annotator;
+import annotation.annotation.Annotation;
+import annotation.annotator.Annotator;
 
 /**
  * An annotator which can annotate a document using its raw text from the Document object

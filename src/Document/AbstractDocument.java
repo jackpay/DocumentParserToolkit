@@ -3,8 +3,8 @@ package Document;
 import java.util.Collection;
 import java.util.Map;
 
-import annotation.Annotation;
-import annotation.Annotator;
+import annotation.annotation.Annotation;
+import annotation.annotator.Annotator;
 
 public class AbstractDocument <D>{
 	

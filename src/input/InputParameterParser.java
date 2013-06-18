@@ -1,9 +1,9 @@
 package input;
 
-import configuration.Config;
+import configuration.AbstractConfig;
 
 public interface InputParameterParser {
 	
-	public Config parseInputParams();
+	public AbstractConfig parseInputParams();
 
 }

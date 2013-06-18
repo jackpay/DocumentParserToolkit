@@ -2,7 +2,7 @@ package input;
 
 import com.beust.jcommander.Parameter;
 
-import configuration.Config;
+import configuration.AbstractConfig;
 
 /**
  * Abstract class for parsing input parameters with a few basic inputs implemented.
@@ -75,8 +75,12 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		public String output(){
 			return outputLocation;
 		}
+		
+		public String suffix(){
+			return suff;
+		}
 	}
 
-	public abstract Config parseInputParams();
+	public abstract AbstractConfig parseInputParams();
 
 }
