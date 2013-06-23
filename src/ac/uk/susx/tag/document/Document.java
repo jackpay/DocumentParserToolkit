@@ -6,15 +6,19 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.annotations.Annotation;
 import ac.uk.susx.tag.annotation.annotator.Annotator;
 
-public interface Document <D>{
+public interface Document <D,AT>{
 	
 	public D getDocument();
 	
 	public void setDocument(D docText);
 
-	public void addAnnotations(Class<? extends Annotator> cl, Collection<? extends Annotation> annotations);
+	@SuppressWarnings("rawtypes")
+	public void addAnnotations(Class<? extends Annotator> cl, Collection<Annotation<AT>> annotations);
 	
-	public Collection<? extends Annotation> getAnnotations(Class<? extends Annotator> cl);
+	@SuppressWarnings("rawtypes")
+	public Collection<? extends Annotation<AT>> getAnnotations(Class<? extends Annotator> cl);
 	
-	public Map<Class<? extends Annotator>, Collection<? extends Annotation>> getDocumentAnnotations();
+	@SuppressWarnings("rawtypes")
+	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> getDocumentAnnotations();
+	
 }

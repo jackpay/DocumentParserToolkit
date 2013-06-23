@@ -30,44 +30,8 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		private String suff = null;
 		
 		@Parameter
-		(names = {"-pos --posTag"}, description="Pos tag annotations")
-		private boolean postag = false;
-		
-		@Parameter
-		(names = {"-cs", "--chunkSpan"}, description="Chunk span annotations")
-		private boolean chunkSpan = false;
-		
-		@Parameter
-		(names = {"-ct", "chunkToken"}, description="Chunk token annotations")
-		private boolean chunkToken = false;
-		
-		@Parameter
-		(names = {"-s", "--sentence"}, description="Sentence annotations")
-		private boolean sentenceTag = false;
-		
-		@Parameter 
-		(names = {"-t", "--token"}, description="Token annotations")
-		private boolean token = true;
-		
-		public boolean chunkToken(){
-			return chunkToken;
-		}
-		
-		public boolean chunkSpan(){
-			return chunkSpan;
-		}
-		
-		public boolean token(){
-			return token;
-		}
-		
-		public boolean sentence(){
-			return sentenceTag;
-		}
-		
-		public boolean posTag(){
-			return postag;
-		}
+		(names = {"-osuff", "--outputFileSuffix"}, description="Output file suffix")
+		private String osuff = null;
 		
 		public String input(){
 			return inputLocation;
@@ -80,8 +44,12 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		public String suffix(){
 			return suff;
 		}
+		
+		public String outSuffix(){
+			return osuff;
+		}
 	}
-
-	public abstract Configuration parseInputParams();
+	
+	public abstract Configuration<?,?,?> parseInputParams(String[] args);
 
 }

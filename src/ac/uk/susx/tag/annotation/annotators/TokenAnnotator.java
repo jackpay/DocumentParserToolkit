@@ -10,58 +10,63 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
 
+import ac.uk.susx.tag.annotation.annotations.Annotation;
 import ac.uk.susx.tag.annotation.annotations.GrammaticalAnnotation;
 import ac.uk.susx.tag.annotation.annotator.Annotator;
-import ac.uk.susx.tag.annotation.annotator.AnnotatorUtils;
-import ac.uk.susx.tag.document.StringDocument;
+import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.utils.AnnotatorUtils;
+import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class TokenAnnotator implements Annotator<StringDocument, GrammaticalAnnotation>{
+public class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
 	
 	private TokenizerME tokeniser;
 
-	public void annotate(StringDocument doc) {
+	public void annotate(Document<String,String> doc) throws IncompatibleAnnotationException{
 		annotate(doc, true);
 	}
 
-	public void annotate(StringDocument doc, boolean parseRawText) {
-		
-		String docStr = doc.getDocument();
-		ArrayList<GrammaticalAnnotation> annotations = createAnnotations(docStr);
+	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException{
+		GrammaticalAnnotation docAnn = new GrammaticalAnnotation(doc.getDocument(),0,doc.getDocument().length());
+		Collection<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+		annotations.addAll(annotate(docAnn));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 	
-	public ArrayList<GrammaticalAnnotation> annotate(Collection<GrammaticalAnnotation> annotations) {
+	public Collection<GrammaticalAnnotation> annotate(Collection<? extends Annotation<String>> annotations) 
+																throws IncompatibleAnnotationException{
 		String[] annotationStrings = AnnotatorUtils.annotationsToArray(annotations);
 		ArrayList<GrammaticalAnnotation> tokens = new ArrayList<GrammaticalAnnotation>();
+		int length = 0;
 		for(String string : annotationStrings){
-			tokens.addAll(createAnnotations(string));
+			GrammaticalAnnotation ga = new GrammaticalAnnotation(string, length, length+string.length());
+			length = string.length();
+			tokens.addAll(annotate(ga));
 		}
 		return tokens;
 	}
-	
-	public ArrayList<GrammaticalAnnotation> createAnnotations(String docStr){
-		String[] tokens = tokeniser.tokenize(docStr);
+
+	public Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
+		
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
+		String docStr = annotation.getAnnotation();
+		String[] tokens = tokeniser.tokenize(docStr);
 		int begin = 0;
-		Pattern tok;
-		Matcher matcher;
 		for(int i = 0; i < tokens.length; i++){
-			tok = Pattern.compile(tokens[i]);
-			matcher = tok.matcher(docStr);
+			Pattern pattern = Pattern.compile(tokens[i]);
+			Matcher matcher = pattern.matcher(docStr);
 			matcher.find(begin);
-			GrammaticalAnnotation annotation = new GrammaticalAnnotation(tokens[i], tokens[i], i, matcher.start(), matcher.end());			
-			annotations.add(annotation);
-			begin = matcher.end();
+			GrammaticalAnnotation ann = new GrammaticalAnnotation(tokens[i], annotation.getStart()+matcher.start(), annotation.getStart()+matcher.end());
+			annotations.add(ann);
 		}
 		return annotations;
 	}
-
+	
 	public boolean modelStarted() {
-		return tokeniser == null;
+		return tokeniser != null;
 	}
 	
 	public void startModel() {
-		if(tokeniser == null){
+		if(!modelStarted()){
 			try {
 				tokeniser = new TokenizerME(new TokenizerModel(this.getClass().getClassLoader().getResourceAsStream("/entoken.bin")));
 			} catch (InvalidFormatException e) {

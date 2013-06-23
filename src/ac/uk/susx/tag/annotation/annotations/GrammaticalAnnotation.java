@@ -1,11 +1,9 @@
 package ac.uk.susx.tag.annotation.annotations;
 
 
-public class GrammaticalAnnotation extends AbstractAnnotation<String, String>{
+public class GrammaticalAnnotation extends AbstractAnnotation<String> {
 
-	public GrammaticalAnnotation(String annotation, String token, int pos,
-			int start, int end) {
-		super(annotation, token, pos, start, end);
+	public GrammaticalAnnotation(String annotation, int start, int end) {
+		super(annotation, start, end);
 	}
-	
 }

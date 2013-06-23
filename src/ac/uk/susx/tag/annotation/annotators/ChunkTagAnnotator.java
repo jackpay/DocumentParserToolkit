@@ -2,26 +2,13 @@ package ac.uk.susx.tag.annotation.annotators;
 
 import java.util.Collection;
 
-import javax.swing.text.Document;
-
 import ac.uk.susx.tag.annotation.annotations.Annotation;
+import ac.uk.susx.tag.annotation.annotations.GrammaticalAnnotation;
 import ac.uk.susx.tag.annotation.annotator.Annotator;
+import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ChunkTagAnnotator implements Annotator{
-
-	public void annotate(Document doc) {
-		annotate(doc, true);
-	}
-
-	public void annotate(Collection<Annotation> annotations) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void annotate(Document doc, boolean parseRawText) {
-		// TODO Auto-generated method stub
-		
-	}
+public class ChunkTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
 
 	public void startModel() {
 		// TODO Auto-generated method stub
@@ -31,6 +18,32 @@ public class ChunkTagAnnotator implements Annotator{
 	public boolean modelStarted() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void annotate(Document<String, String> doc)
+			throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void annotate(Document<String, String> doc, boolean parseRawText)
+			throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Collection<GrammaticalAnnotation> annotate(
+			Collection<? extends Annotation<String>> annotations)
+			throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Collection<GrammaticalAnnotation> annotate(
+			Annotation<String> annotation)
+			throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

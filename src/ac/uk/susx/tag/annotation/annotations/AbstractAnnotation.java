@@ -1,27 +1,22 @@
 package ac.uk.susx.tag.annotation.annotations;
 
-import java.util.Collection;
-
 
 /**
  * Abstract class for defining an annotation at a specific position within a document.
  * @author jackpay
  *
  */
-public abstract class AbstractAnnotation<A,T> implements Annotation<A,T>{
+public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	
 	protected A annotation;
-	protected T token; 
-	private int position;
+	private int docposition;
 	private int start;
 	private int end;
 	
 	public AbstractAnnotation(){}
 	
-	public AbstractAnnotation(A annotation, T token, int pos, int start, int end){
+	public AbstractAnnotation(A annotation, int start, int end){
 		this.annotation = annotation;
-		this.token = token;
-		this.position = pos;
 		this.start = start;
 		this.end = end;
 	}
@@ -35,19 +30,11 @@ public abstract class AbstractAnnotation<A,T> implements Annotation<A,T>{
 	}
 	
 	public int getPosition(){
-		return position;
+		return docposition;
 	}
 	
 	public A getAnnotation(){
 		return annotation;
-	}
-	
-	public T getToken(){
-		return token;
-	}
-	
-	public void setToken(T token){
-		this.token = token;
 	}
 	
 	public void setAnnotation(A annotation){
@@ -62,17 +49,14 @@ public abstract class AbstractAnnotation<A,T> implements Annotation<A,T>{
 		this.end = end;
 	}
 	
-	public void setPosition(int pos){
-		this.position = pos;
+	public void setDocPosition(int pos){
+		this.docposition = pos;
 	}
-	
 	
 	public int hashCode(){
 		int prime = 31;
-		int hash = prime * 17 + start;
-		hash = hash * 31 + end;
-		hash = hash * 13 + position;
-		hash = hash * 23 + token.hashCode();
+		int hash = prime * 13 + start;
+		hash = hash * 23 + end;
 		return hash;
 	}
 	
