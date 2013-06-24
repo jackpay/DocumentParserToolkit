@@ -3,8 +3,8 @@ package ac.uk.susx.tag.document;
 import java.util.Collection;
 import java.util.Map;
 
-import ac.uk.susx.tag.annotation.annotations.Annotation;
-import ac.uk.susx.tag.annotation.annotator.Annotator;
+import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotator.Annotator;
 
 public interface Document <D,AT>{
 	

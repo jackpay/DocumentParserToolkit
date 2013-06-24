@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import ac.uk.susx.tag.annotation.annotations.Annotation;
-import ac.uk.susx.tag.annotation.annotator.Annotator;
+import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotator.Annotator;
 
 public class StringDocument extends AbstractDocument <String,String> {
 
@@ -16,7 +16,7 @@ public class StringDocument extends AbstractDocument <String,String> {
 	@SuppressWarnings("rawtypes")
 	public StringDocument(String rawDoc) {
 		super(rawDoc);
-		annotations = new HashMap<Class<? extends Annotator>, Collection<Annotation<String>>>();
+		annotations = new HashMap<Class<? extends Annotator>, Collection<Annotation<String>>>(10);
 	}
 
 	@SuppressWarnings("rawtypes")

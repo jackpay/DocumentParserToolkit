@@ -33,6 +33,10 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		(names = {"-osuff", "--outputFileSuffix"}, description="Output file suffix")
 		private String osuff = null;
 		
+		@Parameter
+		(names = {"-sf", "--singleFileOutput"}, description="Set to true if output is required in one file.")
+		private boolean singleFile = false;
+		
 		public String input(){
 			return inputLocation;
 		}
@@ -48,8 +52,12 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		public String outSuffix(){
 			return osuff;
 		}
+		
+		public boolean singleFileOutput(){
+			return singleFile;
+		}
 	}
 	
-	public abstract Configuration<?,?,?> parseInputParams(String[] args);
+	public abstract Configuration<?,?> parseInputParams(String[] args);
 
 }

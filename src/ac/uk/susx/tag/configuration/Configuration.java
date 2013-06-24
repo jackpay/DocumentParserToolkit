@@ -2,8 +2,8 @@ package ac.uk.susx.tag.configuration;
 
 import java.util.Collection;
 
-import ac.uk.susx.tag.annotation.annotations.Annotation;
-import ac.uk.susx.tag.annotation.annotator.Annotator;
+import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
 
 /**
@@ -11,30 +11,30 @@ import ac.uk.susx.tag.document.Document;
  * @author jackpay
  *
  */
-public interface Configuration <D extends Document<?,AT>, A extends Annotation<AT>, AT >{	
+public interface Configuration <D extends Document<?,AT>, AT >{	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
 	 * @param annotator
 	 */
-	public void addAnnotator(Annotator<D,A,AT> annotator);
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator);
 	
 	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include
 	 */
-	public void addAnnotator(Annotator<D,A,AT> annotator, boolean include);
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator, boolean include);
 	
 	/**
 	 * @return Return all stored annotators.
 	 */
-	public Collection<Annotator<D,A,AT>> getAnnotators();
+	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getAnnotators();
 	
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output.
 	 */
-	public Collection<Annotator<D,A,AT>> getOutputIncludedAnnotators();
+	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getOutputIncludedAnnotators();
 	
 	/**
 	 * @return Return the output location.
