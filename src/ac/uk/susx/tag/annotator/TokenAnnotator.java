@@ -67,7 +67,9 @@ public class TokenAnnotator implements Annotator<Document<String,String>, Gramma
 	public void startModel() {
 		if(!modelStarted()){
 			try {
-				tokeniser = new TokenizerME(new TokenizerModel(this.getClass().getClassLoader().getResourceAsStream("/entoken.bin")));
+				//System.err.print(getClass().getClassLoader().getResourceAsStream("DocumentParserToolkit/resources/entoken.bin").toString());
+				
+				tokeniser = new TokenizerME(new TokenizerModel(getClass().getClassLoader().getResourceAsStream("entoken.bin")));
 			} catch (InvalidFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

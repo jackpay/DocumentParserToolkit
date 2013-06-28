@@ -13,7 +13,7 @@ public class StringTokenFormatter implements TokenFormatter<String, String>{
 		StringBuilder sb = new StringBuilder();
 		Iterator<? extends Annotation<String>> iter = tokens.iterator();
 		for(int i = 0; i < tokens.size(); i++){
-			sb.append(iter.next());
+			sb.append(iter.next().getAnnotation());
 			if(i < tokens.size()-1){
 				sb.append(ANN_DELIM);
 			}

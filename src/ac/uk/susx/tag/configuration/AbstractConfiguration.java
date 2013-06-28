@@ -24,6 +24,8 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 	public AbstractConfiguration(String inputLoc, String outputLoc){
 		this.inputLoc = inputLoc;
 		this.outputLoc = outputLoc;
+		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT>>();
+		includeAnnotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT>>();
 	}
 	
 	public String getInputLocation() {

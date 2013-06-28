@@ -18,7 +18,12 @@ public class StringOutputDocumentFormatter implements OutputDocumentFormatter<St
 	private static final String TOKEN_DELIM = "\\t";
 
 	public void processOutput(Document<String, String> outputDocument,
-			String outputFileName, Class<? extends Annotator> head) {
+			String outputFileName) {
+	}
+
+	public void processOutput(Document<String, String> outputDocument,
+			String outputFileName,
+			Class<? extends Annotator> head) {
 		Map<Class<? extends Annotator>, Collection<Annotation<String>>> annotations = outputDocument.getDocumentAnnotations();
 		HashMap<Integer, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations);
 		
@@ -32,6 +37,7 @@ public class StringOutputDocumentFormatter implements OutputDocumentFormatter<St
 		}
 		for(ArrayList<Annotation<String>> tokenColl : sortedCollection.values()){
 			String token = tokenMaker.createToken(tokenColl);
+			System.err.println(token);
 			try {
 				docWriter.writeToken(token + TOKEN_DELIM);
 			} catch (IOException e) {
@@ -39,10 +45,6 @@ public class StringOutputDocumentFormatter implements OutputDocumentFormatter<St
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void processOutput(Document<String, String> outputDocument,
-			String outputFileName) {
 	}
 
 }
