@@ -8,7 +8,7 @@ import ac.uk.susx.tag.annotator.SentenceAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.document.Document;
 
-public class GrammaticalConfiguration extends AbstractConfiguration <Document<String,String>,String>{
+public class GrammaticalConfiguration extends AbstractConfiguration <Document<String,String>,String,String>{
 
 	public GrammaticalConfiguration(String inputLoc, String outputLoc) {
 		super(inputLoc, outputLoc);
@@ -24,13 +24,13 @@ public class GrammaticalConfiguration extends AbstractConfiguration <Document<St
 		
 		SENTENCE(new SentenceAnnotator()); // Used to specify a Sentence annotator.
 		
-		private final Annotator<Document<String,String>,? extends Annotation<String>, String> annotator;
+		private final Annotator<Document<String,String>,? extends Annotation<String>, String,String> annotator;
 		
-		private AnnotatorTypes(Annotator<Document<String, String>,? extends Annotation<String>, String> annotator){
+		private AnnotatorTypes(Annotator<Document<String, String>,? extends Annotation<String>, String,String> annotator){
 			this.annotator = annotator;
 		}
 		
-		public Annotator<Document<String,String>, ? extends Annotation<String>, String> getAnnotator(){
+		public Annotator<Document<String,String>, ? extends Annotation<String>, String,String> getAnnotator(){
 			annotator.startModel();
 			return annotator;
 		}

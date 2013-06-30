@@ -15,7 +15,7 @@ import ac.uk.susx.tag.annotation.GrammaticalAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class SentenceAnnotator implements Annotator<Document <String,String>, GrammaticalAnnotation, String>{
+public final class SentenceAnnotator implements Annotator<Document <String,String>, GrammaticalAnnotation, String, String>{
 	
 	private SentenceDetectorME sentencetagger;
 
@@ -42,7 +42,7 @@ public final class SentenceAnnotator implements Annotator<Document <String,Strin
 		return annotationArr;
 	}
 
-	public Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation)
+	public synchronized Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation)
 			throws IncompatibleAnnotationException {
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
 		String[] sentences = sentencetagger.sentDetect(annotation.getAnnotation());

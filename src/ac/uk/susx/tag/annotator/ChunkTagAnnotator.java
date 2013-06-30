@@ -17,7 +17,7 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.ParserUtils;
 
-public final class ChunkTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
+public final class ChunkTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String, String>{
 
 	private ChunkerME chunker;
 	private static final String CHUNKSTART = "B-";
@@ -51,7 +51,7 @@ public final class ChunkTagAnnotator implements Annotator<Document<String,String
 		return annotations;
 	}
 
-	public Collection<GrammaticalAnnotation> annotate(
+	public synchronized Collection<GrammaticalAnnotation> annotate(
 			Annotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();

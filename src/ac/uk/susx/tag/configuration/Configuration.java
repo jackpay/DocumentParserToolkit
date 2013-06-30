@@ -12,25 +12,25 @@ import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
  * @author jackpay
  *
  */
-public interface Configuration <D extends Document<?,AT>, AT >{	
+public interface Configuration <D extends Document<DT,AT>, AT,DT >{	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
 	 * @param annotator
 	 */
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator);
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator);
 	
 	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include
 	 */
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator, boolean include);
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator, boolean include);
 	
 	/**
 	 * @return Return all stored annotators.
 	 */
-	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getAnnotators();
+	public Collection<Annotator<D,? extends Annotation<AT>,AT,DT>> getAnnotators();
 	
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output.

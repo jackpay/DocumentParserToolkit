@@ -23,7 +23,7 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @author jackpay
  *
  */
-public final class PoSTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
+public final class PoSTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String, String>{
 	
 	private POSTaggerME postagger;
 
@@ -65,7 +65,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 * Annotates a single sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public Collection<GrammaticalAnnotation> annotate (
+	public synchronized Collection<GrammaticalAnnotation> annotate (
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();

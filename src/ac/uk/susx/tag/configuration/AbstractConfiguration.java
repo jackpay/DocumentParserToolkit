@@ -13,9 +13,9 @@ import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
  * An abstract class for a global config file.
  * @author jackpay
  */
-public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implements Configuration<D,AT> {
+public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> implements Configuration<D,AT,DT> {
 	
-	private ArrayList<Annotator<D,? extends Annotation<AT>,AT>> annotators; // Specify the annotator's to use when parsing.
+	private ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>> annotators; // Specify the annotator's to use when parsing.
 	private ArrayList<Class<? extends Annotator>> includedAnnotators; // Specify which annotator's should be included in the output.
 	private final String inputLoc;
 	private final String outputLoc;
@@ -27,7 +27,7 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 	public AbstractConfiguration(String inputLoc, String outputLoc){
 		this.inputLoc = inputLoc;
 		this.outputLoc = outputLoc;
-		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT>>();
+		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>>();
 		includedAnnotators = new ArrayList<Class<? extends Annotator>>();
 	}
 	
@@ -63,7 +63,7 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 		return outputSuff;
 	}
 	
-	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getAnnotators(){
+	public Collection<Annotator<D,? extends Annotation<AT>,AT,DT>> getAnnotators(){
 		return annotators;
 	}
 	
@@ -71,14 +71,14 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 		return includedAnnotators;
 	}
 	
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator){
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator){
 		annotators.add(annotator);
 	}
 	
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator, boolean include){
+	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator, boolean include){
 		annotators.add(annotator);
 		if(include){
-			includedAnnotators.add((Class<Annotator<D, ? extends Annotation<AT>, AT>>) annotator.getClass());
+			includedAnnotators.add((Class<Annotator<D, ? extends Annotation<AT>, AT,DT>>) annotator.getClass());
 		}
 	}
 	

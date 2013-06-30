@@ -4,6 +4,6 @@ import ac.uk.susx.tag.configuration.Configuration;
 
 public interface InputParameterParser {
 	
-	public Configuration<?,?> parseInputParameters(String[] args);
+	public Configuration<?,?,?> parseInputParameters(String[] args);
 
 }

@@ -2,8 +2,8 @@ package ac.uk.susx.tag.formatting;
 
 import ac.uk.susx.tag.document.Document;
 
-public interface InputDocumentFormatter <AT>{ 
+public interface InputDocumentFormatter <AT,DT>{ 
 	
-	public Document<?,AT> createDocument(String fileLocation);
+	public Document<DT,AT> createDocument(String fileLocation);
 	
 }

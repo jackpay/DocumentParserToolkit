@@ -16,7 +16,7 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
+public final class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String, String>{
 	
 	private TokenizerME tokeniser;
 
@@ -44,7 +44,7 @@ public final class TokenAnnotator implements Annotator<Document<String,String>, 
 		return tokens;
 	}
 
-	public Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
+	public synchronized Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
 		
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
 		String docStr = annotation.getAnnotation();
