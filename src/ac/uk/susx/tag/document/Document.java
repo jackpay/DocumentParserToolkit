@@ -2,6 +2,7 @@ package ac.uk.susx.tag.document;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
@@ -20,5 +21,13 @@ public interface Document <D,AT>{
 	
 	@SuppressWarnings("rawtypes")
 	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> getDocumentAnnotations();
+	
+	@SuppressWarnings("rawtypes")
+	public void removeAnnotations(Collection<Class<? extends Annotator>> excludedAnnotators);
+	
+	@SuppressWarnings("rawtypes")
+	public void removeAnnotation(Class<? extends Annotator> cl);
+	
+	public void retainAnnotations(Collection<Class<? extends Annotator>> includedAnnotators);
 	
 }

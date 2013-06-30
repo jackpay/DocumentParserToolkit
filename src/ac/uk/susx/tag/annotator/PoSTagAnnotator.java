@@ -23,7 +23,7 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @author jackpay
  *
  */
-public class PoSTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
+public final class PoSTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
 	
 	private POSTaggerME postagger;
 
@@ -37,7 +37,7 @@ public class PoSTagAnnotator implements Annotator<Document<String,String>, Gramm
 	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
+			//doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
 			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
 			if(sentences == null){
 				GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().annotate(doc);
@@ -70,11 +70,11 @@ public class PoSTagAnnotator implements Annotator<Document<String,String>, Gramm
 		
 		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
 		Collection<? extends Annotation<String>> tokens = GrammaticalConfiguration.AnnotatorTypes.TOKEN.getAnnotator().annotate(sentence);
-		String[] strToks = ParserUtils.annotationsToArray(tokens);
+		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
 		for(int i = 0; i < strTags.length; i++){
-			Pattern pattern = Pattern.compile(strToks[i]);
+			Pattern pattern = Pattern.compile(Pattern.quote(strToks[i]));
 			Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
 			GrammaticalAnnotation annotation = new GrammaticalAnnotation(strTags[i], sentence.getStart()+matcher.start(), sentence.getStart()+matcher.end());
@@ -87,12 +87,10 @@ public class PoSTagAnnotator implements Annotator<Document<String,String>, Gramm
 	public void startModel() {
 		if(!modelStarted()){
 			try {
-				postagger = new POSTaggerME(new POSModel(this.getClass().getClassLoader().getResourceAsStream("/enposmaxent.bin")));
+				postagger = new POSTaggerME(new POSModel(this.getClass().getClassLoader().getResourceAsStream("enposmaxent.bin")));
 			} catch (InvalidFormatException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

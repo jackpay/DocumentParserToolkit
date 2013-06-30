@@ -5,6 +5,7 @@ import java.util.Collection;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
 /**
  * The interace class for a global config file.
@@ -34,10 +35,10 @@ public interface Configuration <D extends Document<?,AT>, AT >{
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output.
 	 */
-	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getOutputIncludedAnnotators();
+	public Collection<Class<? extends Annotator>> getOutputIncludedAnnotators();
 	
 	/**
-	 * @return Return the output location.
+	 * @return Return the output location.Class<? extends Annotator>
 	 */
 	public String getInputLocation();
 	
@@ -45,5 +46,16 @@ public interface Configuration <D extends Document<?,AT>, AT >{
 	 * @return Return the input location.
 	 */
 	public String getOutputLocation();
+	
+	/**
+	 * Set the document output writer.
+	 */
+	public void setOutputWriter(OutputDocumentFormatter<AT> outputWriter);
+	
+	/**
+	 * Get the document output writer.
+	 */
+	public OutputDocumentFormatter<AT> getOutputWriter();
+
 
 }

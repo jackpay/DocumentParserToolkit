@@ -15,7 +15,7 @@ import ac.uk.susx.tag.annotation.GrammaticalAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class SentenceAnnotator implements Annotator<Document <String,String>, GrammaticalAnnotation, String>{
+public final class SentenceAnnotator implements Annotator<Document <String,String>, GrammaticalAnnotation, String>{
 	
 	private SentenceDetectorME sentencetagger;
 
@@ -48,7 +48,7 @@ public class SentenceAnnotator implements Annotator<Document <String,String>, Gr
 		String[] sentences = sentencetagger.sentDetect(annotation.getAnnotation());
 		int begin = 0;
 		for(int i = 0; i < sentences.length; i++){
-			Pattern pattern = Pattern.compile(sentences[i]);
+			Pattern pattern = Pattern.compile(Pattern.quote(sentences[i]));
 			Matcher matcher = pattern.matcher(annotation.getAnnotation());
 			matcher.find(begin);
 			GrammaticalAnnotation ga = new GrammaticalAnnotation(sentences[i], annotation.getStart() + matcher.start(), annotation.getStart() + matcher.end());
@@ -61,13 +61,10 @@ public class SentenceAnnotator implements Annotator<Document <String,String>, Gr
 	public void startModel() {
 		if(!modelStarted()){
 			try {
-				SentenceModel model = new SentenceModel(this.getClass().getClassLoader().getResourceAsStream("/ensent.bin"));
-				sentencetagger = new SentenceDetectorME(model);
+				sentencetagger = new SentenceDetectorME(new SentenceModel(this.getClass().getClassLoader().getResourceAsStream("ensent.bin")));
 			} catch (InvalidFormatException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

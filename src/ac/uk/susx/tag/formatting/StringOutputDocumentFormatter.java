@@ -13,19 +13,19 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class StringOutputDocumentFormatter implements OutputDocumentFormatter<String,String>{
+public class StringOutputDocumentFormatter implements OutputDocumentFormatter<String>{
 	
-	private static final String TOKEN_DELIM = "\\t";
+	private static final char TOKEN_DELIM = '\t';
 
-	public void processOutput(Document<String, String> outputDocument,
+	public void processOutput(Document<?, String> outputDocument,
 			String outputFileName) {
 	}
 
-	public void processOutput(Document<String, String> outputDocument,
+	public void processOutput(Document<?, String> outputDocument,
 			String outputFileName,
 			Class<? extends Annotator> head) {
 		Map<Class<? extends Annotator>, Collection<Annotation<String>>> annotations = outputDocument.getDocumentAnnotations();
-		HashMap<Integer, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations);
+		HashMap<Integer, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations, head);
 		
 		StringTokenFormatter tokenMaker = new StringTokenFormatter();
 		StringWriter docWriter = null;
@@ -37,13 +37,18 @@ public class StringOutputDocumentFormatter implements OutputDocumentFormatter<St
 		}
 		for(ArrayList<Annotation<String>> tokenColl : sortedCollection.values()){
 			String token = tokenMaker.createToken(tokenColl);
-			System.err.println(token);
 			try {
 				docWriter.writeToken(token + TOKEN_DELIM);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		try {
+			docWriter.closeDocument();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

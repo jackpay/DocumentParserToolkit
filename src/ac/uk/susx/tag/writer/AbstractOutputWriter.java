@@ -28,7 +28,7 @@ public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
 			}
 		}
 		else{
-			throw new IOException("File already " + fileName + " exists");
+			throw new IOException("File: " + fileName + ". Already exists");
 		}
 	}
 

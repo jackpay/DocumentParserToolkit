@@ -16,7 +16,7 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
+public final class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String>{
 	
 	private TokenizerME tokeniser;
 
@@ -33,7 +33,7 @@ public class TokenAnnotator implements Annotator<Document<String,String>, Gramma
 	
 	public Collection<GrammaticalAnnotation> annotate(Collection<? extends Annotation<String>> annotations) 
 																throws IncompatibleAnnotationException{
-		String[] annotationStrings = ParserUtils.annotationsToArray(annotations);
+		String[] annotationStrings = ParserUtils.annotationsToArray(annotations, new String[annotations.size()]);
 		ArrayList<GrammaticalAnnotation> tokens = new ArrayList<GrammaticalAnnotation>();
 		int length = 0;
 		for(String string : annotationStrings){
@@ -51,11 +51,12 @@ public class TokenAnnotator implements Annotator<Document<String,String>, Gramma
 		String[] tokens = tokeniser.tokenize(docStr);
 		int begin = 0;
 		for(int i = 0; i < tokens.length; i++){
-			Pattern pattern = Pattern.compile(tokens[i]);
+			Pattern pattern = Pattern.compile(Pattern.quote(tokens[i]));
 			Matcher matcher = pattern.matcher(docStr);
 			matcher.find(begin);
 			GrammaticalAnnotation ann = new GrammaticalAnnotation(tokens[i], annotation.getStart()+matcher.start(), annotation.getStart()+matcher.end());
 			annotations.add(ann);
+			begin = matcher.end();
 		}
 		return annotations;
 	}
@@ -67,14 +68,10 @@ public class TokenAnnotator implements Annotator<Document<String,String>, Gramma
 	public void startModel() {
 		if(!modelStarted()){
 			try {
-				//System.err.print(getClass().getClassLoader().getResourceAsStream("DocumentParserToolkit/resources/entoken.bin").toString());
-				
 				tokeniser = new TokenizerME(new TokenizerModel(getClass().getClassLoader().getResourceAsStream("entoken.bin")));
 			} catch (InvalidFormatException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

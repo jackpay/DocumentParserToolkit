@@ -10,12 +10,8 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 	public class GrammaticalInputReader extends AbstractInputReader {
 		
 		@Parameter
-		(names = {"-pos --posTag"}, description="Pos tag annotations")
+		(names = {"-pos", "--posTag"}, description="Pos tag annotations")
 		private boolean postag = false;
-		
-		@Parameter
-		(names = {"-cs", "--chunkSpan"}, description="Chunk span annotations")
-		private boolean chunkSpan = false;
 		
 		@Parameter
 		(names = {"-ct", "chunkToken"}, description="Chunk token annotations")
@@ -33,10 +29,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			return chunkToken;
 		}
 		
-		public boolean chunkSpan(){
-			return chunkSpan;
-		}
-		
 		public boolean token(){
 			return token;
 		}
@@ -52,7 +44,7 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 	}
 
 	@Override
-	public GrammaticalConfiguration parseInputParams(String[] args) {
+	public GrammaticalConfiguration parseInputParameters(String[] args) {
 		GrammaticalInputReader reader = new GrammaticalInputReader();
 		JCommander jcomm = new JCommander(reader, args);
 		GrammaticalConfiguration gc = new GrammaticalConfiguration(reader.input(), reader.output());
@@ -72,9 +64,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		}
 		if(reader.chunkToken()){
 			gc.addAnnotator(GrammaticalConfiguration.AnnotatorTypes.CHUNKTAG.getAnnotator(), true);
-		}
-		if(reader.chunkSpan()){
-			gc.addAnnotator(GrammaticalConfiguration.AnnotatorTypes.CHUNKSPAN.getAnnotator(), true);
 		}
 		
 		return gc;

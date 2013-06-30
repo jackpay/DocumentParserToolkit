@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,10 +19,10 @@ public class ParserUtils {
 	
 	@SuppressWarnings("rawtypes")
 	public static <A> HashMap<Integer, ArrayList<Annotation<A>>> collectAnnotations(Map<Class<? extends Annotator>, 
-			Collection<Annotation<A>>> annotations){
+			Collection<Annotation<A>>> annotations, Class<? extends Annotator> head){
 		HashMap<Integer, ArrayList<Annotation<A>>> collectedAnnotations = new HashMap<Integer, ArrayList<Annotation<A>>>(annotations.size()+((int)annotations.size()/4));
-		for(Collection<Annotation<A>> annSet : annotations.values()){
-			for(Annotation<A> ann : annSet){
+		if(head != null && annotations.containsKey(head)){
+			for(Annotation<A> ann : annotations.get(head)){
 				if(collectedAnnotations.get(ann.hashCode()) == null){
 					collectedAnnotations.put(ann.hashCode(), new ArrayList<Annotation<A>>());
 					collectedAnnotations.get(ann.hashCode()).add(ann);
@@ -31,18 +32,34 @@ public class ParserUtils {
 				}
 			}
 		}
+		Iterator iter = annotations.keySet().iterator();
+		while(iter.hasNext()){
+			Object next = iter.next();
+			if(!next.equals(head)){
+				for(Annotation<A> ann : annotations.get(next)){
+					if(collectedAnnotations.get(ann.hashCode()) == null){
+						collectedAnnotations.put(ann.hashCode(), new ArrayList<Annotation<A>>());
+						collectedAnnotations.get(ann.hashCode()).add(ann);
+					}
+					else{
+						collectedAnnotations.get(ann.hashCode()).add(ann);
+					}
+				}
+			}
+		}
 		return collectedAnnotations;
-		
 	}
 	
 	public static ArrayList<File> getFiles(String fileLocation, String suffix) throws IOException{
 		File file = new File(fileLocation);
 		ArrayList<File> files = new ArrayList<File>();
 		if(file.exists()){
-			if(file.exists() && file.isDirectory()){
+			if(file.exists() && file.isDirectory() && !file.isHidden()) {
 				File[] fileList = file.listFiles();
 				for(File f : fileList){
-					files.addAll(getFiles(f.getAbsolutePath(),suffix));
+					if(!f.isHidden()){
+						files.addAll(getFiles(f.getAbsolutePath(),suffix));
+					}
 				}
 			}
 			else{
@@ -50,7 +67,7 @@ public class ParserUtils {
 					files.add(file);
 				}
 				else{
-					throw new IOException("File at path: " + file.getAbsolutePath() + " Does not exist.");
+					throw new IOException("File error. Check input path and files");
 				}
 			}
 		}
@@ -69,15 +86,13 @@ public class ParserUtils {
 		return new String(buffer);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <A> A[] annotationsToArray(Collection<? extends Annotation<A>> annotations){
+	public static <A> A[] annotationsToArray(Collection<? extends Annotation<A>> annotations, A[] array){
 		Iterator<? extends Annotation<A>> iter = annotations.iterator();
-		A[] rawAnnotations = (A[]) new Object[annotations.size()];
 		int i = 0;
 		while(iter.hasNext()){
-			rawAnnotations[i] = (A) iter.next().getAnnotation();
+			array[i] = (A) iter.next().getAnnotation();
 			i++;
 		}
-		return (A[]) rawAnnotations;
+		return (A[]) array;
 	}
 }

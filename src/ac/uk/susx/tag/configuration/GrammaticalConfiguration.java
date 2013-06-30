@@ -2,7 +2,6 @@ package ac.uk.susx.tag.configuration;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.annotator.ChunkSpanAnnotator;
 import ac.uk.susx.tag.annotator.ChunkTagAnnotator;
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 import ac.uk.susx.tag.annotator.SentenceAnnotator;
@@ -21,8 +20,6 @@ public class GrammaticalConfiguration extends AbstractConfiguration <Document<St
 		
 		CHUNKTAG(new ChunkTagAnnotator()), // Used to specify a chunktag annotator.
 		
-		CHUNKSPAN(new ChunkSpanAnnotator()), // Used to specify a chunkspan annotator.
-		
 		TOKEN(new TokenAnnotator()), // Used to specify a token annotator.
 		
 		SENTENCE(new SentenceAnnotator()); // Used to specify a Sentence annotator.
@@ -39,4 +36,5 @@ public class GrammaticalConfiguration extends AbstractConfiguration <Document<St
 		}
 		
 	}
+	
 }

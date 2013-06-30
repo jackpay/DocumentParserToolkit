@@ -2,10 +2,12 @@ package ac.uk.susx.tag.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
 /**
  * An abstract class for a global config file.
@@ -14,18 +16,19 @@ import ac.uk.susx.tag.document.Document;
 public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implements Configuration<D,AT> {
 	
 	private ArrayList<Annotator<D,? extends Annotation<AT>,AT>> annotators; // Specify the annotator's to use when parsing.
-	private ArrayList<Annotator<D,? extends Annotation<AT>,AT>> includeAnnotators; // Specify which annotator's should be included in the output.
+	private ArrayList<Class<? extends Annotator>> includedAnnotators; // Specify which annotator's should be included in the output.
 	private final String inputLoc;
 	private final String outputLoc;
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
+	private OutputDocumentFormatter<AT> outputWriter;
 	
 	public AbstractConfiguration(String inputLoc, String outputLoc){
 		this.inputLoc = inputLoc;
 		this.outputLoc = outputLoc;
 		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT>>();
-		includeAnnotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT>>();
+		includedAnnotators = new ArrayList<Class<? extends Annotator>>();
 	}
 	
 	public String getInputLocation() {
@@ -64,8 +67,8 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 		return annotators;
 	}
 	
-	public Collection<Annotator<D,? extends Annotation<AT>,AT>> getOutputIncludedAnnotators(){
-		return includeAnnotators;
+	public Collection<Class<? extends Annotator>> getOutputIncludedAnnotators(){
+		return includedAnnotators;
 	}
 	
 	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator){
@@ -75,7 +78,21 @@ public abstract class AbstractConfiguration<D extends Document<?,AT>, AT> implem
 	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT> annotator, boolean include){
 		annotators.add(annotator);
 		if(include){
-			includeAnnotators.add(annotator);
+			includedAnnotators.add((Class<Annotator<D, ? extends Annotation<AT>, AT>>) annotator.getClass());
 		}
+	}
+	
+	/**
+	 * Set the document output writer.
+	 */
+	public void setOutputWriter(OutputDocumentFormatter<AT> outputWriter){
+		this.outputWriter = outputWriter;
+	}
+	
+	/**
+	 * Get the document output writer.
+	 */
+	public OutputDocumentFormatter<AT> getOutputWriter(){
+		return outputWriter;
 	}
 }
