@@ -5,6 +5,7 @@ import java.util.Collection;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
 /**
@@ -56,6 +57,29 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	 * Get the document output writer.
 	 */
 	public OutputDocumentFormatter<AT> getOutputWriter();
+	
+	/**
+	 * Set the Document object builder.
+	 */
+	public void setDocumentBuilder(InputDocumentFormatter<DT,AT> documentBuilder);
+	
+	/**
+	 * Get the Document object builder
+	 * @return
+	 */
+	public InputDocumentFormatter<DT,AT> getDocumentBuilder();
+	
+	/**
+	 * Set the suffix for input documents.
+	 * @return
+	 */
+	public String getInputSuff();
+	
+	/**
+	 * Set the suffix to be applied to output documents
+	 * @return
+	 */
+	public String getOutputSuff();
 
 
 }

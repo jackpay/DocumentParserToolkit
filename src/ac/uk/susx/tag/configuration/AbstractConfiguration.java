@@ -7,6 +7,7 @@ import java.util.HashSet;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
 /**
@@ -23,6 +24,7 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	private String outputSuff;
 	private boolean singleFile;
 	private OutputDocumentFormatter<AT> outputWriter;
+	private InputDocumentFormatter<DT,AT> docBuilder;
 	
 	public AbstractConfiguration(String inputLoc, String outputLoc){
 		this.inputLoc = inputLoc;
@@ -94,5 +96,20 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	 */
 	public OutputDocumentFormatter<AT> getOutputWriter(){
 		return outputWriter;
+	}
+	
+	/**
+	 * Set the Document object builder.
+	 */
+	public void setDocumentBuilder(InputDocumentFormatter<DT,AT> documentBuilder){
+		docBuilder = documentBuilder;
+	}
+	
+	/**
+	 * Get the Document object builder
+	 * @return
+	 */
+	public InputDocumentFormatter<DT,AT> getDocumentBuilder(){
+		return docBuilder;
 	}
 }

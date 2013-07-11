@@ -1,5 +1,9 @@
 package ac.uk.susx.tag.annotation;
 
+import ac.uk.susx.tag.indexing.AnnotationIndexToken;
+import ac.uk.susx.tag.indexing.IndexToken;
+import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+
 
 /**
  * Abstract class for defining an annotation at a specific position within a document.
@@ -8,56 +12,24 @@ package ac.uk.susx.tag.annotation;
  */
 public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	
-	protected A annotation;
-	private int docposition;
-	private int start;
-	private int end;
-	
-	public AbstractAnnotation(){}
+	private final AnnotationIndexToken<A> annotation;
+	private final TermOffsetIndexToken offset;
 	
 	public AbstractAnnotation(A annotation, int start, int end){
-		this.annotation = annotation;
-		this.start = start;
-		this.end = end;
+		this.annotation = new AnnotationIndexToken<A>(annotation);
+		offset = new TermOffsetIndexToken(start,end);
 	}
 	
 	public int getStart(){
-		return start;
+		return offset.getStart();
 	}
 	
 	public int getEnd(){
-		return end;
-	}
-	
-	public int getPosition(){
-		return docposition;
+		return offset.getEnd();
 	}
 	
 	public A getAnnotation(){
-		return annotation;
-	}
-	
-	public void setAnnotation(A annotation){
-		this.annotation = annotation;
-	}
-	
-	public void setStart(int start){
-		this.start = start;
-	}
-	
-	public void setEnd(int end){
-		this.end = end;
-	}
-	
-	public void setDocPosition(int pos){
-		this.docposition = pos;
-	}
-	
-	public int hashCode(){
-		int prime = 31;
-		int hash = prime * 13 + start;
-		hash = hash * 23 + end;
-		return hash;
+		return annotation.getAnnotation();
 	}
 	
 	//TODO: Create a better annotation hash code.
@@ -65,10 +37,34 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 		return annotation.hashCode();
 	}
 	
-	//TODO: Create hash code translator for continuous recall questions.
-	// Keep it here or in Filter?
-	public int hashCodeTranslator(int currentHash){
-		return 0;
+	public IndexToken getPositionIndex() {
+		return offset;
 	}
-	
+
+//	
+//	//TODO: Create hash code translator for continuous recall questions.
+//	// Keep it here or in Filter?
+//	public int hashCodeTranslator(int currentHash){
+//		return 0;
+//	}
+//	
+//	/**
+//	 * Used for indexing the Annotation object by its annotation field.
+//	 */
+//	public boolean equals(Object obj){
+//		if(obj == null){
+//			return false;
+//		}
+//		if(obj.getClass() != this.getClass()){
+//			return false;
+//		}
+//		if(obj.getClass() == this.getClass()){
+//			AbstractAnnotation<A> ann = (AbstractAnnotation<A>) obj;
+//			if(this.annotation.equals(ann.annotation)){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
 }

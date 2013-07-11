@@ -1,0 +1,42 @@
+package ac.uk.susx.tag.indexing;
+
+/**
+ * An IndexToken used to index by document position.
+ * @author jp242
+ *
+ */
+public class PositionIndexToken {
+	
+	public final int docPosition; // The index position within the document
+	
+	public PositionIndexToken(int docPosition){
+		this.docPosition = docPosition;
+	}
+	
+	public int hashCode(){
+		int prime = 3;
+		int hash = prime * docPosition;
+		return hash;
+	}
+
+	/**
+	 * Equals defined by the equality of the start and end offsets.
+	 */
+	@Override
+	public boolean equals(Object obj){
+		if(obj == null){
+			return false;
+		}
+		if(obj.getClass() != this.getClass()){
+			return false;
+		}
+		if(obj.getClass() == this.getClass()){
+			PositionIndexToken pos = (PositionIndexToken) obj;
+			if(this.docPosition == pos.docPosition){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+}

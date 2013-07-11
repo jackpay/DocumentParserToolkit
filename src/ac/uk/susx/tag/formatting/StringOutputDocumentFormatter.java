@@ -10,6 +10,7 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.writer.StringWriter;
 
@@ -25,7 +26,7 @@ public class StringOutputDocumentFormatter implements OutputDocumentFormatter<St
 			String outputFileName,
 			Class<? extends Annotator> head) {
 		Map<Class<? extends Annotator>, Collection<Annotation<String>>> annotations = outputDocument.getDocumentAnnotations();
-		HashMap<Integer, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations, head);
+		HashMap<IndexToken, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations, head);
 		
 		StringTokenFormatter tokenMaker = new StringTokenFormatter();
 		StringWriter docWriter = null;

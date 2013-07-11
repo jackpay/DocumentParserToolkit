@@ -12,28 +12,31 @@ import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.configuration.GrammaticalConfiguration;
 import ac.uk.susx.tag.document.Document;
-import ac.uk.susx.tag.formatting.InputDocumentFormatter;
-import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentDocumentProcessor<AT,DT> {
+public abstract class AbstractConcurrentDocumentProcessor<DT,AT> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private final Configuration<Document<DT,AT>,AT,DT> config;
-	OutputDocumentFormatter<AT> outputWriter;
+	private Configuration<Document<DT,AT>,AT,DT> config;
 	
-	public ConcurrentDocumentProcessor(List<File> files, InputDocumentFormatter<AT,DT> docBuilder, Configuration<Document<DT,AT>,AT,DT> config) {
+	public void parseFiles(List<File> files){
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
-		this.config = config;
-		System.err.println(NTHREADS);
 		for(File file : files){
-			Document<DT,AT> doc = docBuilder.createDocument(file.getAbsolutePath());
+			Document<DT,AT> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			Callable<Boolean> docCaller = new DocumentCallable(doc,file.getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
 		}
 		executor.shutdown();
+	}
+	
+	public void setConfiguration(Configuration<Document<DT,AT>,AT,DT> config){
+		this.config = config;
+	}
+	
+	public Configuration<Document<DT,AT>,AT,DT> getConfig(){
+		return config;
 	}
 	
 	public class DocumentCallable implements Callable<Boolean> {
@@ -47,6 +50,7 @@ public class ConcurrentDocumentProcessor<AT,DT> {
 		}
 
 		public Boolean call() throws Exception {
+			System.err.println("Beginning processing of file: " + fileName);
 			for(Annotator<Document<DT,AT>,?,AT,DT> annotator : config.getAnnotators()){
 				try {
 					annotator.annotate(document);

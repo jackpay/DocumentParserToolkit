@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,21 +13,22 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 public class ParserUtils {
 	
 	@SuppressWarnings("rawtypes")
-	public static <A> HashMap<Integer, ArrayList<Annotation<A>>> collectAnnotations(Map<Class<? extends Annotator>, 
+	public static <A> HashMap<IndexToken, ArrayList<Annotation<A>>> collectAnnotations(Map<Class<? extends Annotator>, 
 			Collection<Annotation<A>>> annotations, Class<? extends Annotator> head){
-		HashMap<Integer, ArrayList<Annotation<A>>> collectedAnnotations = new HashMap<Integer, ArrayList<Annotation<A>>>(annotations.size()+((int)annotations.size()/4));
+		HashMap<IndexToken, ArrayList<Annotation<A>>> collectedAnnotations = new HashMap<IndexToken, ArrayList<Annotation<A>>>(annotations.size()+((int)annotations.size()/4));
 		if(head != null && annotations.containsKey(head)){
 			for(Annotation<A> ann : annotations.get(head)){
-				if(collectedAnnotations.get(ann.hashCode()) == null){
-					collectedAnnotations.put(ann.hashCode(), new ArrayList<Annotation<A>>());
-					collectedAnnotations.get(ann.hashCode()).add(ann);
+				if(collectedAnnotations.get(ann.getPositionIndex()) == null){
+					collectedAnnotations.put(ann.getPositionIndex(), new ArrayList<Annotation<A>>());
+					collectedAnnotations.get(ann.getPositionIndex()).add(ann);
 				}
 				else{
-					collectedAnnotations.get(ann.hashCode()).add(ann);
+					collectedAnnotations.get(ann.getPositionIndex()).add(ann);
 				}
 			}
 		}
@@ -37,12 +37,12 @@ public class ParserUtils {
 			Object next = iter.next();
 			if(!next.equals(head)){
 				for(Annotation<A> ann : annotations.get(next)){
-					if(collectedAnnotations.get(ann.hashCode()) == null){
-						collectedAnnotations.put(ann.hashCode(), new ArrayList<Annotation<A>>());
-						collectedAnnotations.get(ann.hashCode()).add(ann);
+					if(collectedAnnotations.get(ann.getPositionIndex()) == null){
+						collectedAnnotations.put(ann.getPositionIndex(), new ArrayList<Annotation<A>>());
+						collectedAnnotations.get(ann.getPositionIndex()).add(ann);
 					}
 					else{
-						collectedAnnotations.get(ann.hashCode()).add(ann);
+						collectedAnnotations.get(ann.getPositionIndex()).add(ann);
 					}
 				}
 			}
