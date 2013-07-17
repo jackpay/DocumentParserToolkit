@@ -23,12 +23,12 @@ public class ParserUtils {
 		HashMap<IndexToken, ArrayList<Annotation<A>>> collectedAnnotations = new HashMap<IndexToken, ArrayList<Annotation<A>>>(annotations.size()+((int)annotations.size()/4));
 		if(head != null && annotations.containsKey(head)){
 			for(Annotation<A> ann : annotations.get(head)){
-				if(collectedAnnotations.get(ann.getPositionIndex()) == null){
-					collectedAnnotations.put(ann.getPositionIndex(), new ArrayList<Annotation<A>>());
-					collectedAnnotations.get(ann.getPositionIndex()).add(ann);
+				if(collectedAnnotations.get(ann.getIndex()) == null){
+					collectedAnnotations.put(ann.getIndex(), new ArrayList<Annotation<A>>());
+					collectedAnnotations.get(ann.getIndex()).add(ann);
 				}
 				else{
-					collectedAnnotations.get(ann.getPositionIndex()).add(ann);
+					collectedAnnotations.get(ann.getIndex()).add(ann);
 				}
 			}
 		}
@@ -37,12 +37,12 @@ public class ParserUtils {
 			Object next = iter.next();
 			if(!next.equals(head)){
 				for(Annotation<A> ann : annotations.get(next)){
-					if(collectedAnnotations.get(ann.getPositionIndex()) == null){
-						collectedAnnotations.put(ann.getPositionIndex(), new ArrayList<Annotation<A>>());
-						collectedAnnotations.get(ann.getPositionIndex()).add(ann);
+					if(collectedAnnotations.get(ann.getIndex()) == null){
+						collectedAnnotations.put(ann.getIndex(), new ArrayList<Annotation<A>>());
+						collectedAnnotations.get(ann.getIndex()).add(ann);
 					}
 					else{
-						collectedAnnotations.get(ann.getPositionIndex()).add(ann);
+						collectedAnnotations.get(ann.getIndex()).add(ann);
 					}
 				}
 			}
@@ -51,6 +51,12 @@ public class ParserUtils {
 	}
 	
 	public static ArrayList<File> getFiles(String fileLocation, String suffix) throws IOException{
+		if(fileLocation == null){
+			throw new IOException("File location is null");
+		}
+		if(suffix == null){
+			throw new IOException("File suffix is null");
+		}
 		File file = new File(fileLocation);
 		ArrayList<File> files = new ArrayList<File>();
 		if(file.exists()){

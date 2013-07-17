@@ -11,8 +11,8 @@ import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.util.InvalidFormatException;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.GrammaticalAnnotation;
-import ac.uk.susx.tag.configuration.GrammaticalConfiguration;
+import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -23,7 +23,7 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @author jackpay
  *
  */
-public final class PoSTagAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String, String>{
+public final class PoSTagAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
 	
 	private POSTaggerME postagger;
 
@@ -37,12 +37,11 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			//doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
-			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
+			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 			if(sentences == null){
-				GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().annotate(doc);
+				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 			}
-			sentences = doc.getAnnotations(GrammaticalConfiguration.AnnotatorTypes.SENTENCE.getAnnotator().getClass());
+			sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 			postags.addAll(annotate(sentences));
 			doc.addAnnotations(this.getClass(), postags);
 	}
@@ -51,10 +50,10 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 * Takes pre-split sentences and annotates them
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public Collection<GrammaticalAnnotation> annotate(
+	public Collection<StringAnnotation> annotate(
 			Collection<? extends Annotation<String>> sentences) throws IncompatibleAnnotationException {
 		
-		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
+		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		for(Annotation<String> sentence : sentences){
 			annotations.addAll(annotate(sentence));
 		}
@@ -65,11 +64,11 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 * Annotates a single sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public synchronized Collection<GrammaticalAnnotation> annotate (
+	public synchronized Collection<StringAnnotation> annotate (
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		
-		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
-		Collection<? extends Annotation<String>> tokens = GrammaticalConfiguration.AnnotatorTypes.TOKEN.getAnnotator().annotate(sentence);
+		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
@@ -77,7 +76,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 			Pattern pattern = Pattern.compile(Pattern.quote(strToks[i]));
 			Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
-			GrammaticalAnnotation annotation = new GrammaticalAnnotation(strTags[i], sentence.getStart()+matcher.start(), sentence.getStart()+matcher.end());
+			StringAnnotation annotation = new StringAnnotation(strTags[i], sentence.getStart()+matcher.start(), sentence.getStart()+matcher.end());
 			annotations.add(annotation);
 			begin = matcher.end();
 		}

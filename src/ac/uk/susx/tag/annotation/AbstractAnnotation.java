@@ -2,6 +2,7 @@ package ac.uk.susx.tag.annotation;
 
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
 import ac.uk.susx.tag.indexing.IndexToken;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 
@@ -14,6 +15,7 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	
 	private final AnnotationIndexToken<A> annotation;
 	private final TermOffsetIndexToken offset;
+	private PositionIndexToken docPosition;
 	
 	public AbstractAnnotation(A annotation, int start, int end){
 		this.annotation = new AnnotationIndexToken<A>(annotation);
@@ -32,39 +34,21 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 		return annotation.getAnnotation();
 	}
 	
+	public void setDocumentPosition(int pos){
+		docPosition = new PositionIndexToken(pos);
+	}
+	
 	//TODO: Create a better annotation hash code.
 	public int annotationHashCode(){
 		return annotation.hashCode();
 	}
 	
-	public IndexToken getPositionIndex() {
+	public TermOffsetIndexToken getIndex() {
 		return offset;
 	}
+	
+	public PositionIndexToken getDocumentPosition() {
+		return docPosition;
+	}
 
-//	
-//	//TODO: Create hash code translator for continuous recall questions.
-//	// Keep it here or in Filter?
-//	public int hashCodeTranslator(int currentHash){
-//		return 0;
-//	}
-//	
-//	/**
-//	 * Used for indexing the Annotation object by its annotation field.
-//	 */
-//	public boolean equals(Object obj){
-//		if(obj == null){
-//			return false;
-//		}
-//		if(obj.getClass() != this.getClass()){
-//			return false;
-//		}
-//		if(obj.getClass() == this.getClass()){
-//			AbstractAnnotation<A> ann = (AbstractAnnotation<A>) obj;
-//			if(this.annotation.equals(ann.annotation)){
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//	
 }

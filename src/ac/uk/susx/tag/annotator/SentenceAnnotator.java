@@ -3,21 +3,30 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Iterator;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.util.InvalidFormatException;
+import opennlp.tools.util.Span;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.GrammaticalAnnotation;
+import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class SentenceAnnotator implements Annotator<Document <String,String>, GrammaticalAnnotation, String, String>{
+public final class SentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
 	
 	private SentenceDetectorME sentencetagger;
+	private final boolean storeSentence;
+	
+	public SentenceAnnotator(){
+		storeSentence = true;
+	}
+	
+	public SentenceAnnotator(boolean storeSentenceString){
+		this.storeSentence = storeSentenceString;
+	}
 
 	public void annotate(Document<String,String> doc)
 			throws IncompatibleAnnotationException {
@@ -27,34 +36,46 @@ public final class SentenceAnnotator implements Annotator<Document <String,Strin
 	public void annotate(Document<String,String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
 		String docStr = doc.getDocument();
-		GrammaticalAnnotation ga = new GrammaticalAnnotation(docStr,0,docStr.length());
+		StringAnnotation ga = new StringAnnotation(docStr,0,docStr.length());
 		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		annotations.addAll(annotate(ga));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 
-	public Collection<GrammaticalAnnotation> annotate(Collection<? extends Annotation<String>> annotations)
+	public Collection<StringAnnotation> annotate(Collection<? extends Annotation<String>> annotations)
 			throws IncompatibleAnnotationException {
-		ArrayList<GrammaticalAnnotation> annotationArr = new ArrayList<GrammaticalAnnotation>();
+		ArrayList<StringAnnotation> annotationArr = new ArrayList<StringAnnotation>();
+		int index = 0;
 		for(Annotation<String> annotation : annotations){
-			annotationArr.addAll(annotate(annotation));
+			Collection<StringAnnotation> sentAnn = annotate(annotation);
+			for(StringAnnotation ann : sentAnn){
+				int currPos = ann.getDocumentPosition() == null ? 0 : ann.getDocumentPosition().getPosition();
+				ann.setDocumentPosition(currPos + index);
+				index++;
+			}
+			annotationArr.addAll(sentAnn);
 		}
 		return annotationArr;
 	}
 
-	public synchronized Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation)
+	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation)
 			throws IncompatibleAnnotationException {
-		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
-		String[] sentences = sentencetagger.sentDetect(annotation.getAnnotation());
-		int begin = 0;
-		for(int i = 0; i < sentences.length; i++){
-			Pattern pattern = Pattern.compile(Pattern.quote(sentences[i]));
-			Matcher matcher = pattern.matcher(annotation.getAnnotation());
-			matcher.find(begin);
-			GrammaticalAnnotation ga = new GrammaticalAnnotation(sentences[i], annotation.getStart() + matcher.start(), annotation.getStart() + matcher.end());
-			annotations.add(ga);
-			begin = matcher.end();
+		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
+		
+		for(int i = 0; i < sentPos.length; i++){
+			if(storeSentence){
+				StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart(),sentPos[i].getEnd());
+				sentence.setDocumentPosition(i);
+				annotations.add(sentence);
+			}
+			else{
+				StringAnnotation sentence = new StringAnnotation(null,sentPos[i].getStart(),sentPos[i].getEnd());
+				sentence.setDocumentPosition(i);
+				annotations.add(sentence);
+			}
 		}
+		
 		return annotations;
 	}
 

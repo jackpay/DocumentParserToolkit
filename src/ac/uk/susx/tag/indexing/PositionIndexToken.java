@@ -5,12 +5,16 @@ package ac.uk.susx.tag.indexing;
  * @author jp242
  *
  */
-public class PositionIndexToken {
+public class PositionIndexToken implements IndexToken {
 	
 	public final int docPosition; // The index position within the document
 	
 	public PositionIndexToken(int docPosition){
 		this.docPosition = docPosition;
+	}
+	
+	public int getPosition(){
+		return docPosition;
 	}
 	
 	public int hashCode(){
@@ -20,7 +24,7 @@ public class PositionIndexToken {
 	}
 
 	/**
-	 * Equals defined by the equality of the start and end offsets.
+	 * Equals defined by the equality of the doc position.
 	 */
 	@Override
 	public boolean equals(Object obj){

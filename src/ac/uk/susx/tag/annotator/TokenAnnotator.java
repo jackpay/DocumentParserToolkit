@@ -3,20 +3,19 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
+import opennlp.tools.util.Span;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.GrammaticalAnnotation;
+import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class TokenAnnotator implements Annotator<Document<String,String>, GrammaticalAnnotation, String, String>{
+public final class TokenAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
 	
 	private TokenizerME tokeniser;
 
@@ -25,39 +24,44 @@ public final class TokenAnnotator implements Annotator<Document<String,String>, 
 	}
 
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException{
-		GrammaticalAnnotation docAnn = new GrammaticalAnnotation(doc.getDocument(),0,doc.getDocument().length());
+		StringAnnotation docAnn = new StringAnnotation(doc.getDocument(),0,doc.getDocument().length());
 		Collection<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		annotations.addAll(annotate(docAnn));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 	
-	public Collection<GrammaticalAnnotation> annotate(Collection<? extends Annotation<String>> annotations) 
+	public Collection<StringAnnotation> annotate(Collection<? extends Annotation<String>> annotations) 
 																throws IncompatibleAnnotationException{
 		String[] annotationStrings = ParserUtils.annotationsToArray(annotations, new String[annotations.size()]);
-		ArrayList<GrammaticalAnnotation> tokens = new ArrayList<GrammaticalAnnotation>();
+		ArrayList<StringAnnotation> tokens = new ArrayList<StringAnnotation>();
 		int length = 0;
+		int docPos = 0;
 		for(String string : annotationStrings){
-			GrammaticalAnnotation ga = new GrammaticalAnnotation(string, length, length+string.length());
+			StringAnnotation ga = new StringAnnotation(string, length, length+string.length());
 			length = string.length();
-			tokens.addAll(annotate(ga));
+			Collection<StringAnnotation> tokAnnotations = annotate(ga);
+			for(StringAnnotation ann : tokAnnotations){
+				int currPos = ann.getDocumentPosition() == null ? 0 : ann.getDocumentPosition().getPosition();
+				ann.setDocumentPosition(currPos + docPos);
+				docPos++;
+			}
+			tokens.addAll(tokAnnotations);
 		}
 		return tokens;
 	}
 
-	public synchronized Collection<GrammaticalAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
+	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
 		
-		ArrayList<GrammaticalAnnotation> annotations = new ArrayList<GrammaticalAnnotation>();
+		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		String docStr = annotation.getAnnotation();
-		String[] tokens = tokeniser.tokenize(docStr);
-		int begin = 0;
-		for(int i = 0; i < tokens.length; i++){
-			Pattern pattern = Pattern.compile(Pattern.quote(tokens[i]));
-			Matcher matcher = pattern.matcher(docStr);
-			matcher.find(begin);
-			GrammaticalAnnotation ann = new GrammaticalAnnotation(tokens[i], annotation.getStart()+matcher.start(), annotation.getStart()+matcher.end());
-			annotations.add(ann);
-			begin = matcher.end();
+
+		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
+		for(int i = 0; i < tokenSpans.length; i++){
+			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart(), tokenSpans[i].getEnd());
+			token.setDocumentPosition(i);
+			annotations.add(token);
 		}
+		
 		return annotations;
 	}
 	

@@ -10,6 +10,8 @@ public interface Annotation<A>{
 	
 	public int getEnd();
 	
-	public IndexToken getPositionIndex();
+	public IndexToken getIndex();
+	
+	public void setDocumentPosition(int pos);
 	
 }

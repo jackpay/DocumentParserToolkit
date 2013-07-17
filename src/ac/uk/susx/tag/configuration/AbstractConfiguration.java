@@ -2,7 +2,6 @@ package ac.uk.susx.tag.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
