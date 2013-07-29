@@ -15,14 +15,25 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class TokenAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
+public abstract class AbstractTokenAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
 	
 	private TokenizerME tokeniser;
+	private final boolean storeToken;
+	
+	public AbstractTokenAnnotator(boolean storeToken){
+		this.storeToken = storeToken;
+	}
 
+	/**
+	 * Annotates a document with Token annotations
+	 */
 	public void annotate(Document<String,String> doc) throws IncompatibleAnnotationException{
 		annotate(doc, true);
 	}
 
+	/**
+	 * Annotates a document with Token annotations. 
+	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException{
 		StringAnnotation docAnn = new StringAnnotation(doc.getDocument(),0,doc.getDocument().length());
 		Collection<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
@@ -30,6 +41,9 @@ public final class TokenAnnotator implements Annotator<Document<String,String>, 
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 	
+	/**
+	 * Creates Token annotations for a collection of annotations. It applies the document position of each token in the order of the collection provided.
+	 */
 	public Collection<StringAnnotation> annotate(Collection<? extends Annotation<String>> annotations) 
 																throws IncompatibleAnnotationException{
 		String[] annotationStrings = ParserUtils.annotationsToArray(annotations, new String[annotations.size()]);
@@ -50,6 +64,9 @@ public final class TokenAnnotator implements Annotator<Document<String,String>, 
 		return tokens;
 	}
 
+	/**
+	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
+	 */
 	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
@@ -57,18 +74,30 @@ public final class TokenAnnotator implements Annotator<Document<String,String>, 
 
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
-			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart(), tokenSpans[i].getEnd());
-			token.setDocumentPosition(i);
-			annotations.add(token);
+			if(storeToken){
+				StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart(), tokenSpans[i].getEnd());
+				token.setDocumentPosition(i);
+				annotations.add(token);
+			}
+			else{
+				StringAnnotation token = new StringAnnotation(null, tokenSpans[i].getStart(), tokenSpans[i].getEnd());
+				token.setDocumentPosition(i);
+				annotations.add(token);
+			}
 		}
-		
 		return annotations;
 	}
 	
+	/**
+	 * Starts the model if it has not already done so.
+	 */
 	public boolean modelStarted() {
 		return tokeniser != null;
 	}
 	
+	/**
+	 * Checks if the model has been instantiated.
+	 */
 	public void startModel() {
 		if(!modelStarted()){
 			try {

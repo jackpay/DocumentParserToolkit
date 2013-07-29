@@ -2,7 +2,6 @@ package ac.uk.susx.tag.document;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
@@ -28,6 +27,20 @@ public interface Document <D,AT>{
 	@SuppressWarnings("rawtypes")
 	public void removeAnnotation(Class<? extends Annotator> cl);
 	
+	@SuppressWarnings("rawtypes")
 	public void retainAnnotations(Collection<Class<? extends Annotator>> includedAnnotators);
+	
+	/**
+	 * Used to get a sub-section of the stored document. Primarily intended for use by the Annotation offsets.
+	 * @param start 
+	 */
+	public D getDocumentSubSection(int start);
+	
+	/**
+	 * Used to get a sub-section of the stored document. Primarily intended for use by the Annotation offsets.
+	 * @param start 
+	 * @param end
+	 */
+	public D getDocumentSubSection(int start, int end);
 	
 }

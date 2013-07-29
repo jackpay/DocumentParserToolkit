@@ -35,11 +35,11 @@ public abstract class AbstractNERAnnotator implements Annotator<Document<String,
 	public void annotate(Document<String, String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
 		Collection<Annotation<String>> people = new ArrayList<Annotation<String>>();
-		Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+		Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
 		if(sentences == null){
-			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
+			StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().annotate(doc);
 		}
-		sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+		sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
 		people.addAll(annotate(sentences));
 		doc.addAnnotations(this.getClass(), people);
 	}
@@ -58,7 +58,7 @@ public abstract class AbstractNERAnnotator implements Annotator<Document<String,
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.STORED_TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 
 		Span[] peopleSpans = nameFinder.find(strToks);

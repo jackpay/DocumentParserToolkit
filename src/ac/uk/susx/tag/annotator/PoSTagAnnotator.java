@@ -13,6 +13,7 @@ import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
+
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -37,11 +38,11 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
 			if(sentences == null){
-				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
+				StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().annotate(doc);
 			}
-			sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+			sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
 			postags.addAll(annotate(sentences));
 			doc.addAnnotations(this.getClass(), postags);
 	}
@@ -68,7 +69,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.STORED_TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;

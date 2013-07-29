@@ -1,7 +1,8 @@
 package ac.uk.susx.tag.annotation;
 
+import java.io.IOException;
+
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
-import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
@@ -20,6 +21,7 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	public AbstractAnnotation(A annotation, int start, int end){
 		this.annotation = new AnnotationIndexToken<A>(annotation);
 		offset = new TermOffsetIndexToken(start,end);
+		
 	}
 	
 	public int getStart(){
@@ -31,6 +33,13 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	}
 	
 	public A getAnnotation(){
+		if(annotation.getAnnotation() == null){
+			try {
+				throw new IOException("This Annotation object was passed a null object on instantiation. Check the instantiating Annotator configuration.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return annotation.getAnnotation();
 	}
 	
@@ -49,6 +58,14 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	
 	public PositionIndexToken getDocumentPosition() {
 		return docPosition;
+	}
+	
+	/**
+	 * Used to ascertain if an annotation is defined by a specific annotation or a sub-section of a document or text.
+	 * @return
+	 */
+	public boolean isOffsetAnnotation(){
+		return annotation.getAnnotation() == null;
 	}
 
 }

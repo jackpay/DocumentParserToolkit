@@ -6,7 +6,7 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public interface Annotator <D extends Document<DT,AT>, A extends Annotation<AT>,AT,DT>{
+public interface Annotator <D extends Document<DT,AT>, A extends Annotation<AT>,AT,DT> {
 	
 	public void annotate(D document) throws IncompatibleAnnotationException;
 	

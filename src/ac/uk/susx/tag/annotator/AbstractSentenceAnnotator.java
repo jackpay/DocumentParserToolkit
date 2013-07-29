@@ -3,7 +3,6 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -15,16 +14,12 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public final class SentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
+public abstract class AbstractSentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
 	
 	private SentenceDetectorME sentencetagger;
 	private final boolean storeSentence;
 	
-	public SentenceAnnotator(){
-		storeSentence = true;
-	}
-	
-	public SentenceAnnotator(boolean storeSentenceString){
+	public AbstractSentenceAnnotator(boolean storeSentenceString){
 		this.storeSentence = storeSentenceString;
 	}
 

@@ -37,7 +37,7 @@ public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
 	}
 
 	public boolean isDocumentOpen() {
-		return file.canWrite();
+		return file.canWrite() && writer != null;
 	}
 	
 	public BufferedWriter getWriter(){
