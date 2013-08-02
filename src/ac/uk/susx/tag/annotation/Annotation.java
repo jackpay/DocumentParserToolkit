@@ -10,8 +10,10 @@ public interface Annotation<A>{
 	
 	public int getEnd();
 	
-	public IndexToken getIndex();
+	public IndexToken getOffset();
 	
 	public void setDocumentPosition(int pos);
+	
+	public boolean isEmptyAnnotation();
 	
 }

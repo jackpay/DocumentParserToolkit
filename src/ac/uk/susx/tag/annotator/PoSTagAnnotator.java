@@ -38,21 +38,21 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
+			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().getClass());
 			if(sentences == null){
-				StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().annotate(doc);
+				StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().annotate(doc);
 			}
-			sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
+			sentences = doc.getAnnotations(StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().getClass()); 
 			postags.addAll(annotate(sentences));
 			doc.addAnnotations(this.getClass(), postags);
 	}
 
 	/**
-	 * Takes pre-split sentences and annotates them
+	 * Takes pre-tokenised sentence and annotates it.
 	 * @throws IncompatibleAnnotationException 
 	 */
 	public Collection<StringAnnotation> annotate(
-			Collection<? extends Annotation<String>> sentences) throws IncompatibleAnnotationException {
+			Collection<? extends Annotation<String>> sentence) throws IncompatibleAnnotationException {
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		for(Annotation<String> sentence : sentences){
@@ -62,7 +62,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	}
 
 	/**
-	 * Annotates a single sentence.
+	 * Annotates a single un-tokenised sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
 	public synchronized Collection<StringAnnotation> annotate (

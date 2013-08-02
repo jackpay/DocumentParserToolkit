@@ -23,12 +23,12 @@ public class ParserUtils {
 		HashMap<IndexToken, ArrayList<Annotation<A>>> collectedAnnotations = new HashMap<IndexToken, ArrayList<Annotation<A>>>(annotations.size()+((int)annotations.size()/4));
 		if(head != null && annotations.containsKey(head)){
 			for(Annotation<A> ann : annotations.get(head)){
-				if(collectedAnnotations.get(ann.getIndex()) == null){
-					collectedAnnotations.put(ann.getIndex(), new ArrayList<Annotation<A>>());
-					collectedAnnotations.get(ann.getIndex()).add(ann);
+				if(collectedAnnotations.get(ann.getOffset()) == null){
+					collectedAnnotations.put(ann.getOffset(), new ArrayList<Annotation<A>>());
+					collectedAnnotations.get(ann.getOffset()).add(ann);
 				}
 				else{
-					collectedAnnotations.get(ann.getIndex()).add(ann);
+					collectedAnnotations.get(ann.getOffset()).add(ann);
 				}
 			}
 		}
@@ -37,12 +37,12 @@ public class ParserUtils {
 			Object next = iter.next();
 			if(!next.equals(head)){
 				for(Annotation<A> ann : annotations.get(next)){
-					if(collectedAnnotations.get(ann.getIndex()) == null){
-						collectedAnnotations.put(ann.getIndex(), new ArrayList<Annotation<A>>());
-						collectedAnnotations.get(ann.getIndex()).add(ann);
+					if(collectedAnnotations.get(ann.getOffset()) == null){
+						collectedAnnotations.put(ann.getOffset(), new ArrayList<Annotation<A>>());
+						collectedAnnotations.get(ann.getOffset()).add(ann);
 					}
 					else{
-						collectedAnnotations.get(ann.getIndex()).add(ann);
+						collectedAnnotations.get(ann.getOffset()).add(ann);
 					}
 				}
 			}

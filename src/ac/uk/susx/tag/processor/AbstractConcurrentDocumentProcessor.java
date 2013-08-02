@@ -61,7 +61,7 @@ public abstract class AbstractConcurrentDocumentProcessor<DT,AT> {
 				}
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processOutput(document, config.getOutputLocation() + "/" + fileName, StringAnnotatorEnum.STORED_TOKEN.getAnnotator().getClass());
+			config.getOutputWriter().processOutput(document, config.getOutputLocation() + "/" + fileName, StringAnnotatorEnum.OFFSET_TOKEN.getAnnotator().getClass());
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

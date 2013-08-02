@@ -19,9 +19,8 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	private PositionIndexToken docPosition;
 	
 	public AbstractAnnotation(A annotation, int start, int end){
-		this.annotation = new AnnotationIndexToken<A>(annotation);
-		offset = new TermOffsetIndexToken(start,end);
-		
+		this.annotation = (annotation == null)? null : new AnnotationIndexToken<A>(annotation);
+		this.offset = new TermOffsetIndexToken(start,end);	
 	}
 	
 	public int getStart(){
@@ -33,14 +32,7 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	}
 	
 	public A getAnnotation(){
-		if(annotation.getAnnotation() == null){
-			try {
-				throw new IOException("This Annotation object was passed a null object on instantiation. Check the instantiating Annotator configuration.");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return annotation.getAnnotation();
+		return (annotation == null)? null : annotation.getAnnotation();
 	}
 	
 	public void setDocumentPosition(int pos){
@@ -52,7 +44,7 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 		return annotation.hashCode();
 	}
 	
-	public TermOffsetIndexToken getIndex() {
+	public TermOffsetIndexToken getOffset() {
 		return offset;
 	}
 	
@@ -64,8 +56,8 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	 * Used to ascertain if an annotation is defined by a specific annotation or a sub-section of a document or text.
 	 * @return
 	 */
-	public boolean isOffsetAnnotation(){
-		return annotation.getAnnotation() == null;
+	public boolean isEmptyAnnotation(){
+		return annotation == null;
 	}
 
 }

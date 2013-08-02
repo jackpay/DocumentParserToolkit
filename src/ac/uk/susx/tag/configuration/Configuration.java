@@ -51,12 +51,12 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(OutputDocumentFormatter<AT> outputWriter);
+	public void setOutputWriter(OutputDocumentFormatter<DT,AT> outputWriter);
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public OutputDocumentFormatter<AT> getOutputWriter();
+	public OutputDocumentFormatter<DT,AT> getOutputWriter();
 	
 	/**
 	 * Set the Document object builder.

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
-import ac.uk.susx.tag.formatting.StringOutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.StringTabOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.utils.ParserUtils;
 
@@ -33,7 +33,7 @@ public class StringDocumentProcessor extends AbstractConcurrentDocumentProcessor
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		setConfiguration(gip.parseInputParameters(args));
-		OutputDocumentFormatter<String> outputWriter = new StringOutputDocumentFormatter();
+		OutputDocumentFormatter<String,String> outputWriter = new StringTabOutputDocumentFormatter();
 		getConfig().setOutputWriter(outputWriter);
 		getConfig().setDocumentBuilder(new StringInputDocumentFormatter());
 	}

@@ -79,10 +79,10 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
 		if(reader.token()){
-			gc.addAnnotator(StringAnnotatorEnum.STORED_TOKEN.getAnnotator(),true);
+			gc.addAnnotator(StringAnnotatorEnum.OFFSET_TOKEN.getAnnotator(), true);
 		}
 		if(reader.sentence()){
-			gc.addAnnotator(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator(), true);
+			gc.addAnnotator(StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator(), true);
 		}
 		if(reader.posTag()){
 			gc.addAnnotator(StringAnnotatorEnum.POSTAG.getAnnotator(), true);

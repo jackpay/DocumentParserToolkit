@@ -22,7 +22,7 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
-	private OutputDocumentFormatter<AT> outputWriter;
+	private OutputDocumentFormatter<DT,AT> outputWriter;
 	private InputDocumentFormatter<DT,AT> docBuilder;
 	
 	public AbstractConfiguration(String inputLoc, String outputLoc){
@@ -86,14 +86,14 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(OutputDocumentFormatter<AT> outputWriter){
+	public void setOutputWriter(OutputDocumentFormatter<DT,AT> outputWriter){
 		this.outputWriter = outputWriter;
 	}
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public OutputDocumentFormatter<AT> getOutputWriter(){
+	public OutputDocumentFormatter<DT,AT> getOutputWriter(){
 		return outputWriter;
 	}
 	
