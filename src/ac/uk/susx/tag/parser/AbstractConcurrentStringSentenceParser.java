@@ -79,6 +79,7 @@ public class SentenceCallable implements Callable<Document<String,String>> {
 		
 		private final Document<String,String> sentence;
 		
+		//TODO: Add doc position to prevent clashes!
 		public SentenceCallable(Document<String, String> document){
 			this.sentence = document;
 		}
