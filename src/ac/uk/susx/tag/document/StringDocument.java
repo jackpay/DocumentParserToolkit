@@ -6,12 +6,4 @@ public class StringDocument extends AbstractDocument <String,String> {
 		super(rawDoc);
 	}
 
-	public String getDocumentSubSection(int start) {
-		return getDocument().substring(start);
-	}
-
-	public String getDocumentSubSection(int start, int end) {
-		return getDocument().substring(start, end);
-	}
-	
 }

@@ -14,6 +14,4 @@ public interface Annotation<A>{
 	
 	public void setDocumentPosition(int pos);
 	
-	public boolean isEmptyAnnotation();
-	
 }

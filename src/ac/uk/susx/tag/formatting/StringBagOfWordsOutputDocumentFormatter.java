@@ -8,17 +8,27 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class StringTabOutputDocumentFormatter implements OutputDocumentFormatter<String,String>{
+public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFormatter<String,String>{
 	
-	private static final char TOKEN_DELIM = '\t';
+	private final char TOKEN_DELIM;
 
+	public StringBagOfWordsOutputDocumentFormatter(){
+		this('\t');
+	}
+	
+	public StringBagOfWordsOutputDocumentFormatter(char delimiter){
+		TOKEN_DELIM = delimiter;
+	}
+	
 	public void processOutput(Document<String, String> outputDocument,
 			String outputFileName) {
+		processOutput(outputDocument, outputFileName, StringAnnotatorEnum.TOKEN.getAnnotator().getClass());
 	}
 
 	public void processOutput(Document<String, String> outputDocument,
@@ -27,7 +37,7 @@ public class StringTabOutputDocumentFormatter implements OutputDocumentFormatter
 		Map<Class<? extends Annotator>, Collection<Annotation<String>>> annotations = outputDocument.getDocumentAnnotations();
 		HashMap<IndexToken, ArrayList<Annotation<String>>> sortedCollection = ParserUtils.collectAnnotations(annotations, head);
 		
-		StringTokenHyphenFormatter tokenMaker = new StringTokenHyphenFormatter();
+		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
 		StringWriter docWriter = null;
 		try {
 			docWriter = new StringWriter(outputFileName);
@@ -35,7 +45,7 @@ public class StringTabOutputDocumentFormatter implements OutputDocumentFormatter
 			e.printStackTrace();
 		}
 		for(ArrayList<Annotation<String>> tokenColl : sortedCollection.values()){
-			String token = tokenMaker.createToken(outputDocument.getDocument(), tokenColl);
+			String token = tokenMaker.createToken(tokenColl);
 			try {
 				docWriter.writeToken(token + TOKEN_DELIM);
 			} catch (IOException e) {

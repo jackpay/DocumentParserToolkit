@@ -38,11 +38,11 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 */
 	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().getClass());
+			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 			if(sentences == null){
-				StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().annotate(doc);
+				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 			}
-			sentences = doc.getAnnotations(StringAnnotatorEnum.OFFSET_SENTENCE.getAnnotator().getClass()); 
+			sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass()); 
 			postags.addAll(annotate(sentences));
 			doc.addAnnotations(this.getClass(), postags);
 	}
@@ -52,7 +52,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 * @throws IncompatibleAnnotationException 
 	 */
 	public Collection<StringAnnotation> annotate(
-			Collection<? extends Annotation<String>> sentence) throws IncompatibleAnnotationException {
+			Collection<? extends Annotation<String>> sentences) throws IncompatibleAnnotationException {
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		for(Annotation<String> sentence : sentences){
@@ -69,7 +69,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.STORED_TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;

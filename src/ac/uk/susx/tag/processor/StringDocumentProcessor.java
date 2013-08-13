@@ -6,8 +6,10 @@ import java.util.ArrayList;
 
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
-import ac.uk.susx.tag.formatting.StringTabOutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
+import ac.uk.susx.tag.parser.AbstractConcurrentDocumentParser;
+import ac.uk.susx.tag.parser.AbstractConcurrentStringSentenceParser;
 import ac.uk.susx.tag.utils.ParserUtils;
 
 /**
@@ -15,7 +17,7 @@ import ac.uk.susx.tag.utils.ParserUtils;
  * @author jp242
  *
  */
-public class StringDocumentProcessor extends AbstractConcurrentDocumentProcessor <String,String> implements Processor <String,String>{
+public class StringDocumentProcessor extends AbstractConcurrentStringSentenceParser implements Processor <String,String>{
 
 	/**
 	 * @param args
@@ -32,8 +34,8 @@ public class StringDocumentProcessor extends AbstractConcurrentDocumentProcessor
 
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
-		setConfiguration(gip.parseInputParameters(args));
-		OutputDocumentFormatter<String,String> outputWriter = new StringTabOutputDocumentFormatter();
+		setConfig(gip.parseInputParameters(args));
+		OutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
 		getConfig().setOutputWriter(outputWriter);
 		getConfig().setDocumentBuilder(new StringInputDocumentFormatter());
 	}

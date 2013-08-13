@@ -14,14 +14,9 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractSentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
+public class SentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
 	
 	private SentenceDetectorME sentencetagger;
-	private final boolean storeSentence;
-	
-	public AbstractSentenceAnnotator(boolean storeSentenceString){
-		this.storeSentence = storeSentenceString;
-	}
 
 	public void annotate(Document<String,String> doc)
 			throws IncompatibleAnnotationException {
@@ -59,16 +54,9 @@ public abstract class AbstractSentenceAnnotator implements Annotator<Document <S
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		
 		for(int i = 0; i < sentPos.length; i++){
-			if(storeSentence){
-				StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart(),sentPos[i].getEnd());
-				sentence.setDocumentPosition(i);
-				annotations.add(sentence);
-			}
-			else{
-				StringAnnotation sentence = new StringAnnotation(null,sentPos[i].getStart(),sentPos[i].getEnd());
-				sentence.setDocumentPosition(i);
-				annotations.add(sentence);
-			}
+			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart(),sentPos[i].getEnd());
+			sentence.setDocumentPosition(i);
+			annotations.add(sentence);
 		}
 		
 		return annotations;

@@ -31,11 +31,11 @@ public final class ChunkTagAnnotator implements Annotator<Document<String,String
 	public void annotate(Document<String, String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
 		Collection<Annotation<String>> chunktags = new ArrayList<Annotation<String>>();
-		Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
+		Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 		if(sentences == null){
-			StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().annotate(doc);
+			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 		}
-		sentences = doc.getAnnotations(StringAnnotatorEnum.STORED_SENTENCE.getAnnotator().getClass());
+		sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 		chunktags.addAll(annotate(sentences));
 		doc.addAnnotations(this.getClass(), chunktags);
 	}
@@ -56,7 +56,7 @@ public final class ChunkTagAnnotator implements Annotator<Document<String,String
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.STORED_TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		Collection<? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = ParserUtils.annotationsToArray(postags, new String[postags.size()]);

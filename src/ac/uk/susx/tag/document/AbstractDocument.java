@@ -28,7 +28,7 @@ public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 
 
 	@SuppressWarnings("rawtypes")
-	public Collection<? extends Annotation<AT>> getAnnotations(
+	public Collection<Annotation<AT>> getAnnotations(
 			Class<? extends Annotator> cl) {
 		return annotations.get(cl);
 	}

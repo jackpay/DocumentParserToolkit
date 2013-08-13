@@ -81,5 +81,16 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	 */
 	public String getOutputSuff();
 
+	/**
+	 * Used to specify what the head annotation for the output should be.
+	 * @return
+	 */
+	public Class<? extends Annotator> getHeadAnnotator();
+	
+	/**
+	 * Used to set the annotator, which should have its output at the head of each output token.
+	 */
+	public void setHeadAnnotator(Class<? extends Annotator> head);
+
 
 }

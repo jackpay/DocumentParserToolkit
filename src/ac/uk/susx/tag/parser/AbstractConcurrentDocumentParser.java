@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.processor;
+package ac.uk.susx.tag.parser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,13 +9,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.Configuration;
-import ac.uk.susx.tag.configuration.StringConfiguration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractConcurrentDocumentProcessor<DT,AT> {
+public abstract class AbstractConcurrentDocumentParser<DT,AT> implements Parser<DT,AT> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private Configuration<Document<DT,AT>,AT,DT> config;
@@ -24,12 +22,18 @@ public abstract class AbstractConcurrentDocumentProcessor<DT,AT> {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		for(File file : files){
-			Document<DT,AT> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
-			Callable<Boolean> docCaller = new DocumentCallable(doc,file.getName());
+			Document<DT,AT> doc = getConfig().getDocumentBuilder().createDocument(file.getAbsolutePath());
+			Callable<Boolean> docCaller = new DocumentCallable(doc, file.getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
 		}
 		executor.shutdown();
+	}
+	
+	public void parseFile(File file){
+		ArrayList<File> fileList = new ArrayList<File>();
+		fileList.add(file);
+		parseFiles(fileList);
 	}
 	
 	public void setConfiguration(Configuration<Document<DT,AT>,AT,DT> config){
@@ -61,7 +65,7 @@ public abstract class AbstractConcurrentDocumentProcessor<DT,AT> {
 				}
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processOutput(document, config.getOutputLocation() + "/" + fileName, StringAnnotatorEnum.OFFSET_TOKEN.getAnnotator().getClass());
+			config.getOutputWriter().processOutput(document, config.getOutputLocation() + "/" + fileName, config.getHeadAnnotator());
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

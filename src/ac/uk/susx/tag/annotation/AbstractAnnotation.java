@@ -1,7 +1,5 @@
 package ac.uk.susx.tag.annotation;
 
-import java.io.IOException;
-
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
@@ -50,14 +48,6 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	
 	public PositionIndexToken getDocumentPosition() {
 		return docPosition;
-	}
-	
-	/**
-	 * Used to ascertain if an annotation is defined by a specific annotation or a sub-section of a document or text.
-	 * @return
-	 */
-	public boolean isEmptyAnnotation(){
-		return annotation == null;
 	}
 
 }
