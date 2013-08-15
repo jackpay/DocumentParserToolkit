@@ -14,14 +14,9 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class SentenceAnnotator implements Annotator<Document <String,String>, StringAnnotation, String, String>{
+public class SentenceAnnotator extends AbstractStringAnnotator {
 	
 	private SentenceDetectorME sentencetagger;
-
-	public void annotate(Document<String,String> doc)
-			throws IncompatibleAnnotationException {
-		annotate(doc, true);
-	}
 
 	public void annotate(Document<String,String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
@@ -32,31 +27,18 @@ public class SentenceAnnotator implements Annotator<Document <String,String>, St
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 
-	public Collection<StringAnnotation> annotate(Collection<? extends Annotation<String>> annotations)
-			throws IncompatibleAnnotationException {
-		ArrayList<StringAnnotation> annotationArr = new ArrayList<StringAnnotation>();
-		int index = 0;
-		for(Annotation<String> annotation : annotations){
-			Collection<StringAnnotation> sentAnn = annotate(annotation);
-			for(StringAnnotation ann : sentAnn){
-				int currPos = ann.getDocumentPosition() == null ? 0 : ann.getDocumentPosition().getPosition();
-				ann.setDocumentPosition(currPos + index);
-				index++;
-			}
-			annotationArr.addAll(sentAnn);
-		}
-		return annotationArr;
-	}
-
 	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation)
 			throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		
+		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
-			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart(),sentPos[i].getEnd());
+			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart() + offset,sentPos[i].getEnd() + offset);
 			sentence.setDocumentPosition(i);
+			System.err.println(sentence.getDocumentPosition().getPosition());
 			annotations.add(sentence);
+			offset = sentPos[i].getEnd();
 		}
 		
 		return annotations;

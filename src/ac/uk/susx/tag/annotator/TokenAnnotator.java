@@ -15,16 +15,9 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class TokenAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
+public class TokenAnnotator extends AbstractStringAnnotator{
 	
 	private TokenizerME tokeniser;
-
-	/**
-	 * Annotates a document with Token annotations
-	 */
-	public void annotate(Document<String,String> doc) throws IncompatibleAnnotationException{
-		annotate(doc, true);
-	}
 
 	/**
 	 * Annotates a document with Token annotations. 
@@ -69,7 +62,7 @@ public class TokenAnnotator implements Annotator<Document<String,String>, String
 
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
-			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart(), tokenSpans[i].getEnd());
+			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
 			token.setDocumentPosition(i);
 			annotations.add(token);
 

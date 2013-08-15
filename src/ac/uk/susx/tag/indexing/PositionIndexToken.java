@@ -7,7 +7,7 @@ package ac.uk.susx.tag.indexing;
  */
 public class PositionIndexToken implements IndexToken {
 	
-	public final int docPosition; // The index position within the document
+	private final int docPosition; // The index position within the document
 	
 	public PositionIndexToken(int docPosition){
 		this.docPosition = docPosition;

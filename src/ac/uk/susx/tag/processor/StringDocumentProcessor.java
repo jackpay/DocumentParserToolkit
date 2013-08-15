@@ -4,20 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ac.uk.susx.tag.configuration.Configuration;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.parser.AbstractConcurrentDocumentParser;
-import ac.uk.susx.tag.parser.AbstractConcurrentStringSentenceParser;
+import ac.uk.susx.tag.parser.ConcurrentStringSentenceParser;
 import ac.uk.susx.tag.utils.ParserUtils;
 
 /**
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
  * @author jp242
- *
  */
-public class StringDocumentProcessor extends AbstractConcurrentStringSentenceParser implements Processor <String,String>{
+public class StringDocumentProcessor implements Processor<String,String> {
+	
+	private ConcurrentStringSentenceParser parser;
+	private Configuration<Document<String,String>,String,String> config;
 
 	/**
 	 * @param args
@@ -34,25 +37,30 @@ public class StringDocumentProcessor extends AbstractConcurrentStringSentencePar
 
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
-		setConfig(gip.parseInputParameters(args));
+		config = gip.parseInputParameters(args);
 		OutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
-		getConfig().setOutputWriter(outputWriter);
-		getConfig().setDocumentBuilder(new StringInputDocumentFormatter());
+		config.setOutputWriter(outputWriter);
+		config.setDocumentBuilder(new StringInputDocumentFormatter());
+		parser = new ConcurrentStringSentenceParser(config);
 	}
 
 	public boolean process() throws IOException {
-		if(getConfig() == null){
+		
+		if(config == null){
 			throw new IOException("Configuration object file not initialised. Must process input parameters.");
 		}
-		if(getConfig().getOutputWriter() == null){
+		if(config.getOutputWriter() == null){
 			throw new IOException("Output writer not initialised.");
 		}
-		if(getConfig().getDocumentBuilder() == null){
+		if(config.getDocumentBuilder() == null){
 			throw new IOException("Document builder not initialised.");
 		}
+		if(parser == null){
+			throw new IOException("Parser not initialised.");
+		}
 		
-		ArrayList<File> files = ParserUtils.getFiles(getConfig().getInputLocation(), getConfig().getInputSuff());
-		parseFiles(files);
+		ArrayList<File> files = ParserUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+		parser.parseFiles(files);
 	
 		return true;
 	}

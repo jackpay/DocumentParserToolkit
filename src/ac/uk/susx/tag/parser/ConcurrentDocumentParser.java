@@ -13,16 +13,20 @@ import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractConcurrentDocumentParser<DT,AT> implements Parser<DT,AT> {
+public class ConcurrentDocumentParser<DT,AT> implements Parser<DT,AT> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private Configuration<Document<DT,AT>,AT,DT> config;
+	private final Configuration<Document<DT,AT>,AT,DT> config;
+	
+	public ConcurrentDocumentParser(Configuration<Document<DT,AT>,AT,DT> config){
+		this.config = config;
+	}
 	
 	public void parseFiles(List<File> files){
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		for(File file : files){
-			Document<DT,AT> doc = getConfig().getDocumentBuilder().createDocument(file.getAbsolutePath());
+			Document<DT,AT> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			Callable<Boolean> docCaller = new DocumentCallable(doc, file.getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
@@ -34,14 +38,6 @@ public abstract class AbstractConcurrentDocumentParser<DT,AT> implements Parser<
 		ArrayList<File> fileList = new ArrayList<File>();
 		fileList.add(file);
 		parseFiles(fileList);
-	}
-	
-	public void setConfiguration(Configuration<Document<DT,AT>,AT,DT> config){
-		this.config = config;
-	}
-	
-	public Configuration<Document<DT,AT>,AT,DT> getConfig(){
-		return config;
 	}
 	
 	public class DocumentCallable implements Callable<Boolean> {

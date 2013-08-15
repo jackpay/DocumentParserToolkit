@@ -14,7 +14,6 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 
-import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.ParserUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
@@ -24,42 +23,9 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @author jackpay
  *
  */
-public final class PoSTagAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
+public final class PoSTagAnnotator extends AbstractStringAnnotator {
 	
 	private POSTaggerME postagger;
-
-	public void annotate(Document<String,String> doc) throws IncompatibleAnnotationException {
-		annotate(doc, true);
-	}
-
-	/**
-	 * Annotates a document with postag annotations
-	 * @throws IncompatibleAnnotationException 
-	 */
-	public void annotate(Document<String,String> doc, boolean parseRawText) throws IncompatibleAnnotationException {
-			Collection<Annotation<String>> postags = new ArrayList<Annotation<String>>();
-			Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
-			if(sentences == null){
-				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
-			}
-			sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass()); 
-			postags.addAll(annotate(sentences));
-			doc.addAnnotations(this.getClass(), postags);
-	}
-
-	/**
-	 * Takes pre-tokenised sentence and annotates it.
-	 * @throws IncompatibleAnnotationException 
-	 */
-	public Collection<StringAnnotation> annotate(
-			Collection<? extends Annotation<String>> sentences) throws IncompatibleAnnotationException {
-		
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		for(Annotation<String> sentence : sentences){
-			annotations.addAll(annotate(sentence));
-		}
-		return annotations;
-	}
 
 	/**
 	 * Annotates a single un-tokenised sentence.
@@ -67,7 +33,6 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 	 */
 	public synchronized Collection<StringAnnotation> annotate (
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
-		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
@@ -77,7 +42,7 @@ public final class PoSTagAnnotator implements Annotator<Document<String,String>,
 			Pattern pattern = Pattern.compile(Pattern.quote(strToks[i]));
 			Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
-			StringAnnotation annotation = new StringAnnotation(strTags[i], sentence.getStart()+matcher.start(), sentence.getStart()+matcher.end());
+			StringAnnotation annotation = new StringAnnotation(strTags[i], matcher.start(), matcher.end());
 			annotations.add(annotation);
 			begin = matcher.end();
 		}

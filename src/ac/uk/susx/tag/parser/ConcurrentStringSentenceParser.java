@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.Configuration;
@@ -18,24 +19,31 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class AbstractConcurrentStringSentenceParser implements Parser<String, String>{
+public class ConcurrentStringSentenceParser implements Parser<String, String>{
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private Configuration<Document<String,String>,String,String> config;
+	private final Configuration<Document<String,String>,String,String> config;
+	
+	public ConcurrentStringSentenceParser(Configuration<Document<String,String>,String,String> config){
+		this.config = config;
+	}
 
 	public void parseFiles(List<File> files) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		for(File file : files){
 			Document<String, String> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			final ArrayList<Future<Document<String,String>>> futures = new ArrayList<Future<Document<String,String>>>();
+			//System.err.println(config.getAnnotators().remove(StringAnnotatorEnum.SENTENCE.getAnnotator()));
+			for(Annotator annotator : config.getAnnotators()){
+				System.err.println(annotator.getClass());
+			}
 			try {
 				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 				Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 				for(Annotation<String> sentence : sentences){
-					Document<String,String> sentenceDoc = new StringDocument(sentence.getAnnotation());
-					SentenceCallable sentCaller = new SentenceCallable(sentenceDoc);
+					SentenceCallable sentCaller = new SentenceCallable(sentence);
 					Future<Document<String,String>> future = executor.submit(sentCaller);
-					futures.add(future); // Only really there to allow return values in the future.
+					futures.add(future);
 				}
 				for(Future<Document<String,String>> future : futures){
 					try {
@@ -60,14 +68,6 @@ public class AbstractConcurrentStringSentenceParser implements Parser<String, St
 		}
 		executor.shutdown();
 	}
-	
-	public void setConfig(Configuration<Document<String,String>,String,String> config){
-		this.config = config;
-	}
-	
-	public Configuration<Document<String,String>,String,String> getConfig(){
-		return config;
-	}
 
 	public void parseFile(File file) {
 		ArrayList<File> fileList = new ArrayList<File>();
@@ -77,22 +77,29 @@ public class AbstractConcurrentStringSentenceParser implements Parser<String, St
 	
 public class SentenceCallable implements Callable<Document<String,String>> {
 		
-		private final Document<String,String> sentence;
+		private final Document<String,String> sentenceDoc;
+		private final Annotation<String> sentenceAnn;
 		
 		//TODO: Add doc position to prevent clashes!
-		public SentenceCallable(Document<String, String> document){
-			this.sentence = document;
+		public SentenceCallable(Annotation<String> sentence){
+			this.sentenceAnn = sentence;
+			sentenceDoc = new StringDocument(null);
+			ArrayList<Annotation<String>> sentenceList = new ArrayList<Annotation<String>>();
+			sentenceList.add(sentenceAnn);
+			sentenceDoc.addAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass(), sentenceList);
 		}
 
 		public Document<String,String> call() throws Exception {
-			for(Annotator<Document<String,String>,?,String,String> annotator : config.getAnnotators()){
+			for(Annotator<Document<String,String>,? extends Annotation<String>,String,String> annotator : config.getAnnotators()){
 				try {
-					annotator.annotate(sentence);
+					ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+					annotations.addAll(annotator.annotate(sentenceDoc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass())));
+					sentenceDoc.addAnnotations(annotator.getClass(), annotations);
 				} catch (IncompatibleAnnotationException e) {
 					e.printStackTrace();
 				}
 			}
-			return sentence;
+			return sentenceDoc;
 		}
 		
 	}

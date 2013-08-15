@@ -13,11 +13,10 @@ import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
-import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.ParserUtils;
 
-public abstract class AbstractNERAnnotator implements Annotator<Document<String,String>, StringAnnotation, String, String>{
+public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
 	
 	private NameFinderME nameFinder;
 	private static final String TOKDELIM = "-";
@@ -25,33 +24,6 @@ public abstract class AbstractNERAnnotator implements Annotator<Document<String,
 	
 	public AbstractNERAnnotator(String modelName){
 		this.modelName = modelName;
-	}
-
-	public void annotate(Document<String, String> document)
-			throws IncompatibleAnnotationException {
-		annotate(document,true);
-	}
-
-	public void annotate(Document<String, String> doc, boolean parseRawText)
-			throws IncompatibleAnnotationException {
-		Collection<Annotation<String>> people = new ArrayList<Annotation<String>>();
-		Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
-		if(sentences == null){
-			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
-		}
-		sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
-		people.addAll(annotate(sentences));
-		doc.addAnnotations(this.getClass(), people);
-	}
-
-	public Collection<StringAnnotation> annotate(
-			Collection<? extends Annotation<String>> sentences)
-			throws IncompatibleAnnotationException {
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		for(Annotation<String> sentence : sentences){
-			annotations.addAll(annotate(sentence));
-		}
-		return annotations;
 	}
 
 	public synchronized Collection<StringAnnotation> annotate(Annotation<String> sentence)

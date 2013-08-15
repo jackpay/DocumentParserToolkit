@@ -30,10 +30,11 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	}
 	
 	public A getAnnotation(){
-		return (annotation == null)? null : annotation.getAnnotation();
+		return (annotation == null) ? null : annotation.getAnnotation();
 	}
 	
 	public void setDocumentPosition(int pos){
+		System.err.println(pos + " " + offset.getStart() + " " + offset.getEnd() + " " + annotation.getAnnotation());
 		docPosition = new PositionIndexToken(pos);
 	}
 	
