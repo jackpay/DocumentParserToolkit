@@ -1,12 +1,11 @@
 package ac.uk.susx.tag.parser;
 
-import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
-public interface Parser <DT,AT>{
+public interface Parser <DT,AT> {
+
+	public void init(String[] args);
 	
-	public void parseFiles(List<File> files);
-	
-	public void parseFile(File file);
+	public boolean parse() throws IOException;
 
 }

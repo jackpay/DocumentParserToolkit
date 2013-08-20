@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.parser;
+package ac.uk.susx.tag.processor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.Configuration;
@@ -19,24 +18,20 @@ import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentStringSentenceParser implements Parser<String, String>{
+public class ConcurrentStringSentenceProcessor implements Processor<String, String>{
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final Configuration<Document<String,String>,String,String> config;
 	
-	public ConcurrentStringSentenceParser(Configuration<Document<String,String>,String,String> config){
+	public ConcurrentStringSentenceProcessor(Configuration<Document<String,String>,String,String> config){
 		this.config = config;
 	}
 
-	public void parseFiles(List<File> files) {
+	public void processFiles(List<File> files) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		for(File file : files){
 			Document<String, String> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			final ArrayList<Future<Document<String,String>>> futures = new ArrayList<Future<Document<String,String>>>();
-			//System.err.println(config.getAnnotators().remove(StringAnnotatorEnum.SENTENCE.getAnnotator()));
-			for(Annotator annotator : config.getAnnotators()){
-				System.err.println(annotator.getClass());
-			}
 			try {
 				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 				Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
@@ -69,10 +64,10 @@ public class ConcurrentStringSentenceParser implements Parser<String, String>{
 		executor.shutdown();
 	}
 
-	public void parseFile(File file) {
+	public void processFile(File file) {
 		ArrayList<File> fileList = new ArrayList<File>();
 		fileList.add(file);
-		parseFiles(fileList);
+		processFiles(fileList);
 	}
 	
 public class SentenceCallable implements Callable<Document<String,String>> {

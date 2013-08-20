@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.processor;
+package ac.uk.susx.tag.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,26 +10,26 @@ import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.parser.ConcurrentStringSentenceParser;
+import ac.uk.susx.tag.processor.ConcurrentStringSentenceProcessor;
 import ac.uk.susx.tag.utils.ParserUtils;
 
 /**
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
  * @author jp242
  */
-public class StringDocumentProcessor implements Processor<String,String> {
+public class StringDocumentParser implements Parser<String,String> {
 	
-	private ConcurrentStringSentenceParser parser;
+	private ConcurrentStringSentenceProcessor parser;
 	private Configuration<Document<String,String>,String,String> config;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		StringDocumentProcessor gdp = new StringDocumentProcessor();
+		StringDocumentParser gdp = new StringDocumentParser();
 		gdp.init(args);
 		try {
-			gdp.process();
+			gdp.parse();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -41,10 +41,10 @@ public class StringDocumentProcessor implements Processor<String,String> {
 		OutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
 		config.setDocumentBuilder(new StringInputDocumentFormatter());
-		parser = new ConcurrentStringSentenceParser(config);
+		parser = new ConcurrentStringSentenceProcessor(config);
 	}
 
-	public boolean process() throws IOException {
+	public boolean parse() throws IOException {
 		
 		if(config == null){
 			throw new IOException("Configuration object file not initialised. Must process input parameters.");
@@ -60,7 +60,7 @@ public class StringDocumentProcessor implements Processor<String,String> {
 		}
 		
 		ArrayList<File> files = ParserUtils.getFiles(config.getInputLocation(), config.getInputSuff());
-		parser.parseFiles(files);
+		parser.processFiles(files);
 	
 		return true;
 	}

@@ -42,7 +42,7 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 			Pattern pattern = Pattern.compile(Pattern.quote(strToks[i]));
 			Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
-			StringAnnotation annotation = new StringAnnotation(strTags[i], matcher.start(), matcher.end());
+			StringAnnotation annotation = new StringAnnotation(strTags[i], (sentence.getStart() + matcher.start()), (sentence.getStart() + matcher.end()));
 			annotations.add(annotation);
 			begin = matcher.end();
 		}

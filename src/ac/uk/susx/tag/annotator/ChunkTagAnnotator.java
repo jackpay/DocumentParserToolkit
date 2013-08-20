@@ -40,7 +40,7 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 			matcher.find(begin);
 			String chunk = chunkTags[i].replace(INCHUNK, "");
 			chunk = chunk.replace(CHUNKSTART, "");
-			StringAnnotation annotation = new StringAnnotation(chunk, matcher.start(), matcher.end());
+			StringAnnotation annotation = new StringAnnotation(chunk, sentence.getStart() + matcher.start(), sentence.getStart() + matcher.end());
 			annotations.add(annotation);
 			begin = matcher.end();
 		}

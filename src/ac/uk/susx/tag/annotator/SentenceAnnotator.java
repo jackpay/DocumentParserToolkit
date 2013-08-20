@@ -36,7 +36,6 @@ public class SentenceAnnotator extends AbstractStringAnnotator {
 		for(int i = 0; i < sentPos.length; i++){
 			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart() + offset,sentPos[i].getEnd() + offset);
 			sentence.setDocumentPosition(i);
-			System.err.println(sentence.getDocumentPosition().getPosition());
 			annotations.add(sentence);
 			offset = sentPos[i].getEnd();
 		}

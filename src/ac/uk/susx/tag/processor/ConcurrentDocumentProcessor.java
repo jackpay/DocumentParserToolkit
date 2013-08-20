@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.parser;
+package ac.uk.susx.tag.processor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,16 +13,16 @@ import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentDocumentParser<DT,AT> implements Parser<DT,AT> {
+public class ConcurrentDocumentProcessor<DT,AT> implements Processor<DT,AT> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final Configuration<Document<DT,AT>,AT,DT> config;
 	
-	public ConcurrentDocumentParser(Configuration<Document<DT,AT>,AT,DT> config){
+	public ConcurrentDocumentProcessor(Configuration<Document<DT,AT>,AT,DT> config){
 		this.config = config;
 	}
 	
-	public void parseFiles(List<File> files){
+	public void processFiles(List<File> files){
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		for(File file : files){
@@ -34,10 +34,10 @@ public class ConcurrentDocumentParser<DT,AT> implements Parser<DT,AT> {
 		executor.shutdown();
 	}
 	
-	public void parseFile(File file){
+	public void processFile(File file){
 		ArrayList<File> fileList = new ArrayList<File>();
 		fileList.add(file);
-		parseFiles(fileList);
+		processFiles(fileList);
 	}
 	
 	public class DocumentCallable implements Callable<Boolean> {

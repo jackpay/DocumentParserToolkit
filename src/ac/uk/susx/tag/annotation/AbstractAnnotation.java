@@ -34,7 +34,7 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	}
 	
 	public void setDocumentPosition(int pos){
-		System.err.println(pos + " " + offset.getStart() + " " + offset.getEnd() + " " + annotation.getAnnotation());
+		//System.err.println(pos + " " + offset.getStart() + " " + offset.getEnd() + " " + annotation.getAnnotation());
 		docPosition = new PositionIndexToken(pos);
 	}
 	

@@ -1,11 +1,12 @@
 package ac.uk.susx.tag.processor;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.List;
 
-public interface Processor <DT,AT> {
-
-	public void init(String[] args);
+public interface Processor <DT,AT>{
 	
-	public boolean process() throws IOException;
+	public void processFiles(List<File> files);
+	
+	public void processFile(File file);
 
 }
