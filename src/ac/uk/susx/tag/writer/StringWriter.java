@@ -8,8 +8,8 @@ public class StringWriter extends AbstractOutputWriter<String>{
 		init(fileName);
 	}
 
-	public void writeToken(String token) throws IOException {
-		getWriter().write(token);
+	public synchronized void writeToken(String seq) {
+		getWriter().print(seq);
 	}
 
 }

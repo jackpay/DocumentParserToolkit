@@ -61,7 +61,7 @@ public class ConcurrentDocumentProcessor<DT,AT> implements Processor<DT,AT> {
 				}
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processOutput(document, config.getOutputLocation() + "/" + fileName, config.getHeadAnnotator());
+			config.getOutputWriter().processDocument(document, config.getOutputLocation() + "/" + fileName, config.getHeadAnnotator());
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

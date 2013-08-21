@@ -59,7 +59,7 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 				e.printStackTrace();
 			}
 			doc.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processOutput(doc, config.getOutputLocation() + "/" + file.getName(), config.getHeadAnnotator());
+			config.getOutputWriter().processDocument(doc, config.getOutputLocation() + "/" + file.getName(), config.getHeadAnnotator());
 		}
 		executor.shutdown();
 	}

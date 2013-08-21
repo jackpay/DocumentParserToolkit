@@ -4,11 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
 	
 	private File file;
-	private BufferedWriter writer;
+	private PrintWriter writer;
 
 	public void init(String fileName) throws IOException {
 		file = new File(fileName);
@@ -17,7 +18,7 @@ public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
 				file.createNewFile();
 				file.setWritable(true);
 				try {
-					writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+					writer = new PrintWriter(new BufferedWriter(new FileWriter(file.getAbsoluteFile())));
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -40,7 +41,7 @@ public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
 		return file.canWrite() && writer != null;
 	}
 	
-	public BufferedWriter getWriter(){
+	protected PrintWriter getWriter(){
 		return writer;
 	}
 
