@@ -43,7 +43,7 @@ public class ConcurrentStringLineProcessor implements Processor<String,String>{
 					executor.submit(docCaller);
 				}
 				executor.shutdown();
-				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+				while(!executor.awaitTermination(10, TimeUnit.SECONDS)){}
 				writer.closeDocument();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
