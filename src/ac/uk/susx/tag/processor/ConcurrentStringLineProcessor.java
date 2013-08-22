@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.configuration.Configuration;
@@ -35,27 +33,39 @@ public class ConcurrentStringLineProcessor implements Processor<String,String>{
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
-				String currLine;
-				while((currLine = br.readLine()) != null){
-					String line = currLine;
-					StringDocument document = new StringDocument(line);
-					DocumentCallable docCaller = new DocumentCallable(document,writer);
-					executor.submit(docCaller);
+				String currLine = br.readLine();
+				while(currLine != null){
+					int iter = 0;
+					ArrayList<Callable<Boolean>> batch = new ArrayList<Callable<Boolean>>();
+					while(iter < 20 || currLine != null) {
+						String line = currLine;
+						StringDocument document = new StringDocument(line);
+						DocumentCallable docCaller = new DocumentCallable(document,writer);
+						batch.add(docCaller);
+						iter++;
+						currLine = br.readLine();
+					}
+					try {
+						executor.invokeAll(batch);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-				executor.shutdown();
-				while(!executor.awaitTermination(10, TimeUnit.SECONDS)){}
-				writer.closeDocument();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				ArrayList<Callable<Boolean>> shutdown = new ArrayList<Callable<Boolean>>();
+				shutdown.add(new DocumentShutdown(writer, file.getName()));
+				br.close();
+				try {
+					executor.invokeAll(shutdown);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
+		executor.shutdown();
 	}
 
 	public void processFile(File file) {
@@ -75,8 +85,6 @@ public class DocumentCallable implements Callable<Boolean> {
 		}
 
 		public Boolean call() throws Exception {
-			System.err.println("Starting thread!");
-			System.err.println(document.getDocument().length());
 			for(Annotator<Document<String,String>,?,String,String> annotator : config.getAnnotators()){
 				try {
 					annotator.annotate(document);
@@ -87,10 +95,24 @@ public class DocumentCallable implements Callable<Boolean> {
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			config.getOutputWriter().processSubDocument(document, writer, config.getHeadAnnotator());
-			System.err.println("Ending thread!");
 			return true;
 		}
-		
+}
+
+public class DocumentShutdown implements Callable<Boolean> {
+	
+	private final StringWriter writer;
+	
+	public DocumentShutdown(StringWriter writer, String fileName){
+		System.err.println("Finished processing file: " + fileName);
+		this.writer = writer;
 	}
+
+	public Boolean call() throws Exception {
+		writer.closeDocument();
+		return true;
+	}
+	
+}
 
 }
