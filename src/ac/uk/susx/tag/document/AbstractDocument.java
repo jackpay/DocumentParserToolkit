@@ -7,6 +7,8 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.filter.Filter;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 	
@@ -67,5 +69,37 @@ public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 	public void retainAnnotations(
 			Collection<Class<? extends Annotator>> includedAnnotators) {
 		annotations.keySet().retainAll(includedAnnotators);
+	}
+	
+	public void filterAnnotations(Collection<Filter<AT>> filters){
+		if(filters != null && !filters.isEmpty()){
+			for(Filter<AT> filter : filters){
+				filter.filterCollection(annotations);
+			}
+		}
+	}
+	
+	public void filterAnnotation(Collection<Filter<AT>> filters, Class<? extends Annotator> annotator) {
+		if(filters != null && !filters.isEmpty()){
+			for(Filter<AT> filter : filters){
+				filter.filter(annotations.get(annotator));
+			}
+		}
+	}
+	
+	public Map<IndexToken, Collection<Annotation<AT>>> sortAnnotations(ArrayList<Class<? extends Annotator>> orderedAnnotators){
+		Map<IndexToken, Collection<Annotation<AT>>> collectedAnnotations = new HashMap<IndexToken, Collection<Annotation<AT>>>(annotations.size()+((int)annotations.size()/4));
+		for(Class<? extends Annotator> annotator : orderedAnnotators){
+				for(Annotation<AT> ann : annotations.get(annotator)){
+					if(collectedAnnotations.get(ann.getOffset()) == null){
+						collectedAnnotations.put(ann.getOffset(), new ArrayList<Annotation<AT>>());
+						collectedAnnotations.get(ann.getOffset()).add(ann);
+					}
+					else{
+						collectedAnnotations.get(ann.getOffset()).add(ann);
+					}
+				}
+		}
+		return collectedAnnotations;
 	}
 }

@@ -65,6 +65,18 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		public boolean location(){
 			return location;
 		}
+		
+		public String buildOutputName(){
+			StringBuilder sb = new StringBuilder();
+			if(token) { sb.append("tok-"); }
+			if(sentenceTag) { sb.append("s-"); }
+			if(postag) { sb.append("pos-"); }
+			if(chunkToken) { sb.append("ct-"); }
+			if(person) { sb.append("per-"); }
+			if(location) { sb.append("loc-"); }
+			if(organisation) { sb.append("org-"); }
+			return sb.toString().substring(0, sb.toString().length()-1);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -72,7 +84,8 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 	public StringConfiguration parseInputParameters(String[] args) {
 		GrammaticalInputReader reader = new GrammaticalInputReader();
 		JCommander jcomm = new JCommander(reader, args);
-		StringConfiguration gc = new StringConfiguration(reader.input(), reader.output());
+		String output = reader.singleFileOutput() ? reader.output() : reader.output() + "/" + reader.buildOutputName();
+		StringConfiguration gc = new StringConfiguration(reader.input(), output);
 
 		gc.setInputSuff(reader.suffix());
 		gc.setOutSuff(reader.outSuffix());

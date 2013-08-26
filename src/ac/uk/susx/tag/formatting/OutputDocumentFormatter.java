@@ -1,17 +1,16 @@
 package ac.uk.susx.tag.formatting;
 
-import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.document.Document;
+import java.util.Collection;
+import java.util.Map;
+
+import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.writer.OutputWriter;
 
-public interface OutputDocumentFormatter <D,AT>{
+public interface OutputDocumentFormatter <W,AT>{
 	
-	public void processDocument(Document<D,AT> outputDocument, String outputFileName, Class<? extends Annotator> head);
+	public void processDocument(String outputFileName, Map<IndexToken, Collection<Annotation<AT>>> sortedCollection);
 	
-	public void processDocument(Document<D,AT> outputDocument, String outputFileName);
-	
-	public void processSubDocument(Document<D,AT> outputDocument,OutputWriter<String> writer);
-	
-	public void processSubDocument(Document<D, AT> outputDocument,OutputWriter<String> writer, Class<? extends Annotator> head);
+	public void processSubDocument(OutputWriter<W> writer, Map<IndexToken, Collection<Annotation<AT>>> sortedCollection);
 	
 }

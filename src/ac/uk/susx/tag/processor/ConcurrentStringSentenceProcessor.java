@@ -59,7 +59,8 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 				e.printStackTrace();
 			}
 			doc.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processDocument(doc, config.getOutputLocation() + "/" + file.getName(), config.getHeadAnnotator());
+			doc.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), doc.sortAnnotations(config.getOutputIncludedAnnotators()));
 		}
 		executor.shutdown();
 	}

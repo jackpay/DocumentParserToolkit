@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.StringDocument;
-import ac.uk.susx.tag.utils.ParserUtils;
+import ac.uk.susx.tag.utils.FileUtils;
 
 public class StringInputDocumentFormatter implements InputDocumentFormatter<String,String>{
 
@@ -16,7 +16,7 @@ public class StringInputDocumentFormatter implements InputDocumentFormatter<Stri
 	public Document<String, String> createDocument(File file) {
 		String rawDoc = null;
 		try{
-			rawDoc = ParserUtils.readFileAsString(file);
+			rawDoc = FileUtils.readFileAsString(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

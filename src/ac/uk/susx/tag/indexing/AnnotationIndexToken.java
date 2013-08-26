@@ -28,25 +28,28 @@ public class AnnotationIndexToken <A> implements IndexToken {
 		return hash;
 	}
 	
-	/**
-	 * Equals method. Used for indexing. WARNING: for correct use, the equals method of custom annotation classes must be specified
-	 */
-	@Override
-	public boolean equals(Object obj){
-		if(obj == null){
-			return false;
-		}
-		if(obj.getClass() != this.getClass()){
-			return false;
-		}
-		if(obj.getClass() == this.getClass()){
-			AnnotationIndexToken pos = (AnnotationIndexToken) obj;
-			if(pos.annotation.getClass() == this.annotation.getClass()){
-				if(this.annotation.equals(pos.annotation)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	/**
+//	 * Equals method. Used for indexing. WARNING: for correct use, the equals method of custom annotation classes must be specified
+//	 */
+//	@Override
+//	public boolean equals(Object obj){
+//		if(obj == null){
+//			return false;
+//		}
+//		if(obj.getClass() != this.getClass()){
+//			return false;
+//		}
+//		if(obj.getClass() != this.getClass()){
+//			return false;
+//		}
+//		else{
+//			AnnotationIndexToken pos = (AnnotationIndexToken) obj;
+//			if(pos.annotation.getClass() == this.annotation.getClass()){
+//				if(this.annotation.equals(pos.annotation)){
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 }

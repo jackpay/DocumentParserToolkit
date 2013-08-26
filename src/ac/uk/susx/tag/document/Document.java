@@ -1,10 +1,13 @@
 package ac.uk.susx.tag.document;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.filter.Filter;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 public interface Document <D,AT>{
 	
@@ -29,5 +32,11 @@ public interface Document <D,AT>{
 	
 	@SuppressWarnings("rawtypes")
 	public void retainAnnotations(Collection<Class<? extends Annotator>> includedAnnotators);
+	
+	public void filterAnnotations(Collection<Filter<AT>> filters);
+	
+	public void filterAnnotation(Collection<Filter<AT>> filters, Class<? extends Annotator> annotator);
+	
+	public Map<IndexToken, Collection<Annotation<AT>>> sortAnnotations(ArrayList<Class<? extends Annotator>> orderedAnnotators);
 	
 }

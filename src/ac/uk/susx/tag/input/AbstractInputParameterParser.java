@@ -56,6 +56,7 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		public boolean singleFileOutput(){
 			return singleFile;
 		}
+		
 	}
 	
 	public abstract Configuration<?,?,?> parseInputParameters(String[] args);

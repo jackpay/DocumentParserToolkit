@@ -1,10 +1,12 @@
 package ac.uk.susx.tag.configuration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.filter.Filter;
 import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
@@ -34,9 +36,21 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	public Collection<Annotator<D,? extends Annotation<AT>,AT,DT>> getAnnotators();
 	
 	/**
+	 * Return all stored filters;
+	 * @return
+	 */
+	public Collection<Filter<AT>> getFilters();
+	
+	/**
+	 * Add a filter.
+	 * @param filter
+	 */
+	public void addFilter(Filter<AT> filter);
+	
+	/**
 	 * @return Return all annotators which will have all their annotations included in the output.
 	 */
-	public Collection<Class<? extends Annotator>> getOutputIncludedAnnotators();
+	public ArrayList<Class<? extends Annotator>> getOutputIncludedAnnotators();
 	
 	/**
 	 * @return Return the output location.Class<? extends Annotator>
@@ -80,17 +94,5 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	 * @return
 	 */
 	public String getOutputSuff();
-
-	/**
-	 * Used to specify what the head annotation for the output should be.
-	 * @return
-	 */
-	public Class<? extends Annotator> getHeadAnnotator();
-	
-	/**
-	 * Used to set the annotator, which should have its output at the head of each output token.
-	 */
-	public void setHeadAnnotator(Class<? extends Annotator> head);
-
 
 }

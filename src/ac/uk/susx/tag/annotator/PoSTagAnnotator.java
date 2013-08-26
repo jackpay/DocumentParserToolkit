@@ -14,7 +14,7 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 
-import ac.uk.susx.tag.utils.ParserUtils;
+import ac.uk.susx.tag.utils.AnnotatorUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 /**
@@ -35,7 +35,7 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		String[] strToks = AnnotatorUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
 		for(int i = 0; i < strTags.length; i++){

@@ -12,7 +12,7 @@ import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
 import ac.uk.susx.tag.processor.ConcurrentStringSentenceProcessor;
-import ac.uk.susx.tag.utils.ParserUtils;
+import ac.uk.susx.tag.utils.FileUtils;
 
 /**
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
@@ -60,7 +60,7 @@ public class StringDocumentParser implements Parser<String,String> {
 			throw new IOException("Parser not initialised.");
 		}
 		
-		ArrayList<File> files = ParserUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
 		parser.processFiles(files);
 	
 		return true;

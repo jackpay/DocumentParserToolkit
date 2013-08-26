@@ -14,7 +14,7 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
-import ac.uk.susx.tag.utils.ParserUtils;
+import ac.uk.susx.tag.utils.AnnotatorUtils;
 
 public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
 	
@@ -31,7 +31,7 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		String[] strToks = ParserUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		String[] strToks = AnnotatorUtils.annotationsToArray(tokens, new String[tokens.size()]);
 
 		Span[] peopleSpans = nameFinder.find(strToks);
 		

@@ -35,7 +35,7 @@ public abstract class AbstractStringAnnotator implements Annotator<Document<Stri
 		for(Annotation<String> annotation : annotations){
 			Collection<StringAnnotation> sentAnn = annotate(annotation);
 			for(StringAnnotation ann : sentAnn){
-				int currPos = ann.getDocumentPosition() == null ? 0 : ann.getDocumentPosition().getPosition();
+				int currPos = ann.getPosition() == null ? 0 : ann.getPosition().getPosition();
 				ann.setDocumentPosition(currPos + index);
 				index++;
 			}

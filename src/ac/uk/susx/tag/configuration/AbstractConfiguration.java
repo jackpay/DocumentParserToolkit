@@ -5,10 +5,11 @@ import java.util.Collection;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.filter.Filter;
 import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
+import ac.uk.susx.tag.utils.FileUtils;
 
 /**
  * An abstract class for a global config file.
@@ -25,14 +26,13 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	private boolean singleFile;
 	private OutputDocumentFormatter<DT,AT> outputWriter;
 	private InputDocumentFormatter<DT,AT> docBuilder;
-	private Class<? extends Annotator> headAnnotator;
+	private ArrayList<Filter<AT>> filters;
 	
-	public AbstractConfiguration(String inputLoc, String outputLoc){
+	public AbstractConfiguration(String inputLoc, String outputLoc) {
 		this.inputLoc = inputLoc;
-		this.outputLoc = outputLoc;
+		this.outputLoc = FileUtils.createOutputDirectory(outputLoc);
 		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>>();
 		includedAnnotators = new ArrayList<Class<? extends Annotator>>();
-		headAnnotator = StringAnnotatorEnum.TOKEN.getAnnotator().getClass(); // Defaults the head annotator to Token but can be changed.
 	}
 	
 	public String getInputLocation() {
@@ -71,7 +71,7 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 		return annotators;
 	}
 	
-	public Collection<Class<? extends Annotator>> getOutputIncludedAnnotators(){
+	public ArrayList<Class<? extends Annotator>> getOutputIncludedAnnotators(){
 		return includedAnnotators;
 	}
 	
@@ -101,6 +101,17 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	}
 	
 	/**
+	 * Return the annotation filters.
+	 */
+	public Collection<Filter<AT>> getFilters(){
+		return filters;
+	}
+	
+	public void addFilter(Filter<AT> filter){
+		filters.add(filter);
+	}
+	
+	/**
 	 * Set the Document object builder.
 	 */
 	public void setDocumentBuilder(InputDocumentFormatter<DT,AT> documentBuilder){
@@ -115,18 +126,4 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 		return docBuilder;
 	}
 	
-	/**
-	 * Used to specify what the head annotation for the output should be.
-	 * @return
-	 */
-	public Class<? extends Annotator> getHeadAnnotator(){
-		return headAnnotator;
-	}
-	
-	/**
-	 * Used to set the annotator, which should have its output at the head of each output token.
-	 */
-	public void setHeadAnnotator(Class<? extends Annotator> head){
-		headAnnotator = head;
-	}
 }

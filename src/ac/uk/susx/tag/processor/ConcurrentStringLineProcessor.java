@@ -94,7 +94,8 @@ public class DocumentCallable implements Callable<Boolean> {
 				}
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			config.getOutputWriter().processSubDocument(document, writer, config.getHeadAnnotator());
+			document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+			config.getOutputWriter().processSubDocument(writer, document.sortAnnotations(config.getOutputIncludedAnnotators()));
 			return true;
 		}
 }
