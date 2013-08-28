@@ -49,29 +49,5 @@ public abstract class AbstractAnnotation<A> implements Annotation<A>{
 	public PositionIndexToken getPosition() {
 		return docPosition;
 	}
-	
-	public boolean equals(Object obj){
-		if(obj == null){
-			return false;
-		}
-		if(obj == this){
-			return true;
-		}
-		if(!(obj instanceof Annotation<?>)){
-			return false;
-		}
-		else{
-			Annotation<?> ann = (Annotation<?>) obj;
-			if(!(ann.getAnnotation().getClass() == this.getAnnotation().getClass())){
-				return false;
-			}
-			else {
-				if(ann.getAnnotation().equals(this.getAnnotation())){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 
 }

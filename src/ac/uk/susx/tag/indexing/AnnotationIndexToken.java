@@ -1,5 +1,7 @@
 package ac.uk.susx.tag.indexing;
 
+import ac.uk.susx.tag.annotation.Annotation;
+
 /**
  * An index token based on the annotation.
  * @author jp242
@@ -28,28 +30,28 @@ public class AnnotationIndexToken <A> implements IndexToken {
 		return hash;
 	}
 	
-//	/**
-//	 * Equals method. Used for indexing. WARNING: for correct use, the equals method of custom annotation classes must be specified
-//	 */
-//	@Override
-//	public boolean equals(Object obj){
-//		if(obj == null){
-//			return false;
-//		}
-//		if(obj.getClass() != this.getClass()){
-//			return false;
-//		}
-//		if(obj.getClass() != this.getClass()){
-//			return false;
-//		}
-//		else{
-//			AnnotationIndexToken pos = (AnnotationIndexToken) obj;
-//			if(pos.annotation.getClass() == this.annotation.getClass()){
-//				if(this.annotation.equals(pos.annotation)){
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
+	public boolean equals(Object obj){
+		if(obj == null){
+			return false;
+		}
+		if(obj == this){
+			return true;
+		}
+		if(!(obj instanceof Annotation<?>)){
+			return false;
+		}
+		else{
+			Annotation<?> ann = (Annotation<?>) obj;
+			if(!(ann.getAnnotation().getClass() == this.getAnnotation().getClass())){
+				return false;
+			}
+			else {
+				if(ann.getAnnotation().equals(this.getAnnotation())){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }

@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.configuration.Configuration;
@@ -34,20 +36,30 @@ public class ConcurrentStringLineProcessor implements Processor<String,String>{
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
 				String currLine = br.readLine();
+				int lineCount = 0;
 				while(currLine != null){
 					int iter = 0;
 					ArrayList<Callable<Boolean>> batch = new ArrayList<Callable<Boolean>>();
-					while(iter < 20 || currLine != null) {
+					while(iter < (NTHREADS * 2) || currLine != null) {
 						String line = currLine;
 						StringDocument document = new StringDocument(line);
 						DocumentCallable docCaller = new DocumentCallable(document,writer);
 						batch.add(docCaller);
 						iter++;
+						lineCount++;
+						if(lineCount%100 == 0){
+							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
+						}
 						currLine = br.readLine();
 					}
 					try {
-						executor.invokeAll(batch);
+						List<Future<Boolean>> futures = executor.invokeAll(batch);
+						for(Future<Boolean> future : futures){
+							future.get();
+						}
 					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (ExecutionException e) {
 						e.printStackTrace();
 					}
 				}
