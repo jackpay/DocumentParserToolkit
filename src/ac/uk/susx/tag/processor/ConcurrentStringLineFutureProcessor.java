@@ -2,7 +2,6 @@ package ac.uk.susx.tag.processor;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,12 +19,12 @@ import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class ConcurrentStringLineProcessor implements Processor<String,String>{
+public class ConcurrentStringLineFutureProcessor implements Processor<String,String> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final Configuration<Document<String,String>,String,String> config;
 	
-	public ConcurrentStringLineProcessor(Configuration<Document<String,String>,String,String> config){
+	public ConcurrentStringLineFutureProcessor(Configuration<Document<String,String>,String,String> config) {
 		this.config = config;
 	}
 
@@ -34,54 +33,45 @@ public class ConcurrentStringLineProcessor implements Processor<String,String>{
 		for(File file : files){
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
 				String currLine = br.readLine();
+				StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
+				Future[] futures = new Future[NTHREADS];
 				int lineCount = 0;
+				// TODO: Use ExecutorCompletionTask!
 				while(currLine != null){
-					int iter = 0;
-					ArrayList<Callable<Boolean>> batch = new ArrayList<Callable<Boolean>>();
-					while(iter < (NTHREADS * 2) || currLine != null) {
-						String line = currLine;
-						StringDocument document = new StringDocument(line);
-						DocumentCallable docCaller = new DocumentCallable(document,writer);
-						batch.add(docCaller);
-						iter++;
-						lineCount++;
-						if(lineCount%1000 == 0){
-							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
-						}
-						currLine = br.readLine();
-					}
-					try {
-						List<Future<Boolean>> futures = executor.invokeAll(batch);
-						for(Future<Boolean> future : futures){
-							future.get();
-							if(future.isDone()){
-								continue;
+					for(int i = 0; i < futures.length; i++){
+						if(futures[i] == null || futures[i].isDone()){
+							String line = currLine;
+							StringDocument document = new StringDocument(line);
+							DocumentCallable docCaller = new DocumentCallable(document,writer);
+							futures[i] = executor.submit(docCaller);
+							currLine = br.readLine();
+							lineCount++;
+							if(lineCount%1000 == 0){
+								System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
+							}
+							if(currLine == null){
+								break;
 							}
 						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+				}
+				for(Future future : futures){
+					future.get();
 				}
 				ArrayList<Callable<Boolean>> shutdown = new ArrayList<Callable<Boolean>>();
 				shutdown.add(new DocumentShutdown(writer, file.getName()));
 				br.close();
-				try {
-					executor.invokeAll(shutdown);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 		}
-		executor.shutdown();
 	}
 
 	public void processFile(File file) {
