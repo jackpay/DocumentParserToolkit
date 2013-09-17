@@ -7,10 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.configuration.Configuration;
@@ -19,18 +21,25 @@ import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class ConcurrentStringLineECS {
+public class ConcurrentStringLineECS implements Processor<String,String>{
 
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final Configuration<Document<String,String>,String,String> config;
+	private final boolean inOrder;
 	
-	public ConcurrentStringLineECS(Configuration<Document<String,String>,String,String> config){
+	public ConcurrentStringLineECS(Configuration<Document<String,String>,String,String> config) {
+		this(config, false);
+	}
+	
+	public ConcurrentStringLineECS(Configuration<Document<String,String>,String,String> config, boolean inOrder) {
 		this.config = config;
+		this.inOrder = inOrder;
 	}
 
 	public void processFiles(List<File> files) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-		final ExecutorCompletionService pool = new ExecutorCompletionService(executor);
+		final ArrayBlockingQueue<Future<Boolean>> queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2, inOrder);
+		final ExecutorCompletionService pool = new ExecutorCompletionService(executor,new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2, inOrder));
 		for(File file : files){
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -38,7 +47,6 @@ public class ConcurrentStringLineECS {
 				String currLine = br.readLine();
 				int lineCount = 0;
 				while(currLine != null){
-					
 //					int iter = 0;
 //					ArrayList<Callable<Boolean>> batch = new ArrayList<Callable<Boolean>>();
 //					while(iter < (NTHREADS * 2) || currLine != null) {
