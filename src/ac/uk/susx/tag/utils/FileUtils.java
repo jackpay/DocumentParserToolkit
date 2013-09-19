@@ -69,6 +69,7 @@ public class FileUtils {
 		folderName = FileUtils.enumerateFileNumber(startingLocation + "/" + folderName.replace("/", "-"),0);
 		boolean success = new File(folderName).mkdirs();
 		if(success){
+			System.err.println("Output can be found in this location: " + folderName);
 			return folderName;
 		}
 		else{
@@ -83,7 +84,6 @@ public class FileUtils {
 
 	private static String enumerateFileNumber(String currentFolder, int currIt) {
 		File file;
-		System.err.println(currentFolder);
 		if(currIt > 0){
 			file = new File(currentFolder + "-(" + currIt + ")");
 		}

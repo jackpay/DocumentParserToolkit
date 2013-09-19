@@ -10,7 +10,7 @@ import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.processor.ConcurrentStringLineFutureProcessor;
+import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
 import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
 import ac.uk.susx.tag.processor.ConcurrentStringSentenceProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
@@ -21,7 +21,7 @@ import ac.uk.susx.tag.utils.FileUtils;
  */
 public class StringDocumentParser implements Parser<String,String> {
 	
-	private ConcurrentStringLineFutureProcessor parser;
+	private ConcurrentStringLineProcessor parser;
 	private Configuration<Document<String,String>,String,String> config;
 
 	/**
@@ -43,7 +43,7 @@ public class StringDocumentParser implements Parser<String,String> {
 		OutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
 		config.setDocumentBuilder(new StringInputDocumentFormatter());
-		parser = new ConcurrentStringLineFutureProcessor(config);
+		parser = new ConcurrentStringLineProcessor(config);
 	}
 
 	public boolean parse() throws IOException {

@@ -16,6 +16,7 @@ import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.StringDocument;
+import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class ConcurrentStringSentenceProcessor implements Processor<String, String>{
@@ -30,11 +31,11 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 	public void processFiles(List<File> files) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		for(File file : files){
-			Document<String, String> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
+			Document<String, String> document = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			final ArrayList<Future<Document<String,String>>> futures = new ArrayList<Future<Document<String,String>>>();
 			try {
-				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
-				Collection<? extends Annotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(document);
+				Collection<? extends Annotation<String>> sentences = document.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 				for(Annotation<String> sentence : sentences){
 					SentenceCallable sentCaller = new SentenceCallable(sentence);
 					Future<Document<String,String>> future = executor.submit(sentCaller);
@@ -44,7 +45,7 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 					try {
 						Document<String,String> sent = future.get();
 						for(Class<? extends Annotator> annotator : sent.getDocumentAnnotations().keySet()){
-							doc.addAnnotations(annotator, sent.getAnnotations(annotator));
+							document.addAnnotations(annotator, sent.getAnnotations(annotator));
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -58,9 +59,9 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 			} catch (IncompatibleAnnotationException e) {
 				e.printStackTrace();
 			}
-			doc.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			doc.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), doc.sortAnnotations(config.getOutputIncludedAnnotators()));
+			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
+			document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), AnnotationUtils.collateAnnotations(document.getDocumentAnnotations()));
 		}
 		executor.shutdown();
 	}

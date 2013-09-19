@@ -19,13 +19,13 @@ public interface Filter<AT>{
 	 * @param annotations
 	 * @return
 	 */
-	public Collection<? extends Annotation<AT>> filter(Collection<? extends Annotation<AT>> annotations);
+	public Collection<Annotation<AT>> filter(Collection<Annotation<AT>> annotations);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends Annotator>, Collection<? extends Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations);
+	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations);
 
 }

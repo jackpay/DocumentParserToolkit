@@ -48,7 +48,7 @@ public interface Configuration <D extends Document<DT,AT>, AT,DT >{
 	public void addFilter(Filter<AT> filter);
 	
 	/**
-	 * @return Return all annotators which will have all their annotations included in the output.
+	 * @return Return all annotators which will have all their annotations included in the output. Uses ArrayList to guarantee order.
 	 */
 	public ArrayList<Class<? extends Annotator>> getOutputIncludedAnnotators();
 	

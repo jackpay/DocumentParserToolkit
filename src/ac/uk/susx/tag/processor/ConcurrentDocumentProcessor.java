@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class ConcurrentDocumentProcessor<DT,AT> implements Processor<DT,AT> {
@@ -62,7 +63,7 @@ public class ConcurrentDocumentProcessor<DT,AT> implements Processor<DT,AT> {
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + fileName, document.sortAnnotations(config.getOutputIncludedAnnotators()));
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + fileName, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations()));
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

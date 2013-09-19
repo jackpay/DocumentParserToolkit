@@ -14,7 +14,7 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
-import ac.uk.susx.tag.utils.AnnotatorUtils;
+import ac.uk.susx.tag.utils.AnnotationUtils;
 
 public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 
@@ -29,8 +29,8 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		Collection<? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
-		String[] strToks = AnnotatorUtils.annotationsToArray(tokens, new String[tokens.size()]);
-		String[] strTags = AnnotatorUtils.annotationsToArray(postags, new String[postags.size()]);
+		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);
 		String[] chunkTags = chunker.chunk(strToks, strTags);
 		
 		int begin = 0;
