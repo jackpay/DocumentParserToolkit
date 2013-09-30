@@ -33,6 +33,7 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 		this.outputLoc = FileUtils.createOutputDirectory(outputLoc);
 		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>>();
 		includedAnnotators = new ArrayList<Class<? extends Annotator>>();
+		filters = new ArrayList<Filter<AT>>();
 	}
 	
 	public String getInputLocation() {

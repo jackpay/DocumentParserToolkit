@@ -6,6 +6,7 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.filter.Filter;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 public interface Document <D,AT>{
 	
@@ -14,13 +15,13 @@ public interface Document <D,AT>{
 	public void setDocument(D docText);
 
 	@SuppressWarnings("rawtypes")
-	public void addAnnotations(Class<? extends Annotator> cl, Collection<Annotation<AT>> annotations);
+	public void addAnnotations(Class<? extends Annotator> cl, Map<IndexToken, Annotation<AT>> annotations);
 	
 	@SuppressWarnings("rawtypes")
-	public Collection<Annotation<AT>> getAnnotations(Class<? extends Annotator> cl);
+	public Map<IndexToken, Annotation<AT>> getAnnotations(Class<? extends Annotator> cl);
 	
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> getDocumentAnnotations();
+	public Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> getDocumentAnnotations();
 	
 	@SuppressWarnings("rawtypes")
 	public void removeAnnotations(Collection<Class<? extends Annotator>> excludedAnnotators);

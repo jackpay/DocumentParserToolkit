@@ -13,11 +13,11 @@ import ac.uk.susx.tag.indexing.IndexToken;
 public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 	
 	private D document;
-	private Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations;
+	private Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends Annotator>, Collection<Annotation<AT>>>(10);
+		annotations = new HashMap<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>>(10);
 	}
 	
 	public D getDocument(){
@@ -30,26 +30,24 @@ public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 
 
 	@SuppressWarnings("rawtypes")
-	public Collection<Annotation<AT>> getAnnotations(
+	public Map<IndexToken, Annotation<AT>> getAnnotations(
 			Class<? extends Annotator> cl) {
 		return annotations.get(cl);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> getDocumentAnnotations() {
+	public Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> getDocumentAnnotations() {
 		return annotations;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void addAnnotations(
-			Class<? extends Annotator> cl,
-			Collection<Annotation<AT>> annotations) {
+	public void addAnnotations(Class<? extends Annotator> cl, Map<IndexToken, Annotation<AT>> annotations) {
 		if(this.annotations.get(cl) == null){
-			this.annotations.put(cl, new ArrayList<Annotation<AT>>());
-			this.annotations.get(cl).addAll(annotations);
+			this.annotations.put(cl, new HashMap<IndexToken,Annotation<AT>>());
+			this.annotations.get(cl).putAll(annotations);
 		}
 		else{
-			this.annotations.get(cl).addAll(annotations);
+			this.annotations.get(cl).putAll(annotations);
 		}
 	}
 

@@ -146,7 +146,7 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 				}
 				document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 				document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-				config.getOutputWriter().processSubDocument(writer, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations()));
+				config.getOutputWriter().processSubDocument(writer, document.getDocumentAnnotations());
 				return true;
 			}
 	}

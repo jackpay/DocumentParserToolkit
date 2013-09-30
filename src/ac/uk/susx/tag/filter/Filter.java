@@ -5,6 +5,7 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 /**
  * A filter interface to allow removal or exclusive inclusion of specific annotations.
@@ -19,13 +20,13 @@ public interface Filter<AT>{
 	 * @param annotations
 	 * @return
 	 */
-	public Collection<Annotation<AT>> filter(Collection<Annotation<AT>> annotations);
+	public Collection<Annotation<AT>> filter(Map<IndexToken, Annotation<AT>> annotations);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations);
+	public Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annotations);
 
 }

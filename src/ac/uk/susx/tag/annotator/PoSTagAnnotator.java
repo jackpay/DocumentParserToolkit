@@ -3,6 +3,8 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,7 @@ import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
+import ac.uk.susx.tag.indexing.IndexToken;
 
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -31,10 +34,10 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 	 * Annotates a single un-tokenised sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public synchronized Collection<StringAnnotation> annotate (
+	public synchronized Map<IndexToken, StringAnnotation> annotate (
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Map<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
+		Map<IndexToken, ? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
@@ -43,7 +46,7 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 			Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
 			StringAnnotation annotation = new StringAnnotation(strTags[i], (sentence.getStart() + matcher.start()), (sentence.getStart() + matcher.end()));
-			annotations.add(annotation);
+			annotations.put(annotation.getOffset(), annotation);
 			begin = matcher.end();
 		}
 		return annotations;

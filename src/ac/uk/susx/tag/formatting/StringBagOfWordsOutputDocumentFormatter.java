@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.writer.OutputWriter;
 import ac.uk.susx.tag.writer.StringWriter;
@@ -21,7 +22,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		TOKEN_DELIM = delimiter;
 	}
 
-	public void processDocument(String outputFileName, Map<IndexToken, Collection<Annotation<String>>> sortedCollection) {
+	public void processDocument(String outputFileName, Map<Class<? extends Annotator>, Map<IndexToken, Annotation<String>>> collection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
 		StringWriter docWriter = null;
 		try {
@@ -29,9 +30,20 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for(Collection<Annotation<String>> tokenColl : sortedCollection.values()){
-			String token = tokenMaker.createToken(tokenColl);
-			docWriter.writeToken(token + TOKEN_DELIM);
+//		for(Collection<Annotation<String>> tokenColl : collection.values()){
+//			String token = tokenMaker.addToken(tokenColl);
+//			docWriter.writeToken(tokenMaker.createToken() + TOKEN_DELIM);
+//		}
+		for(Map<IndexToken, Annotation<String>> annotations : collection.values()){
+			for(IndexToken key : annotations.keySet()){
+				for(Map<IndexToken, Annotation<String>> subAnnotations : collection.values()){
+					Annotation<String> ann = subAnnotations.remove(key);
+					if(ann != null){
+						tokenMaker.addToken(ann);
+					}
+				}
+				docWriter.writeToken(tokenMaker.createToken() + TOKEN_DELIM);
+			}
 		}
 		try {
 			docWriter.closeDocument();
@@ -40,16 +52,32 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		}
 	}
 
-	public void processSubDocument(OutputWriter<String> writer, Map<IndexToken, Collection<Annotation<String>>> sortedCollection) {
+	public void processSubDocument(OutputWriter<String> writer, Map<Class<? extends Annotator>, Map<IndexToken, Annotation<String>>> collection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
-		for(Collection<Annotation<String>> tokenColl : sortedCollection.values()){
-			String token = tokenMaker.createToken(tokenColl);
-			try {
-				writer.writeToken(token + TOKEN_DELIM);
-			} catch (IOException e) {
-				e.printStackTrace();
+		
+		for(Map<IndexToken, Annotation<String>> annotations : collection.values()){
+			for(IndexToken key : annotations.keySet()){
+				for(Map<IndexToken, Annotation<String>> subAnnotations : collection.values()){
+					Annotation<String> ann = subAnnotations.remove(key);
+					if(ann != null){
+						tokenMaker.addToken(ann);
+					}
+				}
+				try {
+					writer.writeToken(tokenMaker.createToken() + TOKEN_DELIM);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+//		for(Collection<Annotation<String>> tokenColl : collection.values()){
+//			String token = tokenMaker.createToken(tokenColl);
+//			try {
+//				writer.writeToken(token + TOKEN_DELIM);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 }

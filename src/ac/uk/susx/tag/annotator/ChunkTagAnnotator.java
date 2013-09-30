@@ -1,8 +1,8 @@
 package ac.uk.susx.tag.annotator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +13,7 @@ import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -22,13 +23,13 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 	private static final String CHUNKSTART = "B-";
 	private static final String INCHUNK = "I-";
 
-	public synchronized Collection<StringAnnotation> annotate(
+	public synchronized Map<IndexToken, StringAnnotation> annotate(
 			Annotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		Collection<? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
+		Map<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
+		Map<IndexToken, ? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Map<IndexToken, ? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);
 		String[] chunkTags = chunker.chunk(strToks, strTags);
@@ -41,7 +42,7 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 			String chunk = chunkTags[i].replace(INCHUNK, "");
 			chunk = chunk.replace(CHUNKSTART, "");
 			StringAnnotation annotation = new StringAnnotation(chunk, sentence.getStart() + matcher.start(), sentence.getStart() + matcher.end());
-			annotations.add(annotation);
+			annotations.put(annotation.getOffset(), annotation);
 			begin = matcher.end();
 		}
 		return annotations;

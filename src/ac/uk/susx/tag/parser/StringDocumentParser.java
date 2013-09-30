@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.Configuration;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.filter.AnnotationFilter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
@@ -43,6 +45,7 @@ public class StringDocumentParser implements Parser<String,String> {
 		OutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
 		config.setDocumentBuilder(new StringInputDocumentFormatter());
+		//config.addFilter(new AnnotationFilter<String>("NN",StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
 

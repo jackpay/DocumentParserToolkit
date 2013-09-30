@@ -1,13 +1,11 @@
 package ac.uk.susx.tag.formatting;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import ac.uk.susx.tag.annotation.Annotation;
 
 public class StringTokenAnnotatorFormatter implements TokenFormatter<String, String>{
 	
 	private final String ANN_DELIM;
+	private final StringBuilder sb;
 	
 	public StringTokenAnnotatorFormatter(){
 		this("-");
@@ -15,21 +13,15 @@ public class StringTokenAnnotatorFormatter implements TokenFormatter<String, Str
 	
 	public StringTokenAnnotatorFormatter(String delimiter){
 		ANN_DELIM = delimiter;
+		sb = new StringBuilder();
+	}
+	
+	public String createToken() {
+		return sb.substring(0, sb.length()-1);
 	}
 
-	/**
-	 * Used to create a token assuming there is no empty annotations contained within the input collection.
-	 */
-	public String createToken(Collection<? extends Annotation<String>> tokens) {
-		StringBuilder sb = new StringBuilder();
-		Iterator<? extends Annotation<String>> iter = tokens.iterator();
-		for(int i = 0; i < tokens.size(); i++){
-			sb.append(iter.next().getAnnotation());
-			if(i < tokens.size()-1){
-				sb.append(ANN_DELIM);
-			}
-		}
-		return sb.toString();
+	public void addToken(Annotation<String> token) {
+		sb.append(token.getAnnotation());
+		sb.append(ANN_DELIM);
 	}
-
 }

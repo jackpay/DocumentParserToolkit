@@ -1,8 +1,8 @@
 package ac.uk.susx.tag.annotator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -12,6 +12,7 @@ import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class SentenceAnnotator extends AbstractStringAnnotator {
@@ -22,21 +23,21 @@ public class SentenceAnnotator extends AbstractStringAnnotator {
 			throws IncompatibleAnnotationException {
 		String docStr = doc.getDocument();
 		StringAnnotation ga = new StringAnnotation(docStr,0,docStr.length());
-		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
-		annotations.addAll(annotate(ga));
+		Map<IndexToken, Annotation<String>> annotations = new HashMap<IndexToken, Annotation<String>>();
+		annotations.putAll(annotate(ga));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 
-	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation)
+	public synchronized Map<IndexToken, StringAnnotation> annotate(Annotation<String> annotation)
 			throws IncompatibleAnnotationException {
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+		Map<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		
 		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
 			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart() + offset,sentPos[i].getEnd() + offset);
 			sentence.setDocumentPosition(i);
-			annotations.add(sentence);
+			annotations.put(sentence.getOffset(), sentence);
 			offset = sentPos[i].getEnd();
 		}
 		
