@@ -32,7 +32,7 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
 		startModel(); // Ensure model is live.
 		HashMap<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
 		Map<IndexToken, ? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		String[] strToks = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(tokens), new String[tokens.size()]);
 
 		Span[] peopleSpans = nameFinder.find(strToks);
 		

@@ -34,15 +34,15 @@ public class FilterUtils {
 		return matcher.matches();
 	}
 	
-	public class AnnotationPositionComparator implements Comparator<Annotation<?>> {
-
+	public static class AnnotationPositionComparator implements Comparator<Annotation<?>> {
+		
 		public int compare(Annotation<?> ann1, Annotation<?> ann2) {
 			return ann1.getPosition().getPosition() < ann2.getPosition().getPosition() ? -1 : ann1.getPosition().getPosition() == ann2.getPosition().getPosition() ? 0 : 1;
 		}	
 	}
 	
-	public class AnnotationOffsetComparator implements Comparator<Annotation<?>> {
-
+	public static class AnnotationOffsetComparator implements Comparator<Annotation<?>> {
+		
 		public int compare(Annotation<?> ann1, Annotation<?> ann2) {
 			return ann1.getStart() < ann2.getStart() ? -1 : ann1.getStart() == ann2.getStart() ? 0 : 1;
 		}
