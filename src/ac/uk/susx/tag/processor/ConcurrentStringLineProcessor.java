@@ -69,15 +69,16 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 		}
 		
 		public void run() {
+			ExecutorService executor;
 			for(File file : files){
 				try {
-					ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
+					executor = Executors.newFixedThreadPool(NTHREADS);
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					String currLine = br.readLine();
 					StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
 					int lineCount = 0;
 					while(currLine != null){
-						String line = currLine;
+						String line = new String(currLine);
 						StringDocument document = new StringDocument(line);
 						DocumentCallable docCaller = new DocumentCallable(document,writer);
 						queue.put(executor.submit(docCaller));
@@ -87,6 +88,7 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
 						}
 					}
+					
 					executor.shutdown();
 					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 					System.err.println("Finished processing file: " + file.getName());
@@ -114,7 +116,7 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 				while(!complete){
 					Future<Boolean> out = queue.take();
 					out.get();
-					complete = out.getClass().equals(ConsumerShutdownFuture.class) ? true : false;
+					complete = out instanceof ConsumerShutdownFuture;
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
