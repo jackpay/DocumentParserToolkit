@@ -2,11 +2,9 @@ package ac.uk.susx.tag.utils;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
@@ -15,7 +13,10 @@ import ac.uk.susx.tag.indexing.IndexToken;
 
 public class AnnotationUtils {
 	
-	public static <A> A[] annotationsToArray(Collection<? extends Annotation<A>> annotations, A[] array){
+	public static <A> A[] annotationsToArray(Collection<? extends Annotation<A>> annotations, A[] array) throws Exception {
+		if(array.length != annotations.size()){
+			throw new Exception("The array must be the same length as the collection.");
+		}
 		int i = 0;
 		for(Annotation<A> annotation : annotations){
 			array[i] = annotation.getAnnotation();
@@ -30,22 +31,20 @@ public class AnnotationUtils {
 		return anns;
 	}
 	
-	public static <AT> Map<IndexToken, Collection<Annotation<AT>>> collateAnnotations(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations){
+	public static <AT> Map<IndexToken, Collection<Annotation<AT>>> collateAnnotations(Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annotations){
 		Map<IndexToken, Collection<Annotation<AT>>> collectedAnnotations = new HashMap<IndexToken, Collection<Annotation<AT>>>(annotations.size()+((int)annotations.size()/4));
-		for(Class<? extends Annotator> annotator : annotations.keySet()){
-				for(Annotation<AT> ann : annotations.get(annotator)){
-					if(collectedAnnotations.get(ann.getOffset()) == null){
-						collectedAnnotations.put(ann.getOffset(), new ArrayList<Annotation<AT>>());
-						collectedAnnotations.get(ann.getOffset()).add(ann);
+		for(Map<IndexToken, Annotation<AT>> annotator : annotations.values()){
+				for(IndexToken index : annotator.keySet()){
+					if(collectedAnnotations.get(index) == null){
+						collectedAnnotations.put(index, new ArrayList<Annotation<AT>>());
+						collectedAnnotations.get(index).add(annotator.get(index));
 					}
 					else{
-						collectedAnnotations.get(ann.getOffset()).add(ann);
+						collectedAnnotations.get(index).add(annotator.get(index));
 					}
 				}
 		}
 		return collectedAnnotations;
 	}
-	
-	
 	
 }

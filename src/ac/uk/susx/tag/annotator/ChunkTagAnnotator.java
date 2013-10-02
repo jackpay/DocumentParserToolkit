@@ -30,8 +30,16 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 		Map<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
 		Map<IndexToken, ? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		Map<IndexToken, ? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
-		String[] strToks = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(tokens), new String[tokens.size()]);
-		String[] strTags = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(postags), new String[postags.size()]);
+		String[] strToks = null;
+		String[] strTags = null;
+		try {
+			strToks = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(tokens), new String[tokens.size()]);
+			strTags = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(postags), new String[postags.size()]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		String[] chunkTags = chunker.chunk(strToks, strTags);
 		
 		int begin = 0;

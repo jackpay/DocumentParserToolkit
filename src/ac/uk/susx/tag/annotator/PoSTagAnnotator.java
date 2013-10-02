@@ -38,7 +38,13 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 			Annotation<String> sentence) throws IncompatibleAnnotationException {
 		Map<IndexToken, StringAnnotation> annotations = new HashMap<IndexToken, StringAnnotation>();
 		Map<IndexToken, ? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		String[] strToks = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(tokens), new String[tokens.size()]);
+		String[] strToks= null;
+		try {
+			strToks = AnnotationUtils.annotationsToArray(AnnotationUtils.annotationsToSortedArrayList(tokens), new String[tokens.size()]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
 		for(int i = 0; i < strTags.length; i++){
