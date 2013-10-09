@@ -8,7 +8,8 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.Annotator;
 import ac.uk.susx.tag.indexing.IndexToken;
-import ac.uk.susx.tag.utils.AnnotationUtils;
+import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+import ac.uk.susx.tag.utils.FilterUtils;
 
 public class AnnotationFilter <AT> implements Filter<AT> {
 	
@@ -47,37 +48,16 @@ public class AnnotationFilter <AT> implements Filter<AT> {
 		return annotations;
 	}
 
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> filterCollection(
-			Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations) {
+	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations) {
 		if(!remAll){
-			if(annotator == null){
-				for(Class<? extends Annotator> annotator : annotations.keySet()){
-					annotations.put(annotator, filter(annotations.get(annotator)));
-				}
-			}
-			else{
-				annotations.put(annotator, filter(annotations.get(annotator)));
-			}
+			annotations.put(annotator, filter(annotations.get(annotator)));
 		}
 		else{
-			Map<IndexToken, Collection<Annotation<AT>>> collatedAnnotations = AnnotationUtils.collateAnnotations(annotations);
-			if(annotator == null){
-				for(Class<? extends Annotator> annotator : annotations.keySet()){
-					Iterator<Annotation<AT>> iter = annotations.get(annotator).iterator();
-					while(iter.hasNext()){
-						Annotation<AT> annotation = iter.next();
-						for(AT excludeAnn : excludeAnnotations){
-							if(annotation.getAnnotation().equals(excludeAnn)) {
-								if(!remAll){
-									annotations.remove(annotation);
-								}
-								else{
-									collatedAnnotations.remove(annotation.getOffset());
-								}
-							}
-						}
-					}
-				}
+			Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annoMap = (Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>>) FilterUtils.annotationsToMap(annotations);
+			Collection<Annotation<AT>> filtAnno = annotations.get(annotator);
+			Iterator<Annotation<AT>> iter = filtAnno.iterator();
+			while(iter.hasNext()){
+				Annotation<AT> next = iter.next();
 			}
 		}
 		return annotations;

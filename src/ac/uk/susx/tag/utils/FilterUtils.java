@@ -1,10 +1,17 @@
 package ac.uk.susx.tag.utils;
 
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.indexing.IndexToken;
+import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 public class FilterUtils {
 	
@@ -34,6 +41,32 @@ public class FilterUtils {
 		return matcher.matches();
 	}
 	
+	public static <AT> Map<IndexToken, Annotation<AT>> annotationsToMap(Collection<Annotation<AT>> annotations){
+		return annotationsToMap(annotations, TermOffsetIndexToken.class);
+	}
+	
+	public static <AT> Map<IndexToken, Annotation<AT>> annotationsToMap(Collection<Annotation<AT>> annotations, Class<? extends IndexToken> index){
+		Map<IndexToken, Annotation<AT>> annoMap = new HashMap<IndexToken, Annotation<AT>>();
+		Iterator<Annotation<AT>> iter = annotations.iterator();
+		while(iter.hasNext()){
+			Annotation<AT> next = iter.next();
+			annoMap.put(next.getIndex(index), next);
+		}
+		return annoMap;
+	}
+	
+	public static <AT> Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annotationsToMap(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations){
+		return annotationsToMap(annotations, TermOffsetIndexToken.class);
+	}
+	
+	public static <AT> Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annotationsToMap(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations, Class<? extends IndexToken> index){
+		Map<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>> annoMap = new HashMap<Class<? extends Annotator>, Map<IndexToken, Annotation<AT>>>();
+		for(Class<? extends Annotator> annotator : annotations.keySet()){
+			annoMap.put(annotator, annotationsToMap(annotations.get(annotator),index));
+		}
+		return annoMap;
+	}
+	
 	public class AnnotationPositionComparator implements Comparator<Annotation<?>> {
 
 		public int compare(Annotation<?> ann1, Annotation<?> ann2) {
@@ -47,4 +80,5 @@ public class FilterUtils {
 			return ann1.getStart() < ann2.getStart() ? -1 : ann1.getStart() == ann2.getStart() ? 0 : 1;
 		}
 	}
+	
 }

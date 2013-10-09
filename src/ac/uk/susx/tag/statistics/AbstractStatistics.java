@@ -1,21 +1,24 @@
 package ac.uk.susx.tag.statistics;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import ac.uk.susx.tag.writer.OutputWriter;
+
 public abstract class AbstractStatistics implements Statistics{
 	
-	private final HashMap<String,Statistic<Object>> stats;
+	private final HashMap<String, AbstractStatistic<Object>> stats;
 	
 	public AbstractStatistics(){
-		this.stats = new HashMap<String,Statistic<Object>>();
+		this.stats = new HashMap<String, AbstractStatistic<Object>>();
 	}
 	
-	public <A> void addStatistic(String field, Statistic<A> value){
+	public void addStatistic(String field, AbstractStatistic<Object> value){
 		stats.put(field, value);
 	}
 	
-	public int getStatistic(String field){
+	public Object getStatistic(String field){
 		return stats.get(field);
 	}
 	
@@ -23,10 +26,12 @@ public abstract class AbstractStatistics implements Statistics{
 		return stats.keySet();
 	}
 	
-	public void combineStatistics(AbstractStatistics doc){
-		for(String field : doc.getFields()){
-			
-		}
+	public Collection<AbstractStatistic<Object>> getStatistics(){
+		return stats.values();
 	}
+	
+	public abstract void combineStatistics();
+	
+	public abstract <A> void writeStatistics(OutputWriter<A> writer);
 
 }
