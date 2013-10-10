@@ -24,7 +24,7 @@ public class ExcludeAnnotationFilter <AT> implements IFilter<AT> {
 		this.remAll = remAll;
 	}
 	
-	public ExcludeAnnotationFilter(AT annotation, Class<? extends IAnnotator> annotator, boolean remAll){
+	public ExcludeAnnotationFilter(AT annotation, Class<? extends IAnnotator> annotator, boolean remAll) {
 		this(new ArrayList<AT>(), annotator, remAll);
 		excludeAnnotations.add(annotation);
 	}
