@@ -3,10 +3,10 @@ package ac.uk.susx.tag.configuration;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.document.Document;
-import ac.uk.susx.tag.filter.Filter;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 
@@ -15,42 +15,42 @@ import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
  * @author jackpay
  *
  */
-public interface Configuration <D extends Document<DT,AT>, AT,DT >{	
+public interface IConfiguration <D extends IDocument<DT,AT>, AT,DT >{	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
 	 * @param annotator
 	 */
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator);
+	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator);
 	
 	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include
 	 */
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator, boolean include);
+	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator, boolean include);
 	
 	/**
 	 * @return Return all stored annotators.
 	 */
-	public Collection<Annotator<D,? extends Annotation<AT>,AT,DT>> getAnnotators();
+	public Collection<IAnnotator<D,? extends IAnnotation<AT>,AT,DT>> getAnnotators();
 	
 	/**
 	 * Return all stored filters;
 	 * @return
 	 */
-	public Collection<Filter<AT>> getFilters();
+	public Collection<IFilter<AT>> getFilters();
 	
 	/**
 	 * Add a filter.
 	 * @param filter
 	 */
-	public void addFilter(Filter<AT> filter);
+	public void addFilter(IFilter<AT> filter);
 	
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output. Uses ArrayList to guarantee order.
 	 */
-	public ArrayList<Class<? extends Annotator>> getOutputIncludedAnnotators();
+	public ArrayList<Class<? extends IAnnotator>> getOutputIncludedAnnotators();
 	
 	/**
 	 * @return Return the output location.Class<? extends Annotator>

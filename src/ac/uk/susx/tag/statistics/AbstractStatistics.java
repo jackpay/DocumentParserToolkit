@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
-import ac.uk.susx.tag.writer.OutputWriter;
+import ac.uk.susx.tag.writer.IOutputWriter;
 
-public abstract class AbstractStatistics implements Statistics{
+public abstract class AbstractStatistics implements IStatistics{
 	
 	private final HashMap<String, AbstractStatistic<Object>> stats;
 	
@@ -32,6 +32,6 @@ public abstract class AbstractStatistics implements Statistics{
 	
 	public abstract void combineStatistics();
 	
-	public abstract <A> void writeStatistics(OutputWriter<A> writer);
+	public abstract <A> void writeStatistics(IOutputWriter<A> writer);
 
 }

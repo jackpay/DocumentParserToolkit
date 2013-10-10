@@ -2,14 +2,14 @@ package ac.uk.susx.tag.annotator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 
-import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
@@ -20,7 +20,7 @@ public class TokenAnnotator extends AbstractStringAnnotator{
 	/**
 	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
 	 */
-	public synchronized Collection<StringAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
+	public synchronized List<StringAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException{
 		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		String docStr = annotation.getAnnotation();

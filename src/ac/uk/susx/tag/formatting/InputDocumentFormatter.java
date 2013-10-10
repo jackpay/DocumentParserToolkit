@@ -2,12 +2,12 @@ package ac.uk.susx.tag.formatting;
 
 import java.io.File;
 
-import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.document.IDocument;
 
 public interface InputDocumentFormatter <DT,AT>{ 
 	
-	public Document<DT,AT> createDocument(String fileLocation);
+	public IDocument<DT,AT> createDocument(String fileLocation);
 	
-	public Document<DT,AT> createDocument(File file);
+	public IDocument<DT,AT> createDocument(File file);
 	
 }

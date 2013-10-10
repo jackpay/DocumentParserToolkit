@@ -15,22 +15,22 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.configuration.Configuration;
-import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.configuration.IConfiguration;
+import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class ConcurrentStringLineProcessor implements Processor<String,String> {
+public class ConcurrentStringLineProcessor implements IProcessor<String,String> {
 	
-	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private final Configuration<Document<String,String>,String,String> config;
+	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
+	private final IConfiguration<IDocument<String,String>,String,String> config;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 	
-	public ConcurrentStringLineProcessor(Configuration<Document<String,String>,String,String> config) {
+	public ConcurrentStringLineProcessor(IConfiguration<IDocument<String,String>,String,String> config) {
 		this.config = config;
 		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
@@ -129,16 +129,16 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 	
 	public final class DocumentCallable implements Callable<Boolean> {
 			
-			private final Document<String,String> document;
+			private final IDocument<String,String> document;
 			private final StringWriter writer;
 			
-			public DocumentCallable(Document<String, String> document, StringWriter writer){
+			public DocumentCallable(IDocument<String, String> document, StringWriter writer){
 				this.document = document;
 				this.writer = writer;
 			}
 	
 			public Boolean call() throws Exception {
-				for(Annotator<Document<String,String>,?,String,String> annotator : config.getAnnotators()){
+				for(IAnnotator<IDocument<String,String>,?,String,String> annotator : config.getAnnotators()){
 					try {
 						annotator.annotate(document);
 					} catch (IncompatibleAnnotationException e) {
@@ -148,7 +148,7 @@ public class ConcurrentStringLineProcessor implements Processor<String,String> {
 				}
 				document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 				document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-				config.getOutputWriter().processSubDocument(writer, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations()));
+				config.getOutputWriter().processSubDocument(writer, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations(), config.getOutputIncludedAnnotators()));
 				return true;
 			}
 	}

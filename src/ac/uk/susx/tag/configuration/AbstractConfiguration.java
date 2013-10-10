@@ -3,10 +3,10 @@ package ac.uk.susx.tag.configuration;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.document.Document;
-import ac.uk.susx.tag.filter.Filter;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.InputDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.utils.FileUtils;
@@ -15,10 +15,10 @@ import ac.uk.susx.tag.utils.FileUtils;
  * An abstract class for a global config file.
  * @author jackpay
  */
-public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> implements Configuration<D,AT,DT> {
+public abstract class AbstractConfiguration<D extends IDocument<DT,AT>, AT,DT> implements IConfiguration<D,AT,DT> {
 	
-	private ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>> annotators; // Specify the annotator's to use when parsing.
-	private ArrayList<Class<? extends Annotator>> includedAnnotators; // Specify which annotator's should be included in the output.
+	private ArrayList<IAnnotator<D,? extends IAnnotation<AT>,AT,DT>> annotators; // Specify the annotator's to use when parsing.
+	private ArrayList<Class<? extends IAnnotator>> includedAnnotators; // Specify which annotator's should be included in the output.
 	private final String inputLoc;
 	private final String outputLoc;
 	private String inputSuff;
@@ -26,13 +26,14 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	private boolean singleFile;
 	private OutputDocumentFormatter<DT,AT> outputWriter;
 	private InputDocumentFormatter<DT,AT> docBuilder;
-	private ArrayList<Filter<AT>> filters;
+	private ArrayList<IFilter<AT>> filters;
 	
 	public AbstractConfiguration(String inputLoc, String outputLoc) {
 		this.inputLoc = inputLoc;
 		this.outputLoc = FileUtils.createOutputDirectory(outputLoc);
-		annotators = new ArrayList<Annotator<D,? extends Annotation<AT>,AT,DT>>();
-		includedAnnotators = new ArrayList<Class<? extends Annotator>>();
+		annotators = new ArrayList<IAnnotator<D,? extends IAnnotation<AT>,AT,DT>>();
+		includedAnnotators = new ArrayList<Class<? extends IAnnotator>>();
+		filters = new ArrayList<IFilter<AT>>();
 	}
 	
 	public String getInputLocation() {
@@ -67,22 +68,22 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 		return outputSuff;
 	}
 	
-	public Collection<Annotator<D,? extends Annotation<AT>,AT,DT>> getAnnotators(){
+	public Collection<IAnnotator<D,? extends IAnnotation<AT>,AT,DT>> getAnnotators(){
 		return annotators;
 	}
 	
-	public ArrayList<Class<? extends Annotator>> getOutputIncludedAnnotators(){
+	public ArrayList<Class<? extends IAnnotator>> getOutputIncludedAnnotators(){
 		return includedAnnotators;
 	}
 	
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator){
+	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator){
 		annotators.add(annotator);
 	}
 	
-	public void addAnnotator(Annotator<D,? extends Annotation<AT>,AT,DT> annotator, boolean include){
+	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator, boolean include){
 		annotators.add(annotator);
 		if(include){
-			includedAnnotators.add((Class<Annotator<D, ? extends Annotation<AT>, AT,DT>>) annotator.getClass());
+			includedAnnotators.add((Class<IAnnotator<D, ? extends IAnnotation<AT>, AT,DT>>) annotator.getClass());
 		}
 	}
 	
@@ -103,11 +104,11 @@ public abstract class AbstractConfiguration<D extends Document<DT,AT>, AT,DT> im
 	/**
 	 * Return the annotation filters.
 	 */
-	public Collection<Filter<AT>> getFilters(){
+	public Collection<IFilter<AT>> getFilters(){
 		return filters;
 	}
 	
-	public void addFilter(Filter<AT> filter){
+	public void addFilter(IFilter<AT> filter){
 		filters.add(filter);
 	}
 	

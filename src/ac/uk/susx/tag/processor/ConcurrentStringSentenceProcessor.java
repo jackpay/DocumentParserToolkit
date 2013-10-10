@@ -10,41 +10,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
-import ac.uk.susx.tag.configuration.Configuration;
-import ac.uk.susx.tag.document.Document;
+import ac.uk.susx.tag.configuration.IConfiguration;
+import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentStringSentenceProcessor implements Processor<String, String>{
+public class ConcurrentStringSentenceProcessor implements IProcessor<String, String>{
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private final Configuration<Document<String,String>,String,String> config;
+	private final IConfiguration<IDocument<String,String>,String,String> config;
 	
-	public ConcurrentStringSentenceProcessor(Configuration<Document<String,String>,String,String> config){
+	public ConcurrentStringSentenceProcessor(IConfiguration<IDocument<String,String>,String,String> config){
 		this.config = config;
 	}
 
 	public void processFiles(List<File> files) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		for(File file : files){
-			Document<String, String> document = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
-			final ArrayList<Future<Document<String,String>>> futures = new ArrayList<Future<Document<String,String>>>();
+			IDocument<String, String> document = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
+			final ArrayList<Future<IDocument<String,String>>> futures = new ArrayList<Future<IDocument<String,String>>>();
 			try {
 				StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(document);
-				Collection<? extends Annotation<String>> sentences = document.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
-				for(Annotation<String> sentence : sentences){
+				Collection<? extends IAnnotation<String>> sentences = document.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+				for(IAnnotation<String> sentence : sentences){
 					SentenceCallable sentCaller = new SentenceCallable(sentence);
-					Future<Document<String,String>> future = executor.submit(sentCaller);
+					Future<IDocument<String,String>> future = executor.submit(sentCaller);
 					futures.add(future);
 				}
-				for(Future<Document<String,String>> future : futures){
+				for(Future<IDocument<String,String>> future : futures){
 					try {
-						Document<String,String> sent = future.get();
-						for(Class<? extends Annotator> annotator : sent.getDocumentAnnotations().keySet()){
+						IDocument<String,String> sent = future.get();
+						for(Class<? extends IAnnotator> annotator : sent.getDocumentAnnotations().keySet()){
 							document.addAnnotations(annotator, sent.getAnnotations(annotator));
 						}
 					} catch (InterruptedException e) {
@@ -61,7 +61,7 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 			}
 			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), AnnotationUtils.collateAnnotations(document.getDocumentAnnotations()));
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), AnnotationUtils.collateAnnotations(document.getDocumentAnnotations(), config.getOutputIncludedAnnotators()));
 		}
 		executor.shutdown();
 	}
@@ -72,24 +72,24 @@ public class ConcurrentStringSentenceProcessor implements Processor<String, Stri
 		processFiles(fileList);
 	}
 	
-public class SentenceCallable implements Callable<Document<String,String>> {
+public class SentenceCallable implements Callable<IDocument<String,String>> {
 		
-		private final Document<String,String> sentenceDoc;
-		private final Annotation<String> sentenceAnn;
+		private final IDocument<String,String> sentenceDoc;
+		private final IAnnotation<String> sentenceAnn;
 		
 		//TODO: Add doc position to prevent clashes!
-		public SentenceCallable(Annotation<String> sentence){
+		public SentenceCallable(IAnnotation<String> sentence){
 			this.sentenceAnn = sentence;
 			sentenceDoc = new StringDocument(null);
-			ArrayList<Annotation<String>> sentenceList = new ArrayList<Annotation<String>>();
+			ArrayList<IAnnotation<String>> sentenceList = new ArrayList<IAnnotation<String>>();
 			sentenceList.add(sentenceAnn);
 			sentenceDoc.addAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass(), sentenceList);
 		}
 
-		public Document<String,String> call() throws Exception {
-			for(Annotator<Document<String,String>,? extends Annotation<String>,String,String> annotator : config.getAnnotators()){
+		public IDocument<String,String> call() throws Exception {
+			for(IAnnotator<IDocument<String,String>,? extends IAnnotation<String>,String,String> annotator : config.getAnnotators()){
 				try {
-					ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+					ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 					annotations.addAll(annotator.annotate(sentenceDoc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass())));
 					sentenceDoc.addAnnotations(annotator.getClass(), annotations);
 				} catch (IncompatibleAnnotationException e) {

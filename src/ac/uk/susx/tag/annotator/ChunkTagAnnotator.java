@@ -10,7 +10,7 @@ import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.util.InvalidFormatException;
 
-import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -23,12 +23,12 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 	private static final String INCHUNK = "I-";
 
 	public synchronized Collection<StringAnnotation> annotate(
-			Annotation<String> sentence)
+			IAnnotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends Annotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		Collection<? extends Annotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> postags = StringAnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);
 		String[] chunkTags = chunker.chunk(strToks, strTags);

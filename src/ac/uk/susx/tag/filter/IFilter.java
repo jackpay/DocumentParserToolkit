@@ -3,8 +3,8 @@ package ac.uk.susx.tag.filter;
 import java.util.Collection;
 import java.util.Map;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotator.Annotator;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
 
 /**
  * A filter interface to allow removal or exclusive inclusion of specific annotations.
@@ -12,20 +12,20 @@ import ac.uk.susx.tag.annotator.Annotator;
  *
  * @param <AT>
  */
-public interface Filter<AT>{
+public interface IFilter<AT>{
 	
 	/**
 	 * Filter a single set of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Collection<Annotation<AT>> filter(Collection<Annotation<AT>> annotations);
+	public Collection<IAnnotation<AT>> filter(Collection<IAnnotation<AT>> annotations);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> filterCollection(Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations);
+	public Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations);
 
 }

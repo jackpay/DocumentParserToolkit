@@ -5,19 +5,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotator.Annotator;
-import ac.uk.susx.tag.filter.Filter;
-import ac.uk.susx.tag.indexing.IndexToken;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.filter.IFilter;
+import ac.uk.susx.tag.indexing.IIndexToken;
 
-public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
+public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
 	
 	private D document;
-	private Map<Class<? extends Annotator>, Collection<Annotation<AT>>> annotations;
+	private Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends Annotator>, Collection<Annotation<AT>>>(10);
+		annotations = new HashMap<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>>(10);
 	}
 	
 	public D getDocument(){
@@ -30,22 +30,22 @@ public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 
 
 	@SuppressWarnings("rawtypes")
-	public Collection<Annotation<AT>> getAnnotations(
-			Class<? extends Annotator> cl) {
+	public Collection<IAnnotation<AT>> getAnnotations(
+			Class<? extends IAnnotator> cl) {
 		return annotations.get(cl);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends Annotator>, Collection<Annotation<AT>>> getDocumentAnnotations() {
+	public Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> getDocumentAnnotations() {
 		return annotations;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void addAnnotations(
-			Class<? extends Annotator> cl,
-			Collection<Annotation<AT>> annotations) {
+			Class<? extends IAnnotator> cl,
+			Collection<IAnnotation<AT>> annotations) {
 		if(this.annotations.get(cl) == null){
-			this.annotations.put(cl, new ArrayList<Annotation<AT>>());
+			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
 			this.annotations.get(cl).addAll(annotations);
 		}
 		else{
@@ -53,35 +53,35 @@ public abstract class AbstractDocument <D,AT> implements Document<D,AT>{
 		}
 	}
 
-	public void removeAnnotation(Class<? extends Annotator> cl) {
+	public void removeAnnotation(Class<? extends IAnnotator> cl) {
 		if(annotations.containsKey(cl)){
 			annotations.remove(cl);
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void removeAnnotations(Collection<Class<? extends Annotator>> annotators) {
-		for(Class<? extends Annotator> annotator : annotators){
+	public void removeAnnotations(Collection<Class<? extends IAnnotator>> annotators) {
+		for(Class<? extends IAnnotator> annotator : annotators){
 			removeAnnotation(annotator);
 		}
 	}
 
 	public void retainAnnotations(
-			Collection<Class<? extends Annotator>> includedAnnotators) {
+			Collection<Class<? extends IAnnotator>> includedAnnotators) {
 		annotations.keySet().retainAll(includedAnnotators);
 	}
 	
-	public void filterAnnotations(Collection<Filter<AT>> filters){
+	public void filterAnnotations(Collection<IFilter<AT>> filters){
 		if(filters != null && !filters.isEmpty()){
-			for(Filter<AT> filter : filters){
+			for(IFilter<AT> filter : filters){
 				filter.filterCollection(annotations);
 			}
 		}
 	}
 	
-	public void filterAnnotation(Collection<Filter<AT>> filters, Class<? extends Annotator> annotator) {
+	public void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator> annotator) {
 		if(filters != null && !filters.isEmpty()){
-			for(Filter<AT> filter : filters){
+			for(IFilter<AT> filter : filters){
 				filter.filter(annotations.get(annotator));
 			}
 		}

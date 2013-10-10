@@ -2,7 +2,7 @@ package ac.uk.susx.tag.writer;
 
 import java.io.IOException;
 
-public interface OutputWriter<A>{
+public interface IOutputWriter<A>{
 	
 	public void init(String fileName) throws IOException;
 	

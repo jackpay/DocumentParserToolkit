@@ -3,7 +3,7 @@ package ac.uk.susx.tag.formatting;
 import java.util.Collection;
 import java.util.Iterator;
 
-import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.IAnnotation;
 
 public class StringTokenAnnotatorFormatter implements TokenFormatter<String, String>{
 	
@@ -20,9 +20,9 @@ public class StringTokenAnnotatorFormatter implements TokenFormatter<String, Str
 	/**
 	 * Used to create a token assuming there is no empty annotations contained within the input collection.
 	 */
-	public String createToken(Collection<? extends Annotation<String>> tokens) {
+	public String createToken(Collection<? extends IAnnotation<String>> tokens) {
 		StringBuilder sb = new StringBuilder();
-		Iterator<? extends Annotation<String>> iter = tokens.iterator();
+		Iterator<? extends IAnnotation<String>> iter = tokens.iterator();
 		for(int i = 0; i < tokens.size(); i++){
 			sb.append(iter.next().getAnnotation());
 			if(i < tokens.size()-1){

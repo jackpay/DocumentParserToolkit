@@ -5,7 +5,7 @@ package ac.uk.susx.tag.indexing;
  * @author jp242
  *
  */
-public interface IndexToken {
+public interface IIndexToken {
 	
 	public boolean equals(Object obj);
 

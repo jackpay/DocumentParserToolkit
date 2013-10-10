@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.indexing.IndexToken;
-import ac.uk.susx.tag.writer.OutputWriter;
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.StringWriter;
 
 public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFormatter<String,String>{
@@ -21,7 +21,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		TOKEN_DELIM = delimiter;
 	}
 
-	public void processDocument(String outputFileName, Map<IndexToken, Collection<Annotation<String>>> sortedCollection) {
+	public void processDocument(String outputFileName, Map<IIndexToken, Collection<IAnnotation<String>>> sortedCollection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
 		StringWriter docWriter = null;
 		try {
@@ -29,7 +29,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for(Collection<Annotation<String>> tokenColl : sortedCollection.values()){
+		for(Collection<IAnnotation<String>> tokenColl : sortedCollection.values()){
 			String token = tokenMaker.createToken(tokenColl);
 			docWriter.writeToken(token + TOKEN_DELIM);
 		}
@@ -40,9 +40,9 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		}
 	}
 
-	public void processSubDocument(OutputWriter<String> writer, Map<IndexToken, Collection<Annotation<String>>> sortedCollection) {
+	public void processSubDocument(IOutputWriter<String> writer, Map<IIndexToken, Collection<IAnnotation<String>>> sortedCollection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
-		for(Collection<Annotation<String>> tokenColl : sortedCollection.values()){
+		for(Collection<IAnnotation<String>> tokenColl : sortedCollection.values()){
 			String token = tokenMaker.createToken(tokenColl);
 			try {
 				writer.writeToken(token + TOKEN_DELIM);

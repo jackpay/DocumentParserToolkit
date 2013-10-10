@@ -1,6 +1,6 @@
 package ac.uk.susx.tag.indexing;
 
-import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.IAnnotation;
 
 /**
  * An index token based on the annotation.
@@ -8,7 +8,7 @@ import ac.uk.susx.tag.annotation.Annotation;
  *
  * @param <A>
  */
-public class AnnotationIndexToken <A> implements IndexToken {
+public class AnnotationIndexToken <A> implements IIndexToken {
 
 	private final A annotation;
 	
@@ -37,11 +37,11 @@ public class AnnotationIndexToken <A> implements IndexToken {
 		if(obj == this){
 			return true;
 		}
-		if(!(obj instanceof Annotation<?>)){
+		if(!(obj instanceof IAnnotation<?>)){
 			return false;
 		}
 		else{
-			Annotation<?> ann = (Annotation<?>) obj;
+			IAnnotation<?> ann = (IAnnotation<?>) obj;
 			if(!(ann.getAnnotation().getClass() == this.getAnnotation().getClass())){
 				return false;
 			}

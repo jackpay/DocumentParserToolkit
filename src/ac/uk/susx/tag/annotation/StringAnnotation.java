@@ -1,5 +1,7 @@
 package ac.uk.susx.tag.annotation;
 
+import ac.uk.susx.tag.indexing.IIndexToken;
+
 
 public class StringAnnotation extends AbstractAnnotation<String> {
 

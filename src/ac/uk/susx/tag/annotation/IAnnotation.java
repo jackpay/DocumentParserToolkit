@@ -1,10 +1,10 @@
 package ac.uk.susx.tag.annotation;
 
-import ac.uk.susx.tag.indexing.IndexToken;
+import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
-public interface Annotation<A>{
+public interface IAnnotation<A>{
 	
 	public A getAnnotation();
 	
@@ -18,6 +18,6 @@ public interface Annotation<A>{
 	
 	public void setDocumentPosition(int pos);
 	
-	public IndexToken getIndex(Class<? extends IndexToken> indexClass);
+	public IIndexToken getIndexToken(Class<? extends IIndexToken> indexClass) throws Exception;
 	
 }

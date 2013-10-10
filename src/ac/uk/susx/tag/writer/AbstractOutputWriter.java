@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public abstract class AbstractOutputWriter <A> implements OutputWriter<A>{
+public abstract class AbstractOutputWriter <A> implements IOutputWriter<A>{
 	
 	private File file;
 	private PrintWriter writer;

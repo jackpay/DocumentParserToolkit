@@ -1,6 +1,6 @@
 package ac.uk.susx.tag.input;
 
-import ac.uk.susx.tag.configuration.Configuration;
+import ac.uk.susx.tag.configuration.IConfiguration;
 
 import com.beust.jcommander.Parameter;
 
@@ -10,7 +10,7 @@ import com.beust.jcommander.Parameter;
  * @author jackpay
  *
  */
-public abstract class AbstractInputParameterParser implements InputParameterParser{
+public abstract class AbstractInputParameterParser implements IInputParameterParser{
 	
 	public abstract class AbstractInputReader {
 		
@@ -59,6 +59,6 @@ public abstract class AbstractInputParameterParser implements InputParameterPars
 		
 	}
 	
-	public abstract Configuration<?,?,?> parseInputParameters(String[] args);
+	public abstract IConfiguration<?,?,?> parseInputParameters(String[] args);
 
 }
