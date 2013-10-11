@@ -11,45 +11,39 @@ import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 
-public class ExcludeAnnotationFilter <AT> implements IFilter<AT> {
+public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 	
-	private final ArrayList<AT> excludeAnnotations;
+	private final ArrayList<AT> filterAnnotations;
 	private final Class<? extends IAnnotator> annotator;
-	private boolean remAll;
+	private boolean remAllTok;
+	private boolean remove;
 	
-	public ExcludeAnnotationFilter(Collection<AT> annotations, Class<? extends IAnnotator> annotator, boolean remAll) {
-		this.excludeAnnotations = new ArrayList<AT>();
-		this.excludeAnnotations.addAll(annotations);
+	public AbstractAnnotationFilter(Collection<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok, boolean remove) {
+		this.filterAnnotations = new ArrayList<AT>();
+		this.filterAnnotations.addAll(filterAnnotations);
 		this.annotator = annotator;
-		this.remAll = remAll;
+		this.remAllTok = remAllTok;
+		this.remove = remove;
 	}
 	
-	public ExcludeAnnotationFilter(AT annotation, Class<? extends IAnnotator> annotator, boolean remAll) {
-		this(new ArrayList<AT>(), annotator, remAll);
-		excludeAnnotations.add(annotation);
+	public AbstractAnnotationFilter(AT annotation, Class<? extends IAnnotator> annotator, boolean remAllTok, boolean remove) {
+		this(new ArrayList<AT>(), annotator, remAllTok, remove);
+		filterAnnotations.add(annotation);
 	}
 	
-	
-	public ExcludeAnnotationFilter(AT annotation, boolean remAll) {
-		this(annotation, null, remAll);
-	}
-
-	public Collection<IAnnotation<AT>> filter(
-			Collection<IAnnotation<AT>> annotations) {
+	public Collection<IAnnotation<AT>> filter(Collection<IAnnotation<AT>> annotations) {
 		Iterator<? extends IAnnotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			IAnnotation<AT> anno = iter.next();
-			for(AT annotation : excludeAnnotations){
-				if(anno.getAnnotation().equals(annotation)){
-					iter.remove();
-				}
+			if((matchAnnotation(anno.getAnnotation()) && remove) || (!matchAnnotation(anno.getAnnotation()) && !remove)) {
+				iter.remove();
 			}
 		}
 		return annotations;
 	}
-
+	
 	public Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations) {
-		if(!remAll){
+		if(!remAllTok){
 			annotations.put(annotator, filter(annotations.get(annotator)));
 		}
 		else{
@@ -58,9 +52,14 @@ public class ExcludeAnnotationFilter <AT> implements IFilter<AT> {
 			Iterator<IAnnotation<AT>> iter = filtAnno.iterator();
 			while(iter.hasNext()){
 				IAnnotation<AT> next = iter.next();
-				if(excluded(next.getAnnotation())){
+				if((matchAnnotation(next.getAnnotation()) && remove) || (!matchAnnotation(next.getAnnotation()) && !remove)){
 					iter.remove();
-					TermOffsetIndexToken index = next.getOffset();
+					TermOffsetIndexToken index = null;
+					try {
+						index = next.getIndexToken(TermOffsetIndexToken.class);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					for(Class<? extends IAnnotator> key : annotations.keySet()){
 						if(!key.equals(annotator)){
 							annotations.get(key).remove(annoMap.get(key).get(index));
@@ -72,13 +71,14 @@ public class ExcludeAnnotationFilter <AT> implements IFilter<AT> {
 		return annotations;
 	}
 	
-	private boolean excluded(AT annotation){
-		boolean excluded = false;
-		for(AT exAnn : excludeAnnotations){
+	private boolean matchAnnotation(AT annotation){
+		boolean match = false;
+		for(AT exAnn : filterAnnotations){
 			if(annotation.equals(exAnn)){
 				return true;
 			}
 		}
-		return excluded;
+		return match;
 	}
+
 }

@@ -7,17 +7,12 @@ import java.util.ArrayList;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
-import ac.uk.susx.tag.filter.ExcludeAnnotationFilter;
-import ac.uk.susx.tag.filter.IFilter;
-import ac.uk.susx.tag.filter.IncludeAnnotationFilter;
+import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.processor.ConcurrentDocumentProcessor;
 import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
-import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
-import ac.uk.susx.tag.processor.ConcurrentStringSentenceProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
 
 /**
@@ -52,7 +47,7 @@ public class StringDocumentParser implements IParser<String,String> {
 		anns.add("DT");
 		anns.add("CC");
 		anns.add("CD");
-		config.addFilter(new ExcludeAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
+		config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), false));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
 

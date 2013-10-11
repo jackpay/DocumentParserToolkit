@@ -12,12 +12,8 @@ public interface IAnnotation<A>{
 	
 	public int getEnd();
 	
-	public PositionIndexToken getPosition();
+	public void addIndexToken(IIndexToken token);
 	
-	public TermOffsetIndexToken getOffset();
-	
-	public void setDocumentPosition(int pos);
-	
-	public IIndexToken getIndexToken(Class<? extends IIndexToken> indexClass) throws Exception;
+	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception;
 	
 }

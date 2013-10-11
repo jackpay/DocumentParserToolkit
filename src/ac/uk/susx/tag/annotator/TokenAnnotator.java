@@ -11,6 +11,7 @@ import opennlp.tools.util.Span;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class TokenAnnotator extends AbstractStringAnnotator{
@@ -29,7 +30,7 @@ public class TokenAnnotator extends AbstractStringAnnotator{
 		for(int i = 0; i < tokenSpans.length; i++){
 			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
 			//System.err.println(token.getAnnotation() + " " + token.getStart() + " " + token.getEnd());
-			token.setDocumentPosition(i);
+			token.addIndexToken(new PositionIndexToken(i));
 			annotations.add(token);
 		}
 		return annotations;

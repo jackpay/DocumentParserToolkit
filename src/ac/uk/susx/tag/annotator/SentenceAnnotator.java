@@ -12,6 +12,7 @@ import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class SentenceAnnotator extends AbstractStringAnnotator {
@@ -35,7 +36,7 @@ public class SentenceAnnotator extends AbstractStringAnnotator {
 		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
 			StringAnnotation sentence = new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart() + offset,sentPos[i].getEnd() + offset);
-			sentence.setDocumentPosition(i);
+			sentence.addIndexToken(new PositionIndexToken(i));
 			annotations.add(sentence);
 			offset = sentPos[i].getEnd();
 		}

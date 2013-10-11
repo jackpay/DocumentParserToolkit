@@ -7,6 +7,7 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<String,String>, StringAnnotation, String, String> {
@@ -35,8 +36,13 @@ public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<St
 		for(IAnnotation<String> annotation : annotations){
 			Collection<StringAnnotation> sentAnn = annotate(annotation);
 			for(StringAnnotation ann : sentAnn){
-				int currPos = ann.getPosition() == null ? 0 : ann.getPosition().getPosition();
-				ann.setDocumentPosition(currPos + index);
+				int currPos = 0;
+				try {
+					currPos = ann.getIndexToken(PositionIndexToken.class) == null ? 0 : ann.getIndexToken(PositionIndexToken.class).getPosition();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				ann.addIndexToken(new PositionIndexToken(currPos + index));
 				index++;
 			}
 			annotationArr.addAll(sentAnn);

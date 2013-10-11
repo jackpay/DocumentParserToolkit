@@ -18,7 +18,6 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	private final AnnotationIndexToken<A> annotation;
 	private final TermOffsetIndexToken offset;
 	private final HashMap<Class<? extends IIndexToken>, IIndexToken> index;
-	private PositionIndexToken docPosition;
 	
 	public AbstractAnnotation(A annotation, int start, int end){
 		this.annotation = (annotation == null)? null : new AnnotationIndexToken<A>(annotation);
@@ -40,27 +39,18 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		return (annotation == null) ? null : annotation.getAnnotation();
 	}
 	
-	public void setDocumentPosition(int pos){
-		docPosition = new PositionIndexToken(pos);
+	public void addIndexToken(IIndexToken token) {
+		index.put(token.getClass(), token);
 	}
 	
-	public int annotationHashCode(){
-		return annotation.hashCode();
-	}
-	
-	public TermOffsetIndexToken getOffset() {
-		return offset;
-	}
-	
-	public PositionIndexToken getPosition() {
-		return docPosition;
-	}
-	
-	public IIndexToken getIndexToken(Class<? extends IIndexToken> indexClass) throws Exception {
+	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception {
 		if(index.get(indexClass) == null){
-			throw new Exception("The annotation: " + annotation.getAnnotation().toString() + "At Offset: " + getStart() + ":" + getEnd() + ". Does not have the required IndexToken.");
+			throw new Exception("The annotation: " + annotation.getAnnotation().toString() + " At Offset: " + getStart() + ":" + getEnd() + ". Does not have the required IIndexToken: " + indexClass.getSimpleName());
 		}
-		return index.get(indexClass);
+		if(!index.get(indexClass).getClass().equals(indexClass)){
+			throw new Exception("The class of the stored index token does not match the required class. Check how IIndexToken objects are added.");
+		}
+		return indexClass.cast(index.get(indexClass));
 	}
 
 }

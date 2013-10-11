@@ -3,7 +3,6 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +31,7 @@ public final class PoSTagAnnotator extends AbstractStringAnnotator {
 	 * Annotates a single un-tokenised sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public synchronized Collection<StringAnnotation> annotate (
-			IAnnotation<String> sentence) throws IncompatibleAnnotationException {
+	public synchronized Collection<StringAnnotation> annotate (IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);

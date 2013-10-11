@@ -10,6 +10,7 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 public class AnnotationUtils {
 	
@@ -27,12 +28,16 @@ public class AnnotationUtils {
 		Map<IIndexToken, Collection<IAnnotation<AT>>> collectedAnnotations = new HashMap<IIndexToken, Collection<IAnnotation<AT>>>(annotations.size()+((int)annotations.size()/4));
 		for(Class<? extends IAnnotator> annotator : annotators){
 				for(IAnnotation<AT> ann : annotations.get(annotator)){
-					if(collectedAnnotations.get(ann.getOffset()) == null){
-						collectedAnnotations.put(ann.getOffset(), new ArrayList<IAnnotation<AT>>());
-						collectedAnnotations.get(ann.getOffset()).add(ann);
-					}
-					else{
-						collectedAnnotations.get(ann.getOffset()).add(ann);
+					try {
+						if(collectedAnnotations.get(ann.getIndexToken(TermOffsetIndexToken.class)) == null){
+							collectedAnnotations.put(ann.getIndexToken(TermOffsetIndexToken.class), new ArrayList<IAnnotation<AT>>());
+							collectedAnnotations.get(ann.getIndexToken(TermOffsetIndexToken.class)).add(ann);
+						}
+						else{
+							collectedAnnotations.get(ann.getIndexToken(TermOffsetIndexToken.class)).add(ann);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 		}

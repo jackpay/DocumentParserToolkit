@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 public class FilterUtils {
@@ -74,7 +75,12 @@ public class FilterUtils {
 	public class AnnotationPositionComparator implements Comparator<IAnnotation<?>> {
 
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
-			return ann1.getPosition().getPosition() < ann2.getPosition().getPosition() ? -1 : ann1.getPosition().getPosition() == ann2.getPosition().getPosition() ? 0 : 1;
+			try {
+				return ann1.getIndexToken(PositionIndexToken.class).getPosition() < ann2.getIndexToken(PositionIndexToken.class).getPosition() ? -1 : ann1.getIndexToken(PositionIndexToken.class).getPosition() == ann2.getIndexToken(PositionIndexToken.class).getPosition() ? 0 : 1;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return 0;
 		}	
 	}
 	
