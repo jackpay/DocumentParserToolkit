@@ -8,20 +8,20 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
-public interface IDocument <D,AT>{
+public interface IDocument <D>{
 	
 	public D getDocument();
 	
 	public void setDocument(D docText);
 
 	@SuppressWarnings("rawtypes")
-	public void addAnnotations(Class<? extends IAnnotator> cl, List<IAnnotation<AT>> annotations);
+	public <AT> void addAnnotations(Class<? extends IAnnotator> cl, List<IAnnotation<AT>> annotations);
 	
 	@SuppressWarnings("rawtypes")
-	public List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator> cl);
+	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator> cl);
 	
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> getDocumentAnnotations();
+	public Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> getDocumentAnnotations();
 	
 	@SuppressWarnings("rawtypes")
 	public void removeAnnotations(List<Class<? extends IAnnotator>> excludedAnnotators);
@@ -32,8 +32,8 @@ public interface IDocument <D,AT>{
 	@SuppressWarnings("rawtypes")
 	public void retainAnnotations(Collection<Class<? extends IAnnotator>> includedAnnotators);
 	
-	public void filterAnnotations(Collection<IFilter<AT>> filters);
+	public <AT >void filterAnnotations(Collection<IFilter<AT>> filters);
 	
-	public void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator> annotator);
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator> annotator);
 	
 }

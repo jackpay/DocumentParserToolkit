@@ -11,14 +11,14 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<String,String>, StringAnnotation, String, String> {
+public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<String>, StringAnnotation, String, String> {
 
-	public void annotate(IDocument<String, String> document)
+	public void annotate(IDocument<String> document)
 			throws IncompatibleAnnotationException {
 		annotate(document,true);
 	}
 
-	public void annotate(IDocument<String, String> doc, boolean parseRawText)
+	public void annotate(IDocument<String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
 		List<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		List<? extends IAnnotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());

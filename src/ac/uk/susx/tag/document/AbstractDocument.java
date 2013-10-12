@@ -11,14 +11,14 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.indexing.IIndexToken;
 
-public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
+public abstract class AbstractDocument <D> implements IDocument<D>{
 	
 	private D document;
-	private Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations;
+	private Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends IAnnotator>, List<IAnnotation<AT>>>(10);
+		annotations = new HashMap<Class<? extends IAnnotator>, List<IAnnotation<?>>>(10);
 	}
 	
 	public D getDocument(){
@@ -31,13 +31,12 @@ public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
 
 
 	@SuppressWarnings("rawtypes")
-	public List<IAnnotation<AT>> getAnnotations(
-			Class<? extends IAnnotator> cl) {
+	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator> cl) {
 		return annotations.get(cl);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> getDocumentAnnotations() {
+	public Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> getDocumentAnnotations() {
 		return annotations;
 	}
 

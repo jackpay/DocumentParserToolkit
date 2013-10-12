@@ -11,7 +11,7 @@ import ac.uk.susx.tag.annotator.SentenceAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.document.IDocument;
 
-public enum StringAnnotatorEnum {
+public enum StringAnnotatorEnum{
 		
 		POSTAG(new PoSTagAnnotator()), // Used to specify a postag annotator.
 		
@@ -27,13 +27,13 @@ public enum StringAnnotatorEnum {
 		
 		LOCATION(new LocationAnnotator());
 		
-		private final IAnnotator<IDocument<String,String>,? extends IAnnotation<String>,String,String> annotator;
+		private final IAnnotator<IDocument<?>,? extends IAnnotation<?>,?,?> annotator;
 		
-		private StringAnnotatorEnum(IAnnotator<IDocument<String, String>,? extends IAnnotation<String>, String,String> annotator){
+		private StringAnnotatorEnum(IAnnotator<IDocument<?>,? extends IAnnotation<?>, ?,?> annotator){
 			this.annotator = annotator;
 		}
 		
-		public IAnnotator<IDocument<String,String>, ? extends IAnnotation<String>, String,String> getAnnotator(){
+		public IAnnotator<IDocument<?>, ? extends IAnnotation<?>, ?,?> getAnnotator(){
 			annotator.startModel();
 			return annotator;
 		}
