@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
@@ -16,7 +17,7 @@ import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
+public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
 	
 	private NameFinderME nameFinder;
 	private static final String TOKDELIM = "-";
@@ -26,7 +27,7 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator{
 		this.modelName = modelName;
 	}
 
-	public synchronized Collection<StringAnnotation> annotate(IAnnotation<String> sentence)
+	public synchronized List<StringAnnotation> annotate(IAnnotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();

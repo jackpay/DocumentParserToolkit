@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
@@ -24,8 +25,8 @@ public class AnnotationUtils {
 		return (A[]) array;
 	}
 	
-	public static <AT> Map<IIndexToken, Collection<IAnnotation<AT>>> collateAnnotations(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations, Collection<Class<? extends IAnnotator>> annotators){
-		Map<IIndexToken, Collection<IAnnotation<AT>>> collectedAnnotations = new HashMap<IIndexToken, Collection<IAnnotation<AT>>>(annotations.size()+((int)annotations.size()/4));
+	public static <AT> Map<IIndexToken, List<IAnnotation<AT>>> collateAnnotations(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations, List<Class<? extends IAnnotator>> annotators){
+		Map<IIndexToken, List<IAnnotation<AT>>> collectedAnnotations = new HashMap<IIndexToken, List<IAnnotation<AT>>>(annotations.size()+((int)annotations.size()/4));
 		for(Class<? extends IAnnotator> annotator : annotators){
 				for(IAnnotation<AT> ann : annotations.get(annotator)){
 					try {

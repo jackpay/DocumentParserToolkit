@@ -3,6 +3,7 @@ package ac.uk.susx.tag.annotator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +23,7 @@ public final class ChunkTagAnnotator extends AbstractStringAnnotator{
 	private static final String CHUNKSTART = "B-";
 	private static final String INCHUNK = "I-";
 
-	public synchronized Collection<StringAnnotation> annotate(
+	public synchronized List<StringAnnotation> annotate(
 			IAnnotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.

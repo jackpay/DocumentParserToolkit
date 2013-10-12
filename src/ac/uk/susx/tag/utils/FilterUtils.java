@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,11 +43,11 @@ public class FilterUtils {
 		return matcher.matches();
 	}
 	
-	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(Collection<IAnnotation<AT>> annotations){
+	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(List<IAnnotation<AT>> annotations){
 		return annotationsToMap(annotations, TermOffsetIndexToken.class);
 	}
 	
-	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(Collection<IAnnotation<AT>> annotations, Class<? extends IIndexToken> index){
+	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(List<IAnnotation<AT>> annotations, Class<? extends IIndexToken> index){
 		Map<IIndexToken, IAnnotation<AT>> annoMap = new HashMap<IIndexToken, IAnnotation<AT>>();
 		Iterator<IAnnotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
@@ -60,11 +61,11 @@ public class FilterUtils {
 		return annoMap;
 	}
 	
-	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations){
+	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations){
 		return annotationsToMap(annotations, TermOffsetIndexToken.class);
 	}
 	
-	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations, Class<? extends IIndexToken> index){
+	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations, Class<? extends IIndexToken> index){
 		Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annoMap = new HashMap<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>>();
 		for(Class<? extends IAnnotator> annotator : annotations.keySet()){
 			annoMap.put(annotator, annotationsToMap(annotations.get(annotator),index));
@@ -72,7 +73,7 @@ public class FilterUtils {
 		return annoMap;
 	}
 	
-	public class AnnotationPositionComparator implements Comparator<IAnnotation<?>> {
+	public static class AnnotationPositionComparator implements Comparator<IAnnotation<?>> {
 
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
 			try {
@@ -84,7 +85,7 @@ public class FilterUtils {
 		}	
 	}
 	
-	public class AnnotationOffsetComparator implements Comparator<IAnnotation<?>> {
+	public static class AnnotationOffsetComparator implements Comparator<IAnnotation<?>> {
 
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
 			return ann1.getStart() < ann2.getStart() ? -1 : ann1.getStart() == ann2.getStart() ? 0 : 1;

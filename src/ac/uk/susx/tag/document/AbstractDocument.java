@@ -3,6 +3,7 @@ package ac.uk.susx.tag.document;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
@@ -13,11 +14,11 @@ import ac.uk.susx.tag.indexing.IIndexToken;
 public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
 	
 	private D document;
-	private Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations;
+	private Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>>(10);
+		annotations = new HashMap<Class<? extends IAnnotator>, List<IAnnotation<AT>>>(10);
 	}
 	
 	public D getDocument(){
@@ -30,20 +31,20 @@ public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
 
 
 	@SuppressWarnings("rawtypes")
-	public Collection<IAnnotation<AT>> getAnnotations(
+	public List<IAnnotation<AT>> getAnnotations(
 			Class<? extends IAnnotator> cl) {
 		return annotations.get(cl);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> getDocumentAnnotations() {
+	public Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> getDocumentAnnotations() {
 		return annotations;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void addAnnotations(
 			Class<? extends IAnnotator> cl,
-			Collection<IAnnotation<AT>> annotations) {
+			List<IAnnotation<AT>> annotations) {
 		if(this.annotations.get(cl) == null){
 			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
 			this.annotations.get(cl).addAll(annotations);
@@ -60,7 +61,7 @@ public abstract class AbstractDocument <D,AT> implements IDocument<D,AT>{
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void removeAnnotations(Collection<Class<? extends IAnnotator>> annotators) {
+	public void removeAnnotations(List<Class<? extends IAnnotator>> annotators) {
 		for(Class<? extends IAnnotator> annotator : annotators){
 			removeAnnotation(annotator);
 		}

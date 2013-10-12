@@ -3,6 +3,7 @@ package ac.uk.susx.tag.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
@@ -18,7 +19,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 	private boolean remAllTok;
 	private boolean remove;
 	
-	public AbstractAnnotationFilter(Collection<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok, boolean remove) {
+	public AbstractAnnotationFilter(List<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok, boolean remove) {
 		this.filterAnnotations = new ArrayList<AT>();
 		this.filterAnnotations.addAll(filterAnnotations);
 		this.annotator = annotator;
@@ -31,7 +32,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		filterAnnotations.add(annotation);
 	}
 	
-	public Collection<IAnnotation<AT>> filter(Collection<IAnnotation<AT>> annotations) {
+	public List<IAnnotation<AT>> filter(List<IAnnotation<AT>> annotations) {
 		Iterator<? extends IAnnotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			IAnnotation<AT> anno = iter.next();
@@ -42,7 +43,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		return annotations;
 	}
 	
-	public Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, Collection<IAnnotation<AT>>> annotations) {
+	public Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations) {
 		if(!remAllTok){
 			annotations.put(annotator, filter(annotations.get(annotator)));
 		}

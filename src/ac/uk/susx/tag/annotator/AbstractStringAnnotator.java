@@ -2,6 +2,7 @@ package ac.uk.susx.tag.annotator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
@@ -19,8 +20,8 @@ public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<St
 
 	public void annotate(IDocument<String, String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
-		Collection<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+		List<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		List<? extends IAnnotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 		if(sentences == null){
 			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 		}
@@ -29,7 +30,7 @@ public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<St
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 
-	public Collection<StringAnnotation> annotate(Collection<? extends IAnnotation<String>> annotations)
+	public List<StringAnnotation> annotate(List<? extends IAnnotation<String>> annotations)
 			throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotationArr = new ArrayList<StringAnnotation>();
 		int index = 0;

@@ -2,6 +2,7 @@ package ac.uk.susx.tag.formatting;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
@@ -21,7 +22,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		TOKEN_DELIM = delimiter;
 	}
 
-	public void processDocument(String outputFileName, Map<IIndexToken, Collection<IAnnotation<String>>> sortedCollection) {
+	public void processDocument(String outputFileName, Map<IIndexToken,List<IAnnotation<String>>> sortedCollection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
 		StringWriter docWriter = null;
 		try {
@@ -40,7 +41,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 		}
 	}
 
-	public void processSubDocument(IOutputWriter<String> writer, Map<IIndexToken, Collection<IAnnotation<String>>> sortedCollection) {
+	public void processSubDocument(IOutputWriter<String> writer, Map<IIndexToken, List<IAnnotation<String>>> sortedCollection) {
 		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
 		for(Collection<IAnnotation<String>> tokenColl : sortedCollection.values()){
 			String token = tokenMaker.createToken(tokenColl);

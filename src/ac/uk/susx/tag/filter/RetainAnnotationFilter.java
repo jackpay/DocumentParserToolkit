@@ -1,6 +1,6 @@
 package ac.uk.susx.tag.filter;
 
-import java.util.Collection;
+import java.util.List;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 
@@ -10,7 +10,7 @@ public class RetainAnnotationFilter<AT> extends AbstractAnnotationFilter<AT> {
 		super(annotation, annotator, remAllTok, false);
 	}
 	
-	public RetainAnnotationFilter(Collection<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok) {
+	public RetainAnnotationFilter(List<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok) {
 		super(filterAnnotations, annotator, remAllTok, false);
 	}
 

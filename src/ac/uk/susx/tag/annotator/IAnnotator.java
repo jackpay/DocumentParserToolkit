@@ -1,6 +1,6 @@
 package ac.uk.susx.tag.annotator;
 
-import java.util.Collection;
+import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.document.IDocument;
@@ -12,9 +12,9 @@ public interface IAnnotator <D extends IDocument<DT,AT>, A extends IAnnotation<A
 	
 	public void annotate(D doc, boolean parseRawText) throws IncompatibleAnnotationException;
 	
-	public Collection<A> annotate(Collection<? extends IAnnotation<AT>> annotations) throws IncompatibleAnnotationException;
+	public List<A> annotate(List<? extends IAnnotation<AT>> annotations) throws IncompatibleAnnotationException;
 	
-	public Collection<A> annotate(IAnnotation<AT> annotation) throws IncompatibleAnnotationException;
+	public List<A> annotate(IAnnotation<AT> annotation) throws IncompatibleAnnotationException;
 	
 	public void startModel();
 	

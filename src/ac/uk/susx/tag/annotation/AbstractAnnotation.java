@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
 import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 
@@ -44,11 +43,10 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	}
 	
 	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception {
-		if(index.get(indexClass) == null){
-			throw new Exception("The annotation: " + annotation.getAnnotation().toString() + " At Offset: " + getStart() + ":" + getEnd() + ". Does not have the required IIndexToken: " + indexClass.getSimpleName());
-		}
-		if(!index.get(indexClass).getClass().equals(indexClass)){
-			throw new Exception("The class of the stored index token does not match the required class. Check how IIndexToken objects are added.");
+		if(index.get(indexClass) != null){
+			if(!index.get(indexClass).getClass().equals(indexClass)){
+				throw new Exception("The class of the stored index token does not match the required class. Check how IIndexToken objects are added.");
+			}
 		}
 		return indexClass.cast(index.get(indexClass));
 	}

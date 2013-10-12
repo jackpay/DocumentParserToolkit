@@ -2,7 +2,7 @@ package ac.uk.susx.tag.annotator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -28,7 +28,7 @@ public class SentenceAnnotator extends AbstractStringAnnotator {
 		doc.addAnnotations(this.getClass(), annotations);
 	}
 
-	public synchronized Collection<StringAnnotation> annotate(IAnnotation<String> annotation)
+	public synchronized List<StringAnnotation> annotate(IAnnotation<String> annotation)
 			throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
