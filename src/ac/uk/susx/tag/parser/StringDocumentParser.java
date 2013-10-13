@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
+import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
