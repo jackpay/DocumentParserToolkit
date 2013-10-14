@@ -14,26 +14,20 @@ public interface IDocument <D>{
 	
 	public void setDocument(D docText);
 
-	@SuppressWarnings("rawtypes")
-	public <AT> void addAnnotations(Class<? extends IAnnotator> cl, List<IAnnotation<AT>> annotations);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>>> cl, Collection<? extends IAnnotation<AT>> annotations);
 	
-	@SuppressWarnings("rawtypes")
-	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator> cl);
+	public <AT> Collection<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<IDocument<D>,IAnnotation<AT>>> cl);
 	
-	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> getDocumentAnnotations();
+	public Map<Class<? extends IAnnotator<IDocument<D>,?>>, Collection<? extends IAnnotation<?>>> getDocumentAnnotations();
 	
-	@SuppressWarnings("rawtypes")
-	public void removeAnnotations(List<Class<? extends IAnnotator>> excludedAnnotators);
+	public void removeAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?>>> excludedAnnotators);
 	
-	@SuppressWarnings("rawtypes")
-	public void removeAnnotation(Class<? extends IAnnotator> cl);
+	public void removeAnnotation(Class<? extends IAnnotator<IDocument<D>,?>> cl);
 	
-	@SuppressWarnings("rawtypes")
-	public void retainAnnotations(Collection<Class<? extends IAnnotator>> includedAnnotators);
+	public void retainAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?>>> includedAnnotators);
 	
-	public <AT >void filterAnnotations(Collection<IFilter<AT>> filters);
+	public <AT> void filterAnnotations(Collection<IFilter<AT>> filters);
 	
-	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator> annotator);
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<?,IAnnotation<AT>>> annotator);
 	
 }

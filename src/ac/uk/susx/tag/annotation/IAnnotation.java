@@ -1,8 +1,6 @@
 package ac.uk.susx.tag.annotation;
 
 import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.PositionIndexToken;
-import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 public interface IAnnotation<A>{
 	

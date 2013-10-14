@@ -14,11 +14,11 @@ import ac.uk.susx.tag.indexing.IIndexToken;
 public abstract class AbstractDocument <D> implements IDocument<D>{
 	
 	private D document;
-	private Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> annotations;
+	private Map<Class<? extends IAnnotator<IDocument<D>,?>>, List<? extends IAnnotation<?>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends IAnnotator>, List<IAnnotation<?>>>(10);
+		annotations = new HashMap<Class<? extends IAnnotator<IDocument<D>,?>>, List<? extends IAnnotation<?>>>(10);
 	}
 	
 	public D getDocument(){
@@ -29,21 +29,15 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 		this.document = docText;
 	}
 
-
-	@SuppressWarnings("rawtypes")
-	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator> cl) {
-		return annotations.get(cl);
+	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>>> cl) {
+		return (List<IAnnotation<AT>>) annotations.get(cl);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Map<Class<? extends IAnnotator>, List<IAnnotation<?>>> getDocumentAnnotations() {
+	public Map<Class<? extends IAnnotator<IDocument<D>, ?>>, List<? extends IAnnotation<?>>> getDocumentAnnotations() {
 		return annotations;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public void addAnnotations(
-			Class<? extends IAnnotator> cl,
-			List<IAnnotation<AT>> annotations) {
+	public <AT> void addAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>>> cl, List<? extends IAnnotation<AT>> annotations) {
 		if(this.annotations.get(cl) == null){
 			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
 			this.annotations.get(cl).addAll(annotations);
@@ -71,7 +65,7 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 		annotations.keySet().retainAll(includedAnnotators);
 	}
 	
-	public void filterAnnotations(Collection<IFilter<AT>> filters){
+	public <AT> void filterAnnotations(Collection<IFilter<AT>> filters){
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
 				filter.filterCollection(annotations);
@@ -79,7 +73,7 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 		}
 	}
 	
-	public void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator> annotator) {
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<?,IAnnotation<AT>>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
 				filter.filter(annotations.get(annotator));

@@ -26,7 +26,7 @@ public class SentenceAnnotation extends AbstractAnnotation <Map<Class<? extends 
 		}
 	}
 	
-	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<?,?,IT,?>> annotator){
+	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<?,IAnnotation<IT>>> annotator){
 		return getAnnotation().get(annotator).getClass().cast(getAnnotation().get(annotator));
 	}
 	
