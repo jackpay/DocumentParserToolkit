@@ -1,26 +1,26 @@
 package ac.uk.susx.tag.annotator.factory;
 
-import java.util.HashMap;
+import java.util.HashSet;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 
 public abstract class AbstractAnnotatorFactory {
 
-	private final HashMap<Class<? extends IAnnotator>, IAnnotator<?,?,?,?>> annotators;
+	private final HashSet<IAnnotator> annotators;
 	
 	public AbstractAnnotatorFactory(){
-		annotators = new HashMap<Class<? extends IAnnotator>, IAnnotator<?,?,?,?>>();
-		annotators.put(PoSTagAnnotator.class, new PoSTagAnnotator());
+		annotators = new HashSet<IAnnotator>(10);
+		annotators.add(new PoSTagAnnotator());
 	}
 	
-	protected HashMap<Class<? extends IAnnotator>, IAnnotator<?,?,?,?>> getAnnotators(){
+	protected HashSet<IAnnotator> getAnnotators(){
 		return annotators;
 	}
 	
-	
-	
-	public abstract <A extends IAnnotator<?,?,?,?>> A getAnnotator(Class<A> annType);
+	public <A extends IAnnotator>  A getAnnotator(Class<A> annType) {
+		return annotators.get(annType);
+	}
 	
 //	public enum AnnotatorEnum{
 //		POSTAG, // Used to specify a postag annotator.

@@ -10,14 +10,13 @@ import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
-
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
+public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,String,String> {
 	
 	private NameFinderME nameFinder;
 	private static final String TOKDELIM = "-";
@@ -27,10 +26,9 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
 		this.modelName = modelName;
 	}
 
-	public synchronized List<StringAnnotation> annotate(IAnnotation<String> sentence)
-			throws IncompatibleAnnotationException {
+	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 

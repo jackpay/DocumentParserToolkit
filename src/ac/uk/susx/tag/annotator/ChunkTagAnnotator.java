@@ -17,7 +17,7 @@ import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public final class ChunkTagAnnotator extends AbstractStringAnnotator{
+public final class ChunkTagAnnotator extends AbstractAnnotator{
 
 	private ChunkerME chunker;
 	private static final String CHUNKSTART = "B-";

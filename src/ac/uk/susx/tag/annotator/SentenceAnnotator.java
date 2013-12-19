@@ -15,7 +15,7 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class SentenceAnnotator extends AbstractStringAnnotator {
+public class SentenceAnnotator extends AbstractAnnotator {
 	
 	private SentenceDetectorME sentencetagger;
 

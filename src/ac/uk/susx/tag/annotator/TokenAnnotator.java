@@ -14,7 +14,7 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class TokenAnnotator extends AbstractStringAnnotator{
+public class TokenAnnotator extends AbstractAnnotator{
 	
 	private TokenizerME tokeniser;
 

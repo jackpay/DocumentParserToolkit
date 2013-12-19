@@ -2,7 +2,6 @@ package ac.uk.susx.tag.document;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
@@ -14,20 +13,20 @@ public interface IDocument <D>{
 	
 	public void setDocument(D docText);
 
-	public <AT> void addAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>>> cl, Collection<? extends IAnnotation<AT>> annotations);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	
-	public <AT> Collection<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<IDocument<D>,IAnnotation<AT>>> cl);
+	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<IDocument<D>,IAnnotation<AT>,?>> cl);
 	
-	public Map<Class<? extends IAnnotator<IDocument<D>,?>>, Collection<? extends IAnnotation<?>>> getDocumentAnnotations();
+	public Collection<List<? extends IAnnotation<?>>> getDocumentAnnotations();
 	
-	public void removeAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?>>> excludedAnnotators);
+	public void removeAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?,?>>> excludedAnnotators);
 	
-	public void removeAnnotation(Class<? extends IAnnotator<IDocument<D>,?>> cl);
+	public void removeAnnotation(Class<? extends IAnnotator<IDocument<D>,?,?>> cl);
 	
-	public void retainAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?>>> includedAnnotators);
+	public void retainAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?,?>>> includedAnnotators);
 	
 	public <AT> void filterAnnotations(Collection<IFilter<AT>> filters);
 	
-	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<?,IAnnotation<AT>>> annotator);
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<?,IAnnotation<AT>,?>> annotator);
 	
 }

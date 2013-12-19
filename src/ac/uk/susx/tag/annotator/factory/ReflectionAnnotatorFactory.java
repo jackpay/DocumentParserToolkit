@@ -4,7 +4,7 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class ReflectionAnnotatorFactory extends AbstractAnnotatorFactory {
 	
-	public <A extends IAnnotator<?,?,?,?>> A getAnnotator(Class<A> annType){
+	public <A extends IAnnotator> A getAnnotator(Class<A> annType){
 		IAnnotator<?, ?, ?, ?> annotator = getAnnotators().get(annType);
 		if(annotator == null){
 			try {

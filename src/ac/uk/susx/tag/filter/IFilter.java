@@ -1,6 +1,5 @@
 package ac.uk.susx.tag.filter;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +19,13 @@ public interface IFilter<AT>{
 	 * @param annotations
 	 * @return
 	 */
-	public List<IAnnotation<AT>> filter(List<IAnnotation<AT>> annotations);
+	public List<IAnnotation<AT>> filter(List<? extends IAnnotation<AT>> annotations);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations);
+	public Map<Class<? extends IAnnotator>, List<? extends IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, List<? extends IAnnotation<AT>>> annotations);
 
 }

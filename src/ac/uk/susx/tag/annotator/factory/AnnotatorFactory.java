@@ -6,10 +6,10 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class AnnotatorFactory {
 	
-	private final HashMap<Class<? extends IAnnotator>, IAnnotator<?,?,?,?>> annotators;
+	private final HashMap<Class<? extends IAnnotator>, IAnnotator> annotators;
 	
 	public AnnotatorFactory(){
-		annotators = new HashMap<Class<? extends IAnnotator>, IAnnotator<?,?,?,?>>();
+		annotators = new HashMap<Class<? extends IAnnotator>, IAnnotator>();
 	}
 	
 	
