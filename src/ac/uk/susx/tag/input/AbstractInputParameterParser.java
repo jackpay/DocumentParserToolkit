@@ -34,6 +34,10 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		private String osuff = null;
 		
 		@Parameter
+		(names = {"-lc","--lowerCase"}, description="Lowercase all words in the output")
+		private boolean lowCase = false;
+		
+		@Parameter
 		(names = {"-sf", "--singleFileOutput"}, description="Set to true if output is required in one file.")
 		private boolean singleFile = false;
 		
@@ -55,6 +59,10 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		
 		public boolean singleFileOutput(){
 			return singleFile;
+		}
+		
+		public boolean lowerCase() {
+			return lowCase;
 		}
 		
 	}

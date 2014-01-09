@@ -24,6 +24,7 @@ public abstract class AbstractConfiguration<D extends IDocument<DT,AT>, AT,DT> i
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
+	private boolean lowCase;
 	private OutputDocumentFormatter<DT,AT> outputWriter;
 	private InputDocumentFormatter<DT,AT> docBuilder;
 	private ArrayList<IFilter<AT>> filters;
@@ -44,6 +45,10 @@ public abstract class AbstractConfiguration<D extends IDocument<DT,AT>, AT,DT> i
 		return outputLoc;
 	}
 	
+	public boolean getLowCase() {
+		return lowCase;
+	}
+	
 	public void setInputSuff(String inputSuff){
 		this.inputSuff = inputSuff;
 	}
@@ -54,6 +59,10 @@ public abstract class AbstractConfiguration<D extends IDocument<DT,AT>, AT,DT> i
 	
 	public void setSingleFileOutput(boolean single){
 		this.singleFile = single;
+	}
+	
+	public void setLowerCase(boolean low) {
+		lowCase = low;
 	}
 	
 	public boolean singleFileOutput(){

@@ -17,6 +17,11 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 public class TokenAnnotator extends AbstractStringAnnotator{
 	
 	private TokenizerME tokeniser;
+	private final boolean lowerCase;
+	
+	public TokenAnnotator(boolean lowerCase) {
+		this.lowerCase = lowerCase;
+	}
 
 	/**
 	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
@@ -28,8 +33,8 @@ public class TokenAnnotator extends AbstractStringAnnotator{
 
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
-			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
-			//System.err.println(token.getAnnotation() + " " + token.getStart() + " " + token.getEnd());
+			final String strToken = lowerCase ? docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()).toLowerCase() : docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd());
+			StringAnnotation token = new StringAnnotation(strToken, tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
 			token.addIndexToken(new PositionIndexToken(i));
 			annotations.add(token);
 		}

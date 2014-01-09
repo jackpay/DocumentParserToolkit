@@ -17,7 +17,7 @@ public enum StringAnnotatorEnum {
 		
 		CHUNKTAG(new ChunkTagAnnotator()), // Used to specify a chunktag annotator.
 		
-		TOKEN(new TokenAnnotator()), // Used to specify a token annotator.
+		TOKEN(new TokenAnnotator(false)), // Used to specify a token annotator.
 		
 		SENTENCE(new SentenceAnnotator()), // Used to specify a Sentence annotator which does not store the sentence string as an annotation (allows use of the document offsets instead to save memory).
 		

@@ -47,6 +47,12 @@ public class StringDocumentParser implements IParser<String,String> {
 		anns.add("DT");
 		anns.add("CC");
 		anns.add("CD");
+		anns.add("{");
+		anns.add("}");
+		anns.add("[");
+		anns.add("]");
+		anns.add(")");
+		anns.add("(");
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), false));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
