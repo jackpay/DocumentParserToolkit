@@ -10,8 +10,6 @@ import ac.uk.susx.tag.filter.IFilter;
 public interface IDocument <D>{
 	
 	public D getDocument();
-	
-	public void setDocument(D docText);
 
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT, D,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	

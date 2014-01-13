@@ -12,6 +12,8 @@ import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT>{
+	
+	public AbstractAnnotator() {}
 
 	public void annotate(IDocument<DT> document) throws IncompatibleAnnotationException {
 		annotate(document,true);
@@ -19,7 +21,7 @@ public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,
 
 	public void annotate(IDocument<DT> doc, boolean parseRawText) throws IncompatibleAnnotationException {
 		List<IAnnotation<AT>> annotations = new ArrayList<IAnnotation<AT>>();
-		List<IAnnotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
+		List<SentenceAnnotation> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 		if(sentences == null){
 			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
 		}
@@ -27,8 +29,6 @@ public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,
 		annotations.addAll(annotate(sentences));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
-	
-	//public abstract void annotate(IDocument<DT> doc, boolean parseRawText);
 
 	public List<IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException {
 		ArrayList<IAnnotation<AT>> annotationArr = new ArrayList<IAnnotation<AT>>();

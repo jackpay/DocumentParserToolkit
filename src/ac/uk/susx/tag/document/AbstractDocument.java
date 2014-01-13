@@ -12,8 +12,8 @@ import ac.uk.susx.tag.filter.IFilter;
 
 public abstract class AbstractDocument <D> implements IDocument<D>{
 	
-	private D document;
-	private Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
+	private final D document;
+	private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
@@ -22,10 +22,6 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 	
 	public D getDocument(){
 		return document;
-	}
-	
-	public void setDocument(D docText) {
-		this.document = docText;
 	}
 
 	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl) {

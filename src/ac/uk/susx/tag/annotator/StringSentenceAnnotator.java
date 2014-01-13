@@ -4,33 +4,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.SentenceAnnotation;
+import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.indexing.PositionIndexToken;
+import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.document.IDocument;
-import ac.uk.susx.tag.indexing.PositionIndexToken;
-import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
+public class StringSentenceAnnotator extends AbstractSentenceAnnotator <String,String>{
 
-public class SentenceAnnotator extends AbstractAnnotator {
-	
 	private SentenceDetectorME sentencetagger;
-
-	public void annotate(IDocument<String,String> doc, boolean parseRawText)
-			throws IncompatibleAnnotationException {
+	
+	public void annotate(IDocument<String> doc) throws IncompatibleAnnotationException {
 		String docStr = doc.getDocument();
 		StringAnnotation ga = new StringAnnotation(docStr,0,docStr.length());
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		annotations.addAll(annotate(ga));
 		doc.addAnnotations(this.getClass(), annotations);
 	}
-
-	public synchronized List<StringAnnotation> annotate(IAnnotation<String> annotation)
+	
+	public synchronized List<SentenceAnnotation> annotate(IAnnotation<String> annotation)
 			throws IncompatibleAnnotationException {
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+		ArrayList<SentenceAnnotation> annotations = new ArrayList<SentenceAnnotation>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		
 		int offset = 0;
@@ -40,10 +39,10 @@ public class SentenceAnnotator extends AbstractAnnotator {
 			annotations.add(sentence);
 			offset = sentPos[i].getEnd();
 		}
-		
+		annotations.
 		return annotations;
 	}
-
+	
 	public void startModel() {
 		if(!modelStarted()){
 			try {
