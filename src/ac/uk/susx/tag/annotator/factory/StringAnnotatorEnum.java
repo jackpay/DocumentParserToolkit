@@ -27,13 +27,13 @@ public enum StringAnnotatorEnum {
 
 		LOCATION(new LocationAnnotator());
 
-		private final IAnnotator<IDocument<String>,? extends IAnnotation<String>> annotator;
+		private final IAnnotator<?,?,?> annotator;
 
-		private StringAnnotatorEnum(IAnnotator<IDocument< String>,? extends IAnnotation<String>> annotator){
+		private StringAnnotatorEnum(IAnnotator<?,?,?> annotator){
 			this.annotator = annotator;
 		}
 
-		public IAnnotator<IDocument<String>, ? extends IAnnotation<String>> getAnnotator(){
+		public IAnnotator<?,?,?> getAnnotator(){
 			annotator.startModel();
 			return annotator;
 		}

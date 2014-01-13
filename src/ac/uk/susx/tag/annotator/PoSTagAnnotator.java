@@ -26,6 +26,7 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 public final class PoSTagAnnotator extends AbstractAnnotator<String,String,String> {
 	
 	private POSTaggerME postagger;
+	
 
 	/**
 	 * Annotates a single un-tokenised sentence.

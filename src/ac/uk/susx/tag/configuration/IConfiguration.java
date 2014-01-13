@@ -7,50 +7,50 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.IFilter;
-import ac.uk.susx.tag.formatting.InputDocumentFormatter;
-import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.IInputDocumentFormatter;
+import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 
 /**
  * The interace class for a global config file.
  * @author jackpay
  *
  */
-public interface IConfiguration <D extends IDocument<DT,AT>, AT,DT >{	
+public interface IConfiguration <AT,DT >{	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
 	 * @param annotator
 	 */
-	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator);
+	public void addAnnotator(IAnnotator<?,?,?> annotator);
 	
 	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include
 	 */
-	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator, boolean include);
+	public void addAnnotator(IAnnotator<?,?,?> annotator, boolean include);
 	
 	/**
 	 * @return Return all stored annotators.
 	 */
-	public Collection<IAnnotator<D,? extends IAnnotation<AT>,AT,DT>> getAnnotators();
+	public Collection<IAnnotator<?,?,?>> getAnnotators();
 	
 	/**
 	 * Return all stored filters;
 	 * @return
 	 */
-	public Collection<IFilter<AT>> getFilters();
+	public Collection<IFilter<?>> getFilters();
 	
 	/**
 	 * Add a filter.
 	 * @param filter
 	 */
-	public void addFilter(IFilter<AT> filter);
+	public void addFilter(IFilter<?> filter);
 	
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output. Uses ArrayList to guarantee order.
 	 */
-	public ArrayList<Class<? extends IAnnotator>> getOutputIncludedAnnotators();
+	public ArrayList<Class<? extends IAnnotator<?,?,?>>> getOutputIncludedAnnotators();
 	
 	/**
 	 * @return Return the output location.Class<? extends Annotator>
@@ -65,23 +65,23 @@ public interface IConfiguration <D extends IDocument<DT,AT>, AT,DT >{
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(OutputDocumentFormatter<DT,AT> outputWriter);
+	public void setOutputWriter(IOutputDocumentFormatter<DT,AT> outputWriter);
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public OutputDocumentFormatter<DT,AT> getOutputWriter();
+	public IOutputDocumentFormatter<DT,AT> getOutputWriter();
 	
 	/**
 	 * Set the Document object builder.
 	 */
-	public void setDocumentBuilder(InputDocumentFormatter<DT,AT> documentBuilder);
+	public void setDocumentBuilder(IInputDocumentFormatter<DT> documentBuilder);
 	
 	/**
 	 * Get the Document object builder
 	 * @return
 	 */
-	public InputDocumentFormatter<DT,AT> getDocumentBuilder();
+	public IInputDocumentFormatter<DT> getDocumentBuilder();
 	
 	/**
 	 * Set the suffix for input documents.

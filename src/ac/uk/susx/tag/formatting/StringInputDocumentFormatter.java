@@ -7,13 +7,13 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.FileUtils;
 
-public class StringInputDocumentFormatter implements InputDocumentFormatter<String,String>{
+public class StringInputDocumentFormatter implements IInputDocumentFormatter<String>{
 
-	public IDocument<String, String> createDocument(String fileLocation) {
+	public IDocument<String> createDocument(String fileLocation) {
 		return createDocument(new File(fileLocation));
 	}
 
-	public IDocument<String, String> createDocument(File file) {
+	public IDocument<String> createDocument(File file) {
 		String rawDoc = null;
 		try{
 			rawDoc = FileUtils.readFileAsString(file);

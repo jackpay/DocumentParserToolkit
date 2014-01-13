@@ -10,7 +10,7 @@ import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.StringWriter;
 
-public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFormatter<String,String>{
+public class StringBagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatter<String,String>{
 	
 	private final char TOKEN_DELIM;
 

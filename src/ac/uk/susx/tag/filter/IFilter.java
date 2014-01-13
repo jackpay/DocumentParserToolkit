@@ -16,16 +16,16 @@ public interface IFilter<AT>{
 	
 	/**
 	 * Filter a single set of annotations.
-	 * @param annotations
+	 * @param list
 	 * @return
 	 */
-	public List<IAnnotation<AT>> filter(List<? extends IAnnotation<AT>> annotations);
+	public List<? extends IAnnotation<AT>> filter(List<? extends IAnnotation<AT>> list);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends IAnnotator>, List<? extends IAnnotation<AT>>> filterCollection(Map<Class<? extends IAnnotator>, List<? extends IAnnotation<AT>>> annotations);
+	public Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations);
 
 }

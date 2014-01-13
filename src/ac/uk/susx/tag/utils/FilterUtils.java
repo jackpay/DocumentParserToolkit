@@ -42,15 +42,15 @@ public class FilterUtils {
 		return matcher.matches();
 	}
 	
-	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(List<IAnnotation<AT>> annotations){
+	public static Map<IIndexToken, IAnnotation<?>> annotationsToMap(List<? extends IAnnotation<?>> annotations){
 		return annotationsToMap(annotations, TermOffsetIndexToken.class);
 	}
 	
-	public static <AT> Map<IIndexToken, IAnnotation<AT>> annotationsToMap(List<IAnnotation<AT>> annotations, Class<? extends IIndexToken> index){
-		Map<IIndexToken, IAnnotation<AT>> annoMap = new HashMap<IIndexToken, IAnnotation<AT>>();
-		Iterator<IAnnotation<AT>> iter = annotations.iterator();
+	public static Map<IIndexToken, IAnnotation<?>> annotationsToMap(List<? extends IAnnotation<?>> annotations, Class<? extends IIndexToken> index){
+		Map<IIndexToken, IAnnotation<?>> annoMap = new HashMap<IIndexToken, IAnnotation<?>>();
+		Iterator<? extends IAnnotation<?>> iter = annotations.iterator();
 		while(iter.hasNext()){
-			IAnnotation<AT> next = iter.next();
+			IAnnotation<?> next = iter.next();
 			try {
 				annoMap.put(next.getIndexToken(index), next);
 			} catch (Exception e) {
@@ -60,20 +60,19 @@ public class FilterUtils {
 		return annoMap;
 	}
 	
-	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations){
+	public static Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations){
 		return annotationsToMap(annotations, TermOffsetIndexToken.class);
 	}
 	
-	public static <AT> Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annotationsToMap(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations, Class<? extends IIndexToken> index){
-		Map<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>> annoMap = new HashMap<Class<? extends IAnnotator>, Map<IIndexToken, IAnnotation<AT>>>();
-		for(Class<? extends IAnnotator> annotator : annotations.keySet()){
+	public static Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations, Class<? extends IIndexToken> index){
+		Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = new HashMap<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>>();
+		for(Class<? extends IAnnotator<?,?,?>> annotator : annotations.keySet()){
 			annoMap.put(annotator, annotationsToMap(annotations.get(annotator),index));
 		}
 		return annoMap;
 	}
 	
 	public static class AnnotationPositionComparator implements Comparator<IAnnotation<?>> {
-
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
 			try {
 				return ann1.getIndexToken(PositionIndexToken.class).getPosition() < ann2.getIndexToken(PositionIndexToken.class).getPosition() ? -1 : ann1.getIndexToken(PositionIndexToken.class).getPosition() == ann2.getIndexToken(PositionIndexToken.class).getPosition() ? 0 : 1;
@@ -85,7 +84,6 @@ public class FilterUtils {
 	}
 	
 	public static class AnnotationOffsetComparator implements Comparator<IAnnotation<?>> {
-
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
 			return ann1.getStart() < ann2.getStart() ? -1 : ann1.getStart() == ann2.getStart() ? 0 : 1;
 		}

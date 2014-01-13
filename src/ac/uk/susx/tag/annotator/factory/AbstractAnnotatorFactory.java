@@ -18,9 +18,9 @@ public abstract class AbstractAnnotatorFactory {
 		return annotators;
 	}
 	
-	public <A extends IAnnotator>  A getAnnotator(Class<A> annType) {
-		return annotators.get(annType);
-	}
+//	public <A extends IAnnotator>  A getAnnotator(Class<A> annType) {
+//		return annotators.get(annType);
+//	}
 	
 //	public enum AnnotatorEnum{
 //		POSTAG, // Used to specify a postag annotator.

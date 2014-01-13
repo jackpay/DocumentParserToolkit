@@ -13,20 +13,20 @@ public interface IDocument <D>{
 	
 	public void setDocument(D docText);
 
-	public <AT> void addAnnotations(Class<? extends IAnnotator<IDocument<D>, IAnnotation<AT>,?>> cl, List<? extends IAnnotation<AT>> annotations);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT, D,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	
-	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<IDocument<D>,IAnnotation<AT>,?>> cl);
+	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl);
 	
 	public Collection<List<? extends IAnnotation<?>>> getDocumentAnnotations();
 	
-	public void removeAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?,?>>> excludedAnnotators);
+	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> excludedAnnotators);
 	
-	public void removeAnnotation(Class<? extends IAnnotator<IDocument<D>,?,?>> cl);
+	public void removeAnnotation(Class<? extends IAnnotator<?,?,?>> cl);
 	
-	public void retainAnnotations(Collection<Class<? extends IAnnotator<IDocument<D>,?,?>>> includedAnnotators);
+	public void retainAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> includedAnnotators);
 	
-	public <AT> void filterAnnotations(Collection<IFilter<AT>> filters);
+	public void filterAnnotations(Collection<IFilter<?>> filters);
 	
-	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<?,IAnnotation<AT>,?>> annotator);
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?,?>> annotator);
 	
 }

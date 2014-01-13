@@ -26,11 +26,11 @@ import ac.uk.susx.tag.writer.StringWriter;
 public class ConcurrentStringLineProcessor implements IProcessor<String,String> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
-	private final IConfiguration<IDocument<String,String>,String,String> config;
+	private final IConfiguration<String,String> config;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 	
-	public ConcurrentStringLineProcessor(IConfiguration<IDocument<String,String>,String,String> config) {
+	public ConcurrentStringLineProcessor(IConfiguration<String,String> config) {
 		this.config = config;
 		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
@@ -129,16 +129,16 @@ public class ConcurrentStringLineProcessor implements IProcessor<String,String> 
 	
 	public final class DocumentCallable implements Callable<Boolean> {
 			
-			private final IDocument<String,String> document;
+			private final IDocument<String> document;
 			private final StringWriter writer;
 			
-			public DocumentCallable(IDocument<String, String> document, StringWriter writer){
+			public DocumentCallable(IDocument<String> document, StringWriter writer){
 				this.document = document;
 				this.writer = writer;
 			}
 	
 			public Boolean call() throws Exception {
-				for(IAnnotator<IDocument<String,String>,?,String,String> annotator : config.getAnnotators()){
+				for(IAnnotator<?,?,?> annotator : config.getAnnotators()){
 					try {
 						annotator.annotate(document);
 					} catch (IncompatibleAnnotationException e) {
