@@ -1,17 +1,29 @@
 package ac.uk.susx.tag.document;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
 public interface IDocument <D>{
 	
 	public D getDocument();
+	
+	public SentenceAnnotation getSentence(int pos);
+	
+	public boolean sentencesEmpty();
+	
+	public Iterator<SentenceAnnotation> getSentenceIterator();
+	
+	public void addSentence(SentenceAnnotation sent, int pos);
+	
+	public void addSentence(SentenceAnnotation sentence);
 
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT, D,?>> cl, List<? extends IAnnotation<AT>> annotations);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	
 	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl);
 	

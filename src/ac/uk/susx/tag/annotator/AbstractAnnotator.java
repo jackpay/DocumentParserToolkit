@@ -2,9 +2,11 @@ package ac.uk.susx.tag.annotator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.IDocument;
@@ -15,26 +17,26 @@ public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,
 	
 	public AbstractAnnotator() {}
 
-	public void annotate(IDocument<DT> document) throws IncompatibleAnnotationException {
-		annotate(document,true);
-	}
-
-	public void annotate(IDocument<DT> doc, boolean parseRawText) throws IncompatibleAnnotationException {
+	public IDocument<DT> annotate(IDocument<DT> document) throws IncompatibleAnnotationException {
 		List<IAnnotation<AT>> annotations = new ArrayList<IAnnotation<AT>>();
-		List<SentenceAnnotation> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
-		if(sentences == null){
-			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(doc);
+		if(document.sentencesEmpty()){
+			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(document);
 		}
-		sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass()); 
-		annotations.addAll(annotate(sentences));
-		doc.addAnnotations(this.getClass(), annotations);
+		else{
+			Iterator<SentenceAnnotation> sentences = document.getSentenceIterator();
+			while(sentences.hasNext()){
+				annotations.addAll(annotate(sentences.next()));
+			}
+		}
+		document.addAnnotations(this.getClass(), annotations);
+		return document;
 	}
 
 	public List<IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException {
 		ArrayList<IAnnotation<AT>> annotationArr = new ArrayList<IAnnotation<AT>>();
 		int index = 0;
 		for(IAnnotation<ACT> annotation : annotations){
-			List<IAnnotation<AT>> sentAnn = annotate(annotation);
+			List<? extends IAnnotation<AT>> sentAnn = annotate(annotation);
 			for(IAnnotation<AT> ann : sentAnn){
 				int currPos = 0;
 				try {

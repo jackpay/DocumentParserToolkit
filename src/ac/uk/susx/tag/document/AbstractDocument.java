@@ -3,10 +3,12 @@ package ac.uk.susx.tag.document;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
@@ -14,10 +16,12 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 	
 	private final D document;
 	private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
+	private final List<SentenceAnnotation> sentences;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
 		annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
+		sentences = new ArrayList<SentenceAnnotation>();
 	}
 	
 	public D getDocument(){
@@ -32,7 +36,7 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 		return annotations.values();
 	}
 
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT, D,?>> cl, List<? extends IAnnotation<AT>> annotations) {
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations) {
 		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
 		if(anns == null){
 			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
@@ -75,6 +79,38 @@ public abstract class AbstractDocument <D> implements IDocument<D>{
 				filter.filter((List<? extends IAnnotation<AT>>) annotations.get(annotator));
 			}
 		}
+	}
+
+	/**
+	 * Retrieve a SentenceAnnotation from a specified position
+	 */
+	public SentenceAnnotation getSentence(int pos) {
+		return sentences.get(pos);
+	}
+
+	/**
+	 * Retrieve the iterator object for list of SentenceAnnotations
+	 */
+	public Iterator<SentenceAnnotation> getSentenceIterator() {
+		return sentences.iterator();
+	}
+
+	/**
+	 * Add a SentenceAnnotation to a specified position in the list
+	 */
+	public void addSentence(SentenceAnnotation sent, int pos) {
+		sentences.add(pos, sent);
+	}
+
+	/**
+	 * Add a SentenceAnnotation to the end of list.
+	 */
+	public void addSentence(SentenceAnnotation sentence) {
+		sentences.add(sentence);
+	}
+
+	public boolean sentencesEmpty() {
+		return sentences.isEmpty();
 	}
 
 }
