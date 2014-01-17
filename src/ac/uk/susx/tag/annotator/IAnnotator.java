@@ -30,7 +30,7 @@ public interface IAnnotator <AT,DT,ACT> {
 	 * @return A list of newly created annotations corresponding to the annotated input list.
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException;
+	public List<? extends IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single SentenceAnnotation object
@@ -38,7 +38,7 @@ public interface IAnnotator <AT,DT,ACT> {
 	 * @return The list of newly created annotations
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<IAnnotation<AT>> annotate(SentenceAnnotation sentence) throws IncompatibleAnnotationException;
+	public List<? extends IAnnotation<AT>> annotate(SentenceAnnotation<ACT> sentence) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single annotation
@@ -46,7 +46,7 @@ public interface IAnnotator <AT,DT,ACT> {
 	 * @return A list of Annotations born
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<IAnnotation<AT>> annotate(IAnnotation<ACT> annotation) throws IncompatibleAnnotationException;
+	public List<? extends IAnnotation<AT>> annotate(IAnnotation<ACT> annotation) throws IncompatibleAnnotationException;
 	
 
 	/**

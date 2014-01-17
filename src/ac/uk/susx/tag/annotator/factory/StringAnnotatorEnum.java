@@ -6,7 +6,7 @@ import ac.uk.susx.tag.annotator.LocationAnnotator;
 import ac.uk.susx.tag.annotator.OrganisationAnnotator;
 import ac.uk.susx.tag.annotator.PersonAnnotator;
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
-import ac.uk.susx.tag.annotator.SentenceAnnotator;
+import ac.uk.susx.tag.annotator.StringSentenceAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 
 public enum StringAnnotatorEnum {
@@ -17,7 +17,7 @@ public enum StringAnnotatorEnum {
 
 		TOKEN(new TokenAnnotator()), // Used to specify a token annotator.
 
-		SENTENCE(new SentenceAnnotator()), // Used to specify a Sentence annotator which does not store the sentence string as an annotation (allows use of the document offsets instead to save memory).
+		SENTENCE(new StringSentenceAnnotator()), // Used to specify a Sentence annotator which does not store the sentence string as an annotation (allows use of the document offsets instead to save memory).
 
 		ORGANISATION(new OrganisationAnnotator()), // Used to specify a Person annotator.
 

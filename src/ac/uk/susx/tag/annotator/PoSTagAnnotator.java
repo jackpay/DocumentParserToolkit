@@ -11,6 +11,7 @@ import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.IDocument;
@@ -63,6 +64,11 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String,Strin
 
 	public boolean modelStarted() {
 		return postagger != null;
+	}
+
+	public List<? extends IAnnotation<String>> annotate(SentenceAnnotation<String> sentence) throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

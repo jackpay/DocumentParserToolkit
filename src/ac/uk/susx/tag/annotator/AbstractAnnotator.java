@@ -13,7 +13,7 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT>{
+public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT> {
 	
 	public AbstractAnnotator() {}
 
@@ -23,12 +23,12 @@ public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,
 			StringAnnotatorEnum.SENTENCE.getAnnotator().annotate(document);
 		}
 		else{
-			Iterator<SentenceAnnotation> sentences = document.getSentenceIterator();
+			Iterator<SentenceAnnotation<ACT>> sentences = document.getSentenceIterator();
 			while(sentences.hasNext()){
 				annotations.addAll(annotate(sentences.next()));
 			}
 		}
-		document.addAnnotations(this.getClass(), annotations);
+		document.addAnnotations((Class<? extends IAnnotator<AT,?,?>>) this.getClass(), annotations);
 		return document;
 	}
 

@@ -8,11 +8,15 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.utils.FilterUtils;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
-public class SentenceAnnotation extends AbstractAnnotation <Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>> {
+public final class SentenceAnnotation<A> extends AbstractAnnotation <Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>> {
+	
+	private final IAnnotation<A> sentence;
 
-	public SentenceAnnotation(int start, int end) {
+	public SentenceAnnotation(IAnnotation<A> sentence, int start, int end) {
 		super(new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(), start, end);
+		this.sentence = sentence;
 	}
 	
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator, List<? extends IAnnotation<AT>> annotations) {
@@ -25,16 +29,32 @@ public class SentenceAnnotation extends AbstractAnnotation <Map<Class<? extends 
 		else{
 			anns.addAll(annotations);
 		}
-		sortAnnotations(annotator);
+		try {
+			sortAnnotations(annotator);
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<IT,?,?>> annotator){
-		return getAnnotation().get(annotator).getClass().cast(getAnnotation().get(annotator));
+	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<IT,?,?>> annotator) throws IllegalAnnotationStorageException{
+		try{
+			return getAnnotation().get(annotator).getClass().cast(getAnnotation().get(annotator));
+		} catch (ClassCastException ex) {
+			throw new IllegalAnnotationStorageException(annotator.getClass());
+		}
 	}
 	
-	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator){
+	public IAnnotation<A> getSentence() {
+		return sentence;
+	}
+	
+	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator) throws IllegalAnnotationStorageException{
 		Collections.sort(getAnnotation().get(annotator), new FilterUtils.AnnotationOffsetComparator());
-		return getAnnotation().get(annotator).getClass().cast(getAnnotation().get(annotator));
+		try{
+			return getAnnotation().get(annotator).getClass().cast(getAnnotation().get(annotator));
+		} catch (ClassCastException ex) {
+			throw new IllegalAnnotationStorageException(annotator.getClass());
+		}
 	}
 
 }

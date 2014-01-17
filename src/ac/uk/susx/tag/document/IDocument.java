@@ -17,11 +17,13 @@ public interface IDocument <D>{
 	
 	public boolean sentencesEmpty();
 	
-	public Iterator<SentenceAnnotation> getSentenceIterator();
+	public Iterator<SentenceAnnotation<?>> getSentenceIterator();
 	
-	public void addSentence(SentenceAnnotation sent, int pos);
+	public <A> void addSentence(SentenceAnnotation<A> sent, int pos);
 	
-	public void addSentence(SentenceAnnotation sentence);
+	public <A> void addSentence(SentenceAnnotation<A> sentence);
+	
+	public <A> void addAllSentences(List<SentenceAnnotation<A>> sentences);
 
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	
