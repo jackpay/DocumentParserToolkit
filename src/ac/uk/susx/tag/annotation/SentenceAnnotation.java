@@ -1,6 +1,7 @@
 package ac.uk.susx.tag.annotation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,10 @@ public final class SentenceAnnotation<A> extends AbstractAnnotation <Map<Class<?
 	
 	public IAnnotation<A> getSentence() {
 		return sentence;
+	}
+	
+	public Collection<List<? extends IAnnotation<?>>> getSentenceAnnotations() {
+		return getAnnotation().values();
 	}
 	
 	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator) throws IllegalAnnotationStorageException{

@@ -37,7 +37,9 @@ public class StringSentenceAnnotator extends AbstractAnnotator <Map<Class<? exte
 		
 		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
-			SentenceAnnotation<String> sentence = new SentenceAnnotation<String>(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),sentPos[i].getStart() + offset,sentPos[i].getEnd() + offset);
+			int startOffset = sentPos[i].getStart() + offset;
+			int endOffset = sentPos[i].getEnd() + offset;
+			SentenceAnnotation<String> sentence = new SentenceAnnotation<String>(new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),startOffset,endOffset),startOffset,endOffset);
 			sentence.addIndexToken(new PositionIndexToken(i));
 			annotations.add(sentence);
 			offset = sentPos[i].getEnd();

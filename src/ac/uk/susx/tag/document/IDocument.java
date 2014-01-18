@@ -9,21 +9,21 @@ import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
-public interface IDocument <D>{
+public interface IDocument<D>{
 	
 	public D getDocument();
 	
-	public SentenceAnnotation getSentence(int pos);
+	public SentenceAnnotation<D> getSentence(int pos);
 	
 	public boolean sentencesEmpty();
 	
-	public Iterator<SentenceAnnotation<?>> getSentenceIterator();
+	public Iterator<SentenceAnnotation<D>> getSentenceIterator();
 	
-	public <A> void addSentence(SentenceAnnotation<A> sent, int pos);
+	public void addSentence(SentenceAnnotation<D> sent, int pos);
 	
-	public <A> void addSentence(SentenceAnnotation<A> sentence);
+	public void addSentence(SentenceAnnotation<D> sentence);
 	
-	public <A> void addAllSentences(List<SentenceAnnotation<A>> sentences);
+	public void addAllSentences(List<SentenceAnnotation<D>> sentences);
 
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	

@@ -15,38 +15,38 @@ import ac.uk.susx.tag.filter.IFilter;
 public  class AbstractDocument <D> implements IDocument<D> {
 	
 	private final D document;
-	private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
-	private final List<SentenceAnnotation<?>> sentences;
+	//private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
+	private final List<SentenceAnnotation<D>> sentences;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
-		annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
-		sentences = new ArrayList<SentenceAnnotation<?>>();
+		//annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
+		sentences = new ArrayList<SentenceAnnotation<D>>();
 	}
 	
 	public D getDocument(){
 		return document;
 	}
 
-	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl) {
-		return (List<IAnnotation<AT>>) annotations.get(cl);
-	}
+//	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl) {
+//		return (List<IAnnotation<AT>>) annotations.get(cl);
+//	}
 
-	public Collection<List<? extends IAnnotation<?>>> getDocumentAnnotations() {
-		return annotations.values();
-	}
+//	public Collection<List<? extends IAnnotation<?>>> getDocumentAnnotations() {
+//		return annotations.values();
+//	}
 
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations) {
-		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
-		if(anns == null){
-			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
-			anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
-			anns.addAll(annotations);
-		}
-		else{
-			anns.addAll(annotations);
-		}
-	}
+//	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations) {
+//		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
+//		if(anns == null){
+//			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
+//			anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
+//			anns.addAll(annotations);
+//		}
+//		else{
+//			anns.addAll(annotations);
+//		}
+//	}
 
 	public void removeAnnotation(Class<? extends IAnnotator<?,?,?>> cl) {
 		if(annotations.containsKey(cl)){
@@ -91,25 +91,26 @@ public  class AbstractDocument <D> implements IDocument<D> {
 	/**
 	 * Retrieve the iterator object for list of SentenceAnnotations
 	 */
-	public Iterator<SentenceAnnotation<?>> getSentenceIterator() {
+	public Iterator<SentenceAnnotation<D>> getSentenceIterator() {
 		return sentences.iterator();
 	}
 
 	/**
 	 * Add a SentenceAnnotation to a specified position in the list
 	 */
-	public <A> void addSentence(SentenceAnnotation<A> sent, int pos) {
+	public void addSentence(SentenceAnnotation<D> sent, int pos) {
 		sentences.add(pos, sent);
 	}
 
 	/**
 	 * Add a SentenceAnnotation to the end of list.
 	 */
-	public <A> void addSentence(SentenceAnnotation<A> sentence) {
+	public void addSentence(SentenceAnnotation<D> sentence) {
 		sentences.add(sentence);
+		
 	}
 	
-	public <A> void addSentences(List<SentenceAnnotation<A>> sentences) {
+	public void addSentences(List<SentenceAnnotation<D>> sentences) {
 		sentences.addAll(sentences);
 	}
 
