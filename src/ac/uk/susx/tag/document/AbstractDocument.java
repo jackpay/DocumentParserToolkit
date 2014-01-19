@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
@@ -16,12 +15,12 @@ public  class AbstractDocument <D> implements IDocument<D> {
 	
 	private final D document;
 	//private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
-	private final List<SentenceAnnotation<D>> sentences;
+	private final List<Sentence<D>> sentences;
 	
 	public AbstractDocument(D rawDoc){
 		this.document = rawDoc;
 		//annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
-		sentences = new ArrayList<SentenceAnnotation<D>>();
+		sentences = new ArrayList<Sentence<D>>();
 	}
 	
 	public D getDocument(){
@@ -84,33 +83,33 @@ public  class AbstractDocument <D> implements IDocument<D> {
 	/**
 	 * Retrieve a SentenceAnnotation from a specified position
 	 */
-	public SentenceAnnotation getSentence(int pos) {
+	public Sentence getSentence(int pos) {
 		return sentences.get(pos);
 	}
 
 	/**
 	 * Retrieve the iterator object for list of SentenceAnnotations
 	 */
-	public Iterator<SentenceAnnotation<D>> getSentenceIterator() {
+	public Iterator<Sentence<D>> getSentenceIterator() {
 		return sentences.iterator();
 	}
 
 	/**
 	 * Add a SentenceAnnotation to a specified position in the list
 	 */
-	public void addSentence(SentenceAnnotation<D> sent, int pos) {
+	public void addSentence(Sentence<D> sent, int pos) {
 		sentences.add(pos, sent);
 	}
 
 	/**
 	 * Add a SentenceAnnotation to the end of list.
 	 */
-	public void addSentence(SentenceAnnotation<D> sentence) {
+	public void addSentence(Sentence<D> sentence) {
 		sentences.add(sentence);
 		
 	}
 	
-	public void addSentences(List<SentenceAnnotation<D>> sentences) {
+	public void addSentences(List<Sentence<D>> sentences) {
 		sentences.addAll(sentences);
 	}
 

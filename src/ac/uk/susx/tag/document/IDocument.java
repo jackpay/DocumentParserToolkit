@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 
@@ -13,17 +12,17 @@ public interface IDocument<D>{
 	
 	public D getDocument();
 	
-	public SentenceAnnotation<D> getSentence(int pos);
+	public Sentence<D> getSentence(int pos);
 	
 	public boolean sentencesEmpty();
 	
-	public Iterator<SentenceAnnotation<D>> getSentenceIterator();
+	public Iterator<Sentence<D>> getSentenceIterator();
 	
-	public void addSentence(SentenceAnnotation<D> sent, int pos);
+	public void addSentence(Sentence<D> sent, int pos);
 	
-	public void addSentence(SentenceAnnotation<D> sentence);
+	public void addSentence(Sentence<D> sentence);
 	
-	public void addAllSentences(List<SentenceAnnotation<D>> sentences);
+	public void addAllSentences(List<Sentence<D>> sentences);
 
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations);
 	

@@ -9,8 +9,8 @@ import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
@@ -57,7 +57,7 @@ public class TokenAnnotator extends AbstractAnnotator<String,String,String>{
 		}
 	}
 
-	public List<IAnnotation<String>> annotate(SentenceAnnotation<String> sentence)
+	public List<IAnnotation<String>> annotate(Sentence<String> sentence)
 			throws IncompatibleAnnotationException {
 		return annotate(sentence.getSentence());
 	}

@@ -3,8 +3,8 @@ package ac.uk.susx.tag.annotator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 /**
@@ -38,7 +38,7 @@ public interface IAnnotator <AT,DT,ACT> {
 	 * @return The list of newly created annotations
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<AT>> annotate(SentenceAnnotation<ACT> sentence) throws IncompatibleAnnotationException;
+	public List<? extends IAnnotation<AT>> annotate(Sentence<ACT> sentence) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single annotation
