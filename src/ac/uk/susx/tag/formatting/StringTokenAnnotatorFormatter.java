@@ -10,7 +10,7 @@ public class StringTokenAnnotatorFormatter implements TokenFormatter<String, Str
 	private final String ANN_DELIM;
 	
 	public StringTokenAnnotatorFormatter(){
-		this("-");
+		this("_");
 	}
 	
 	public StringTokenAnnotatorFormatter(String delimiter){
@@ -18,7 +18,7 @@ public class StringTokenAnnotatorFormatter implements TokenFormatter<String, Str
 	}
 
 	/**
-	 * Used to create a token assuming there is no empty annotations contained within the input collection.
+	 * Used to create a token assuming there are no empty annotations contained within the input collection.
 	 */
 	public String createToken(Collection<? extends IAnnotation<String>> tokens) {
 		StringBuilder sb = new StringBuilder();

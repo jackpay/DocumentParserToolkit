@@ -3,11 +3,14 @@ package ac.uk.susx.tag.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.filter.RegexFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.filter.StopWordFilter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
@@ -47,13 +50,16 @@ public class StringDocumentParser implements IParser<String,String> {
 		anns.add("DT");
 		anns.add("CC");
 		anns.add("CD");
+		anns.add("IN");
 		anns.add("{");
 		anns.add("}");
 		anns.add("[");
 		anns.add("]");
 		anns.add(")");
 		anns.add("(");
-		config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), false));
+		config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
+		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
 

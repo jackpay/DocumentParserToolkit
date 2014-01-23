@@ -13,5 +13,15 @@ public class RetainAnnotationFilter<AT> extends AbstractAnnotationFilter<AT> {
 	public RetainAnnotationFilter(List<AT> filterAnnotations, Class<? extends IAnnotator> annotator, boolean remAllTok) {
 		super(filterAnnotations, annotator, remAllTok, false);
 	}
+	
+	public boolean matchAnnotation(AT annotation){
+		boolean match = false;
+		for(AT exAnn : getFilterAnnotations()){
+			if(annotation.equals(exAnn)){
+				return true;
+			}
+		}
+		return match;
+	}
 
 }

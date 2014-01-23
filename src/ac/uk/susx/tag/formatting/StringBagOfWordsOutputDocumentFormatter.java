@@ -23,7 +23,7 @@ public class StringBagOfWordsOutputDocumentFormatter implements OutputDocumentFo
 	}
 
 	public void processDocument(String outputFileName, Map<IIndexToken,List<IAnnotation<String>>> sortedCollection) {
-		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter();
+		StringTokenAnnotatorFormatter tokenMaker = new StringTokenAnnotatorFormatter("_");
 		StringWriter docWriter = null;
 		try {
 			docWriter = new StringWriter(outputFileName);
