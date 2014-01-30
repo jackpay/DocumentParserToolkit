@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.annotator.factory;
+package ac.uk.susx.tag.annotator.registry;
 
 import java.util.HashSet;
 

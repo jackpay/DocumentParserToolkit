@@ -7,13 +7,14 @@ import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.factory.StringAnnotatorEnum;
+import ac.uk.susx.tag.annotator.registry.StringAnnotatorEnum;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT> {
+	
 	
 	public AbstractAnnotator() {}
 
