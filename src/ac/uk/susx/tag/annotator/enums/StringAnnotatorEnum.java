@@ -1,6 +1,7 @@
 package ac.uk.susx.tag.annotator.enums;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.ChunkSpanAnnotator;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.ChunkTagAnnotator;
 import ac.uk.susx.tag.annotator.LocationAnnotator;
@@ -16,6 +17,8 @@ public enum StringAnnotatorEnum {
 		POSTAG(new PoSTagAnnotator()), // Used to specify a postag annotator.
 		
 		CHUNKTAG(new ChunkTagAnnotator()), // Used to specify a chunktag annotator.
+		
+		CHUNKSPAN(new ChunkSpanAnnotator()),
 		
 		TOKEN(new TokenAnnotator(false)), // Used to specify a token annotator.
 		

@@ -34,7 +34,8 @@ public class StopWordFilter extends AbstractAnnotationFilter<String>{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String[] strs = writer.toString().split("\n");
+		String out = writer.toString().replace("\n\n", "\n");
+		String[] strs = out.split("\n");
 		return strs;
 	}
 

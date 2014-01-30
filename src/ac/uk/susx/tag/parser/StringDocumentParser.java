@@ -10,6 +10,7 @@ import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.RegexFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.filter.RetainAnnotationFilter;
 import ac.uk.susx.tag.filter.StopWordFilter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
@@ -57,9 +58,10 @@ public class StringDocumentParser implements IParser<String,String> {
 		anns.add("]");
 		anns.add(")");
 		anns.add("(");
-		config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
+		//config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
 		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		//config.addFilter(new RetainAnnotationFilter<String>("NN",StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
 
