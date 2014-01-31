@@ -3,7 +3,7 @@ package ac.uk.susx.tag.input;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import ac.uk.susx.tag.annotator.registry.StringAnnotatorEnum;
+import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
 import ac.uk.susx.tag.configuration.StringConfiguration;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {
@@ -92,25 +92,25 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
 		if(reader.token()){
-			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.TOKEN.getAnnotator(), true);
 		}
 		if(reader.sentence()){
-			gc.addAnnotator(StringAnnotatorEnum.SENTENCE.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.SENTENCE.getAnnotator(), true);
 		}
 		if(reader.posTag()){
-			gc.addAnnotator(StringAnnotatorEnum.POSTAG.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.POSTAG.getAnnotator(), true);
 		}
 		if(reader.chunkToken()){
-			gc.addAnnotator(StringAnnotatorEnum.CHUNKTAG.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.CHUNKTAG.getAnnotator(), true);
 		}
 		if(reader.person()){
-			gc.addAnnotator(StringAnnotatorEnum.PERSON.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.PERSON.getAnnotator(), true);
 		}
 		if(reader.location()){
-			gc.addAnnotator(StringAnnotatorEnum.LOCATION.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.LOCATION.getAnnotator(), true);
 		}
 		if(reader.organisation()){
-			gc.addAnnotator(StringAnnotatorEnum.ORGANISATION.getAnnotator(), true);
+			gc.addAnnotator(AnnotatorEnum.ORGANISATION.getAnnotator(), true);
 		}
 		
 		return gc;

@@ -12,7 +12,7 @@ import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.StringAnnotatorEnum;
+import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -29,7 +29,7 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = AnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 
 		Span[] peopleSpans = nameFinder.find(strToks);

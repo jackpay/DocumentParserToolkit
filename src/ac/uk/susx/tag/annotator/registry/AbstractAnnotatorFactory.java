@@ -7,7 +7,7 @@ import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 
 public abstract class AbstractAnnotatorFactory {
 
-	private final HashSet<IAnnotator> annotators;
+	private final IRegistry annotators;
 	
 	public AbstractAnnotatorFactory(){
 		annotators = new HashSet<IAnnotator>(10);

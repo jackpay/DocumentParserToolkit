@@ -12,7 +12,7 @@ import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.StringAnnotatorEnum;
+import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.AnnotationUtils;
@@ -35,7 +35,7 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String,Strin
 	 */
 	public synchronized List<IAnnotation<String>> annotate (IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = AnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;
