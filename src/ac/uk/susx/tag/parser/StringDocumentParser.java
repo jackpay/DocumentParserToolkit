@@ -3,6 +3,7 @@ package ac.uk.susx.tag.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
@@ -61,7 +62,7 @@ public class StringDocumentParser implements IParser<String,String> {
 		//config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
 		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
-		//config.addFilter(new RetainAnnotationFilter<String>("NN",StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
+		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","JJ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		parser = new ConcurrentStringLineProcessor(config);
 	}
 
