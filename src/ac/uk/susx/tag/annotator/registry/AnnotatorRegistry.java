@@ -5,10 +5,13 @@ import java.util.HashMap;
 import com.google.common.collect.Maps;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.annotator.factory.AbstractAnnotatorFactory;
 
 public final class AnnotatorRegistry {
 	
 	private static final HashMap<String,IAnnotator<?,?,?>> registry = Maps.newHashMap();
+	
+	private AnnotatorRegistry(){}
 
 	public static IAnnotator<?, ?, ?> getAnnotator(String id) throws Exception {
 		if(registry.get(id) != null) {
@@ -19,8 +22,7 @@ public final class AnnotatorRegistry {
 		}
 	}
 
-	public static void register(String key, IAnnotator<?, ?, ?> annotator) {
-		registry.put(key, annotator);
+	public static void register(AbstractAnnotatorFactory factory) {
 	}
 	
 	public enum AnnotatorEnum {

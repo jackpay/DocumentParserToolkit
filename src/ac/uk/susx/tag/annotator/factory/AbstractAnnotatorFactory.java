@@ -5,14 +5,18 @@ import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 
 public abstract class AbstractAnnotatorFactory {
 	
-	public static final String ID;
+	protected abstract IAnnotator<?,?,?> create();
 	
-	static {
-		AnnotatorRegistry.register(ID);
+	public AbstractAnnotatorFactory(){}
+	
+	public static void registerNewAnnotator(Class<? extends AbstractAnnotatorFactory> factory) {
+		try {
+			AnnotatorRegistry.register(factory.newInstance());
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	public abstract String id();
-	
-	public abstract <AT,DT,ACT> IAnnotator<AT,DT,ACT> create();
-	
+
 }
