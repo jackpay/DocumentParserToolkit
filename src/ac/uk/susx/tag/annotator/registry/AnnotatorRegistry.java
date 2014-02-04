@@ -24,25 +24,25 @@ public final class AnnotatorRegistry {
 
 	public static void register(AbstractAnnotatorFactory factory) {
 	}
-	
-	public enum AnnotatorEnum {
-
-		POSTAG, // Used to specify a postag annotator.
-
-		CHUNKTAG, // Used to specify a chunktag annotator.
-		
-		CHUNKSPAN, // Used to specify a chunk span annotator.
-
-		TOKEN, // Used to specify a token annotator.
-
-		SENTENCE, // Used to specify a Sentence annotator which does not store the sentence string as an annotation (allows use of the document offsets instead to save memory).
-
-		ORGANISATION, // Used to specify an Organisation annotator.
-
-		PERSON, // Used to specify a Person annotator
-
-		LOCATION; // Used to specify a Location annotator
-
-}
+//	
+//	public enum AnnotatorEnum {
+//
+//		POSTAG, // Used to specify a postag annotator.
+//
+//		CHUNKTAG, // Used to specify a chunktag annotator.
+//		
+//		CHUNKSPAN, // Used to specify a chunk span annotator.
+//
+//		TOKEN, // Used to specify a token annotator.
+//
+//		SENTENCE, // Used to specify a Sentence annotator which does not store the sentence string as an annotation (allows use of the document offsets instead to save memory).
+//
+//		ORGANISATION, // Used to specify an Organisation annotator.
+//
+//		PERSON, // Used to specify a Person annotator
+//
+//		LOCATION; // Used to specify a Location annotator
+//
+//}
 
 }
