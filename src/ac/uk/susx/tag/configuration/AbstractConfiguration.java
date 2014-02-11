@@ -89,6 +89,7 @@ public abstract class AbstractConfiguration<D extends IDocument<DT,AT>, AT,DT> i
 		annotators.add(annotator);
 	}
 	
+	//TODO: Add checking for duplicate annotators.
 	public void addAnnotator(IAnnotator<D,? extends IAnnotation<AT>,AT,DT> annotator, boolean include){
 		annotators.add(annotator);
 		if(include){
