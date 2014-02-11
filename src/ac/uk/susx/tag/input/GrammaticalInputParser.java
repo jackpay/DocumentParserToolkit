@@ -27,6 +27,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		private boolean sentenceTag = false;
 		
 		@Parameter
+		(names = {"-lem", "--lemmatise"}, description="Text lemmatiser")
+		private boolean lemmatise =  false;
+		
+		@Parameter
+		(names = {"-stem", "--stemmer"}, description="Stems words")
+		private boolean stem = false;
+		
+		@Parameter
 		(names = {"-per", "--person"}, description="Person Annotations")
 		private boolean person = false;
 		
@@ -66,6 +74,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			return location;
 		}
 		
+		public boolean lemmatise() {
+			return lemmatise;
+		}
+		
+		public boolean stem() {
+			return stem;
+		}
+		
 		public String buildOutputName(){
 			StringBuilder sb = new StringBuilder();
 			if(token) { sb.append("tok-"); }
@@ -75,7 +91,9 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			if(person) { sb.append("per-"); }
 			if(location) { sb.append("loc-"); }
 			if(organisation) { sb.append("org-"); }
-			return sb.toString().substring(0, sb.toString().length()-1);
+			if(lemmatise) { sb.append("l-"); }
+			if(stem){ sb.append("stem-"); }
+			return sb.toString().length() > 0 ? sb.toString().substring(0, sb.toString().length()-1) : "output";
 		}
 	}
 
@@ -91,8 +109,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setOutSuff(reader.outSuffix());
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
-		if(reader.token()){
+		if(reader.lemmatise()) {
+			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
+		}
+		if(reader.token()) {
 			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+		}
+		if(reader.stem()) {
+			gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
 		}
 		if(reader.sentence()){
 			gc.addAnnotator(StringAnnotatorEnum.SENTENCE.getAnnotator(), true);
@@ -112,7 +136,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		if(reader.organisation()){
 			gc.addAnnotator(StringAnnotatorEnum.ORGANISATION.getAnnotator(), true);
 		}
-		
 		return gc;
 	}
 

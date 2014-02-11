@@ -34,6 +34,7 @@ public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<St
 			throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotationArr = new ArrayList<StringAnnotation>();
 		int index = 0;
+		System.err.println("tokeniser called");
 		for(IAnnotation<String> annotation : annotations){
 			Collection<StringAnnotation> sentAnn = annotate(annotation);
 			for(StringAnnotation ann : sentAnn){

@@ -4,10 +4,12 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.ChunkSpanAnnotator;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.ChunkTagAnnotator;
+import ac.uk.susx.tag.annotator.LemmatiserAnnotator;
 import ac.uk.susx.tag.annotator.LocationAnnotator;
 import ac.uk.susx.tag.annotator.OrganisationAnnotator;
 import ac.uk.susx.tag.annotator.PersonAnnotator;
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
+import ac.uk.susx.tag.annotator.PorterStemmerAnnotator;
 import ac.uk.susx.tag.annotator.SentenceAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.document.IDocument;
@@ -28,7 +30,11 @@ public enum StringAnnotatorEnum {
 		
 		PERSON(new PersonAnnotator()),
 		
-		LOCATION(new LocationAnnotator());
+		LOCATION(new LocationAnnotator()),
+		
+		LEMMATISER(new LemmatiserAnnotator()),
+		
+		STEMMER(new PorterStemmerAnnotator());
 		
 		private final IAnnotator<IDocument<String,String>,? extends IAnnotation<String>,String,String> annotator;
 		
