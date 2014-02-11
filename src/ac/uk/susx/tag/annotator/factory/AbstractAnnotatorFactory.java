@@ -2,18 +2,21 @@ package ac.uk.susx.tag.annotator.factory;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
+import ac.uk.susx.tag.indexing.AnnotatorIndexToken;
 
 public abstract class AbstractAnnotatorFactory {
 	
-	private final String cmnd;
-	private final String ID;
+	private AnnotatorIndexToken index;
 	
 	{
-		AnnotatorRegistry.register(this);
+		index = AnnotatorIndexToken.generateIndexToken(this);
+		AnnotatorRegistry.register(index);
 	}
 	
 	protected abstract IAnnotator<?,?,?> create();
-	
-	protected abstract String getID();
 
+	public abstract String getFactoryId();
+	
+	public abstract String getCommandLineOption();
+	
 }

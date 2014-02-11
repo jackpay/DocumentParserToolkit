@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
@@ -20,7 +18,7 @@ import ac.uk.susx.tag.utils.FileUtils;
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
  * @author jp242
  */
-public class StringDocumentParser implements IParser<String,String> {
+public class StringDocumentParser extends AbstractParser<String,String> {
 	
 	private ConcurrentStringLineProcessor parser;
 	private IConfiguration<String,String> config;

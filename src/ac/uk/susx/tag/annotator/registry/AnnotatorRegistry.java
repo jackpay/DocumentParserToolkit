@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.factory.AbstractAnnotatorFactory;
+import ac.uk.susx.tag.indexing.AnnotatorIndexToken;
 
 public final class AnnotatorRegistry {
 	
@@ -22,7 +23,7 @@ public final class AnnotatorRegistry {
 		}
 	}
 
-	public static void register(AbstractAnnotatorFactory factory) {
+	public static void register(AnnotatorIndexToken index) {
 	}
 //	
 //	public enum AnnotatorEnum {
@@ -44,5 +45,14 @@ public final class AnnotatorRegistry {
 //		LOCATION; // Used to specify a Location annotator
 //
 //}
+
+	public static void register(AnnotatorIndexToken index, AbstractAnnotatorFactory abstractAnnotatorFactory) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void register() {
+		
+	}
 
 }
