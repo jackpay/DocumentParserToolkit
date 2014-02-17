@@ -112,11 +112,15 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		if(reader.lemmatise()) {
 			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
 		}
-		if(reader.token()) {
-			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
-		}
-		if(reader.stem()) {
-			gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
+		else{
+			if(reader.stem()) {
+				gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
+			}
+			else {
+				if(reader.token()) {
+					gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+				}
+			}
 		}
 		if(reader.sentence()){
 			gc.addAnnotator(StringAnnotatorEnum.SENTENCE.getAnnotator(), true);
