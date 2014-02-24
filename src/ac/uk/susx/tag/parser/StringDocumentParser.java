@@ -27,6 +27,7 @@ public class StringDocumentParser implements IParser<String,String> {
 	
 	private ConcurrentStringLineProcessor parser;
 	private IConfiguration<IDocument<String,String>,String,String> config;
+	private ArrayList<File> files;
 
 	/**
 	 * @param args
@@ -70,6 +71,12 @@ public class StringDocumentParser implements IParser<String,String> {
 		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		parser = new ConcurrentStringLineProcessor(config);
+		try {
+			files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public boolean parse() throws IOException {
@@ -87,7 +94,6 @@ public class StringDocumentParser implements IParser<String,String> {
 			throw new IOException("Parser not initialised.");
 		}
 		
-		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
 		parser.processFiles(files);
 	
 		return true;

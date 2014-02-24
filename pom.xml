@@ -31,6 +31,16 @@
 		<groupId>com.googlecode.mate-tools</groupId>
 		<artifactId>anna</artifactId>
 		<version>3.5</version>
-	  </dependency> 
+	  </dependency>
+	  <dependency>
+	    <groupId>berkeleydb</groupId>
+	    <artifactId>je</artifactId>
+	    <version>3.2.76</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.reflections</groupId>
+		<artifactId>reflections-maven</artifactId>
+		<version>0.9.8</version>
+	 </dependency>
   </dependencies>
 </project>
