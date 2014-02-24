@@ -3,7 +3,6 @@ package ac.uk.susx.tag.input;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
 import ac.uk.susx.tag.configuration.StringConfiguration;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {

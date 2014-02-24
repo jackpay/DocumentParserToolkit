@@ -23,7 +23,7 @@ public final class AnnotatorRegistry {
 		}
 	}
 
-	public static void register(AnnotatorIndexToken index) {
+	public static void register(AbstractAnnotatorFactory abstractAnnotatorFactory) {
 	}
 //	
 //	public enum AnnotatorEnum {
