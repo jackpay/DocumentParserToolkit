@@ -3,6 +3,13 @@ package ac.uk.susx.tag.input;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
+import ac.uk.susx.tag.annotator.ChunkTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.LocationAnnotatorFactory;
+import ac.uk.susx.tag.annotator.OrganisationAnnotatorFactory;
+import ac.uk.susx.tag.annotator.PersonAnnotatorFactory;
+import ac.uk.susx.tag.annotator.PoSTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.StringConfiguration;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {
@@ -91,27 +98,63 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
 		if(reader.token()){
-			gc.addAnnotator(AnnotatorEnum.TOKEN.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(TokenAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		if(reader.sentence()){
-			gc.addAnnotator(AnnotatorEnum.SENTENCE.getAnnotator(), true);
-		}
+		//TODO: Fix how sentences work
+//		if(reader.sentence()){
+//			gc.addAnnotator(AnnotatorRegistry.getAnnotator(SentenceAnnotatorFactory.class), true);
+//		}
 		if(reader.posTag()){
-			gc.addAnnotator(AnnotatorEnum.POSTAG.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(PoSTagAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(reader.chunkToken()){
-			gc.addAnnotator(AnnotatorEnum.CHUNKTAG.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(ChunkTagAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(reader.person()){
-			gc.addAnnotator(AnnotatorEnum.PERSON.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(PersonAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(reader.location()){
-			gc.addAnnotator(AnnotatorEnum.LOCATION.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(LocationAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(reader.organisation()){
-			gc.addAnnotator(AnnotatorEnum.ORGANISATION.getAnnotator(), true);
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(OrganisationAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
+		for(String s : reader.getAdditionalAnnotators()){
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(s));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return gc;
 	}
 

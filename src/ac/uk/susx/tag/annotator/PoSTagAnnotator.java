@@ -12,8 +12,8 @@ import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -27,7 +27,11 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 public final class PoSTagAnnotator extends AbstractAnnotator<String,String,String> {
 	
 	private POSTaggerME postagger;
+	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
 	
+	public PoSTagAnnotator(Class<? extends IAnnotatorFactory<String,String,String>> tokeniser) {
+		this.tokeniser = tokeniser;
+	}
 
 	/**
 	 * Annotates a single un-tokenised sentence.
@@ -35,7 +39,12 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String,Strin
 	 */
 	public synchronized List<IAnnotation<String>> annotate (IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = AnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = null;
+		try {
+			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = postagger.tag(strToks);
 		int begin = 0;

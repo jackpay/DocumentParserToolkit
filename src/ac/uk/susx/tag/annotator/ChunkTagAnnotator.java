@@ -12,23 +12,43 @@ import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.util.InvalidFormatException;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public final class ChunkTagAnnotator extends AbstractAnnotator{
+public final class ChunkTagAnnotator extends AbstractAnnotator<String,String,String>{
 
 	private ChunkerME chunker;
 	private static final String CHUNKSTART = "B-";
 	private static final String INCHUNK = "I-";
+	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
+	private final Class<? extends IAnnotatorFactory<String,String,String>> postagger;
+	
+	public ChunkTagAnnotator(Class<? extends IAnnotatorFactory<String,String,String>> tokeniser,
+			Class<? extends IAnnotatorFactory<String,String,String>> postagger) {
+		this.postagger = postagger;
+		this.tokeniser = tokeniser;
+	}
 
 	public synchronized List<StringAnnotation> annotate(
 			IAnnotation<String> sentence)
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends IAnnotation<String>> tokens = AnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
-		Collection<? extends IAnnotation<String>> postags = AnnotatorEnum.POSTAG.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = null;
+		try {
+			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Collection<? extends IAnnotation<String>> postags = null;
+		try {
+			postags = AnnotatorRegistry.getAnnotator(postagger).annotate(sentence);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);
 		String[] chunkTags = chunker.chunk(strToks, strTags);
@@ -61,6 +81,12 @@ public final class ChunkTagAnnotator extends AbstractAnnotator{
 
 	public boolean modelStarted() {
 		return chunker != null;
+	}
+
+	public List<? extends IAnnotation<String>> annotate(
+			Sentence<String> sentence) throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

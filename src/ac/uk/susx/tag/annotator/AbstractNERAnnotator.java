@@ -12,7 +12,9 @@ import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -21,15 +23,22 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	private NameFinderME nameFinder;
 	private static final String TOKDELIM = "-";
 	private final String modelName;
+	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
 	
-	public AbstractNERAnnotator(String modelName){
+	public AbstractNERAnnotator(String modelName, Class<? extends IAnnotatorFactory<String,String,String>> tokeniser){
 		this.modelName = modelName;
+		this.tokeniser = tokeniser;
 	}
 
 	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = AnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
+		Collection<? extends IAnnotation<String>> tokens = null;
+		try {
+			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 
 		Span[] peopleSpans = nameFinder.find(strToks);
@@ -39,6 +48,12 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 			annotations.add(annotation);
 		}
 		return annotations;
+	}
+	
+	public List<? extends IAnnotation<String>> annotate(
+			Sentence<String> sentence) throws IncompatibleAnnotationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	private String buildAnnotation(String[] tokens, String annotationType){

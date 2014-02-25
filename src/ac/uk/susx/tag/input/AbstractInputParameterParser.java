@@ -1,13 +1,12 @@
 package ac.uk.susx.tag.input;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 
-import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.Maps;
 
 
 /**
@@ -46,9 +45,9 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		(names = {"-sf", "--singleFileOutput"}, description="Set to true if output is required in one file.")
 		private boolean singleFile = false;
 		
-		@DynamicParameter
-		(names = "-D", description = "Additional annotators")
-		private Map<String,String> params = Maps.newHashMap();
+		@Parameter
+		(names = "-A", description = "Additional annotators")
+		private List<String> params = new ArrayList<String>();
 		
 		public String input(){
 			return inputLocation;
@@ -70,7 +69,7 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 			return singleFile;
 		}
 		
-		public Map<String,String> getAdditionalAnnotators() {
+		public List<String> getAdditionalAnnotators() {
 			return params;
 		}
 		

@@ -14,9 +14,6 @@ import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT> {
-	
-	public AbstractAnnotator() {
-	}
 
 	public IDocument<DT> annotate(IDocument<DT> document) throws IncompatibleAnnotationException {
 		List<IAnnotation<AT>> annotations = new ArrayList<IAnnotation<AT>>();

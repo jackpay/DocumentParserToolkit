@@ -13,18 +13,23 @@ import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
 
 public final class AnnotatorRegistry {
 	
-	private static final HashMap<Class<IAnnotatorFactory<?,?,?>>,IAnnotator<?,?,?>> registry = Maps.newHashMap();
-	private static final HashMap<Class<IAnnotatorFactory<?,?,?>>,IAnnotatorFactory<?,?,?>> facRegistry = Maps.newHashMap();
+	private static final HashMap<Class<? extends IAnnotatorFactory<?,?,?>>,IAnnotator<?,?,?>> registry = Maps.newHashMap();
+	private static final HashMap<Class<? extends IAnnotatorFactory<?,?,?>>,IAnnotatorFactory<?,?,?>> facRegistry = Maps.newHashMap();
 	private static final HashMap<String,Class<IAnnotatorFactory<?,?,?>>> cmdRegistry = Maps.newHashMap();
 	
 	private AnnotatorRegistry(){}
 
-	public static IAnnotator<?,?,?> getAnnotator(Class<IAnnotatorFactory<?,?,?>> cl) throws Exception {
+	@SuppressWarnings("unchecked")
+	public static <AT,DT,ACT> IAnnotator<AT,DT,ACT> getAnnotator(Class<? extends IAnnotatorFactory<AT,DT,ACT>> cl) throws Exception {
 		if(facRegistry.get(cl) != null) {
 			if(registry.get(cl) == null){
-				registry.put(cl, facRegistry.get(cl).create());
+				Class<? extends IAnnotatorFactory<?,?,?>> anomCl = cl;
+				registry.put(anomCl, facRegistry.get(cl).create());
 			}
-			return registry.get(cl); 
+			if(!registry.get(cl).modelStarted()){
+				registry.get(cl).startModel();
+			}
+			return (IAnnotator<AT,DT,ACT>) registry.get(cl); 
 		}
 		else {
 			throw new Exception("There is no registered AbstractAnnotatorFactory of that class.");
@@ -43,7 +48,7 @@ public final class AnnotatorRegistry {
 		}
 	}
 
-	public static void register(IAnnotatorFactory<?,?,?> abstractAnnotatorFactory) {
+	public static void registerAnnotator(IAnnotatorFactory<?,?,?> abstractAnnotatorFactory) {
 		facRegistry.put((Class<IAnnotatorFactory<?,?,?>>) abstractAnnotatorFactory.getClass(), abstractAnnotatorFactory);
 		cmdRegistry.put(abstractAnnotatorFactory.getCommandLineOption(), (Class<IAnnotatorFactory<?, ?, ?>>) abstractAnnotatorFactory.getClass());
 	}
@@ -60,7 +65,7 @@ public final class AnnotatorRegistry {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-			register(anf);
+			registerAnnotator(anf);
 		}
 	}
 
