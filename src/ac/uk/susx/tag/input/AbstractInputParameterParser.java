@@ -1,8 +1,14 @@
 package ac.uk.susx.tag.input;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import ac.uk.susx.tag.configuration.IConfiguration;
 
+import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
+import com.google.common.collect.Maps;
 
 
 /**
@@ -40,6 +46,10 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		@Parameter
 		(names = {"-sf", "--singleFileOutput"}, description="Set to true if output is required in one file.")
 		private boolean singleFile = false;
+		
+		@Parameter
+		(names="-A",description="Additional annotators")
+		private List<String> addP = new ArrayList<String>();
 		
 		public String input(){
 			return inputLocation;

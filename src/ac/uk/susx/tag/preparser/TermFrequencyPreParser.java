@@ -24,7 +24,7 @@ public class TermFrequencyPreParser implements IPreParser<String,UnigramEntity,S
 	}
 	
 	public IJob<String> createJob(String sentence) {
-		return new ;
+		return new UnigramJob();
 		
 	}
 

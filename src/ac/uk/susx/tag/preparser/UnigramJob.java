@@ -13,8 +13,8 @@ import com.sleepycat.persist.model.Entity;
 
 public class UnigramJob implements IJob<String>{
 
-	public List<Entity> process(String obj) {
-		ArrayList<Entity> entities = new ArrayList<Entity>();
+	public List<UnigramEntity> process(String obj) {
+		ArrayList<UnigramEntity> entities = new ArrayList<UnigramEntity>();
 		try {
 			for(IAnnotation<String> token : StringAnnotatorEnum.TOKEN.getAnnotator().annotate(new StringAnnotation(obj,0,0))){
 				UnigramEntity ue = new UnigramEntity(token.getAnnotation());
