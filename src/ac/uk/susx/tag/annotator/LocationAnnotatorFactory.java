@@ -1,7 +1,9 @@
 package ac.uk.susx.tag.annotator;
 
+import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 
+@AnnotatorFactory
 public class LocationAnnotatorFactory extends AbstractNERAnnotator implements IAnnotatorFactory<String,String,String>{
 	
 	private static final String CMD = "-loc";
