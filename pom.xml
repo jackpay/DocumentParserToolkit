@@ -27,10 +27,15 @@
 		<artifactId>guava</artifactId>
 		<version>15.0</version>
 	  </dependency>
-	  	  <dependency>
-	      <groupId>berkeleydb</groupId>
-	      <artifactId>je</artifactId>
-		  <version>3.2.76</version>
+	  <dependency>
+	    <groupId>berkeleydb</groupId>
+	    <artifactId>je</artifactId>
+		<version>3.2.76</version>
+	  </dependency>
+	<dependency>
+		<groupId>org.reflections</groupId>
+		<artifactId>reflections-maven</artifactId>
+		<version>0.9.8</version>
 	</dependency>
   </dependencies>
 </project>

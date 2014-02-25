@@ -1,16 +1,16 @@
 package ac.uk.susx.tag.indexing;
 
-import ac.uk.susx.tag.annotator.factory.AbstractAnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 
 public class AnnotatorIndexToken {
 	
-	private final AbstractAnnotatorFactory factory;
+	private final IAnnotatorFactory factory;
 	
-	private AnnotatorIndexToken(AbstractAnnotatorFactory factory) {
+	private AnnotatorIndexToken(IAnnotatorFactory factory) {
 		this.factory = factory;
 	}
 
-	public static final AnnotatorIndexToken generateIndexToken(AbstractAnnotatorFactory factory) {
+	public static final AnnotatorIndexToken generateIndexToken(IAnnotatorFactory factory) {
 		return new AnnotatorIndexToken(factory);
 	}
 	
