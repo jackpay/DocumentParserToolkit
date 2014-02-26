@@ -8,7 +8,7 @@ import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
-import ac.uk.susx.tag.formatting.StringInputDocumentFormatter;
+import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
@@ -41,7 +41,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		config = gip.parseInputParameters(args);
 		IOutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
-		config.setDocumentBuilder(new StringInputDocumentFormatter());
+		config.setDocumentBuilder(new BasicInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
 		anns.add("DT");
 		anns.add("CC");

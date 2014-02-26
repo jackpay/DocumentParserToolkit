@@ -1,32 +1,33 @@
 package ac.uk.susx.tag.annotator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.annotator.registry.AnnotatorEnum;
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,ACT> {
+public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
+	
+	private Class<? extends IAnnotatorFactory<Sentence,String>> sentence = SentenceAnnotatorFactory.class;
 
-	public IDocument<DT> annotate(IDocument<DT> document) throws IncompatibleAnnotationException {
-		List<IAnnotation<AT>> annotations = new ArrayList<IAnnotation<AT>>();
+	public IDocument annotate(IDocument document) throws IncompatibleAnnotationException {
 		if(document.sentencesEmpty()){
-			AnnotatorEnum.SENTENCE.getAnnotator().annotate(document);
-		}
-		else{
-			Iterator<Sentence<ACT>> sentences = document.getSentenceIterator();
-			while(sentences.hasNext()){
-				annotations.addAll(annotate(sentences.next()));
+			try {
+				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
-		document.addAnnotations((Class<? extends IAnnotator<AT,?,?>>) this.getClass(), annotations);
+		Iterator<Sentence> sentences = document.getSentenceIterator();
+		while(sentences.hasNext()){
+			annotate(sentences.next());
+		}
 		return document;
 	}
 
@@ -48,6 +49,10 @@ public abstract class AbstractAnnotator <AT,DT,ACT> implements IAnnotator<AT,DT,
 			annotationArr.addAll(sentAnn);
 		}
 		return annotationArr;
+	}
+	
+	public void setSentenceAnnotator(Class<? extends IAnnotatorFactory<Sentence,String>> annotator) {
+		this.sentence = annotator;
 	}
 
 }

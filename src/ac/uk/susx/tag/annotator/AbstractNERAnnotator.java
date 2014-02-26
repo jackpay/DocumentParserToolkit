@@ -18,14 +18,14 @@ import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,String,String> {
+public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,String> {
 	
 	private NameFinderME nameFinder;
 	private static final String TOKDELIM = "-";
 	private final String modelName;
-	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
+	private final Class<? extends IAnnotatorFactory<String,String>> tokeniser;
 	
-	public AbstractNERAnnotator(String modelName, Class<? extends IAnnotatorFactory<String,String,String>> tokeniser){
+	public AbstractNERAnnotator(String modelName, Class<? extends IAnnotatorFactory<String,String>> tokeniser){
 		this.modelName = modelName;
 		this.tokeniser = tokeniser;
 	}
@@ -33,7 +33,7 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = null;
+		List<? extends IAnnotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
@@ -51,7 +51,7 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	}
 	
 	public List<? extends IAnnotation<String>> annotate(
-			Sentence<String> sentence) throws IncompatibleAnnotationException {
+			Sentence sentence) throws IncompatibleAnnotationException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -4,10 +4,10 @@ import java.io.File;
 
 import ac.uk.susx.tag.document.IDocument;
 
-public interface IInputDocumentFormatter <DT> { 
+public interface IInputDocumentFormatter { 
 	
-	public IDocument<DT> createDocument(String fileLocation);
+	public IDocument createDocument(String fileLocation);
 	
-	public IDocument<DT> createDocument(File file);
+	public IDocument createDocument(File file);
 	
 }

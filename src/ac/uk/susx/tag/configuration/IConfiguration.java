@@ -15,25 +15,25 @@ import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
  * @author jackpay
  *
  */
-public interface IConfiguration <AT,DT >{	
+public interface IConfiguration <AT>{	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
 	 * @param annotator
 	 */
-	public void addAnnotator(IAnnotator<?,?,?> annotator);
+	public void addAnnotator(IAnnotator<?,?> annotator);
 	
 	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include
 	 */
-	public void addAnnotator(IAnnotator<?,?,?> annotator, boolean include);
+	public void addAnnotator(IAnnotator<?,?> annotator, boolean include);
 	
 	/**
 	 * @return Return all stored annotators.
 	 */
-	public Collection<IAnnotator<?,?,?>> getAnnotators();
+	public Collection<IAnnotator<?,?>> getAnnotators();
 	
 	/**
 	 * Return all stored filters;
@@ -50,7 +50,7 @@ public interface IConfiguration <AT,DT >{
 	/**
 	 * @return Return all annotators which will have all their annotations included in the output. Uses ArrayList to guarantee order.
 	 */
-	public ArrayList<Class<? extends IAnnotator<?,?,?>>> getOutputIncludedAnnotators();
+	public ArrayList<Class<? extends IAnnotator<?,?>>> getOutputIncludedAnnotators();
 	
 	/**
 	 * @return Return the output location.Class<? extends Annotator>
@@ -65,23 +65,23 @@ public interface IConfiguration <AT,DT >{
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(IOutputDocumentFormatter<DT,AT> outputWriter);
+	public void setOutputWriter(IOutputDocumentFormatter<AT> outputWriter);
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public IOutputDocumentFormatter<DT,AT> getOutputWriter();
+	public IOutputDocumentFormatter<AT> getOutputWriter();
 	
 	/**
 	 * Set the Document object builder.
 	 */
-	public void setDocumentBuilder(IInputDocumentFormatter<DT> documentBuilder);
+	public void setDocumentBuilder(IInputDocumentFormatter documentBuilder);
 	
 	/**
 	 * Get the Document object builder
 	 * @return
 	 */
-	public IInputDocumentFormatter<DT> getDocumentBuilder();
+	public IInputDocumentFormatter getDocumentBuilder();
 	
 	/**
 	 * Set the suffix for input documents.

@@ -14,7 +14,7 @@ import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class TokenAnnotator extends AbstractAnnotator<String,String,String>{
+public class TokenAnnotator extends AbstractAnnotator<String,String>{
 	
 	private TokenizerME tokeniser;
 	
@@ -57,7 +57,7 @@ public class TokenAnnotator extends AbstractAnnotator<String,String,String>{
 		}
 	}
 
-	public List<IAnnotation<String>> annotate(Sentence<String> sentence)
+	public List<IAnnotation<String>> annotate(Sentence sentence)
 			throws IncompatibleAnnotationException {
 		return annotate(sentence.getSentence());
 	}

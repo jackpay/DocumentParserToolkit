@@ -15,7 +15,7 @@ import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 
 public class AnnotationUtils {
 	
-	public static <A> A[] annotationsToArray(Collection<? extends IAnnotation<A>> annotations, A[] array){
+	public static <A> A[] annotationsToArray(List<? extends IAnnotation<A>> annotations, A[] array){
 		Iterator<? extends IAnnotation<A>> iter = annotations.iterator();
 		int i = 0;
 		while(iter.hasNext()){

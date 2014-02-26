@@ -2,7 +2,6 @@ package ac.uk.susx.tag.annotator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,12 +23,12 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @author jackpay
  *
  */
-public final class PoSTagAnnotator extends AbstractAnnotator<String,String,String> {
+public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 	
 	private POSTaggerME postagger;
-	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
+	private final Class<? extends IAnnotatorFactory<String,String>> tokeniser;
 	
-	public PoSTagAnnotator(Class<? extends IAnnotatorFactory<String,String,String>> tokeniser) {
+	public PoSTagAnnotator(Class<? extends IAnnotatorFactory<String,String>> tokeniser) {
 		this.tokeniser = tokeniser;
 	}
 
@@ -39,7 +38,7 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String,Strin
 	 */
 	public synchronized List<IAnnotation<String>> annotate (IAnnotation<String> sentence) throws IncompatibleAnnotationException {
 		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		Collection<? extends IAnnotation<String>> tokens = null;
+		List<? extends IAnnotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
@@ -75,9 +74,8 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String,Strin
 		return postagger != null;
 	}
 
-	public List<? extends IAnnotation<String>> annotate(Sentence<String> sentence) throws IncompatibleAnnotationException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		return annotate(sentence.getSentence());
 	}
 	
 }

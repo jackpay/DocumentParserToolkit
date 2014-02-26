@@ -14,18 +14,18 @@ import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
-public final class Sentence<A> {
+public final class Sentence {
 	
-	private final IAnnotation<A> sentence;
-	private final HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
+	private final IAnnotation<String> sentence;
+	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations;
 
-	public Sentence(IAnnotation<A> sentence, int start, int end) {
+	public Sentence(IAnnotation<String> sentence, int start, int end) {
 		//super(new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(), start, end);
-		annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>();
+		annotations = new HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>>();
 		this.sentence = sentence;
 	}
 	
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator, List<? extends IAnnotation<AT>> annos) {
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends IAnnotation<AT>> annos) {
 		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) annotations.get(annotator);
 		if(anns == null){
 			annotations.put(annotator, new ArrayList<IAnnotation<AT>>());
@@ -42,7 +42,7 @@ public final class Sentence<A> {
 		}
 	}
 	
-	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<IT,?,?>> annotator) throws IllegalAnnotationStorageException{
+	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<IT,?>> annotator) throws IllegalAnnotationStorageException{
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
 		} catch (ClassCastException ex) {
@@ -50,7 +50,7 @@ public final class Sentence<A> {
 		}
 	}
 	
-	public IAnnotation<A> getSentence() {
+	public IAnnotation<String> getSentence() {
 		return sentence;
 	}
 	
@@ -58,19 +58,19 @@ public final class Sentence<A> {
 		return annotations.values();
 	}
 	
-	public void removeAnnotation(Class<? extends IAnnotator<?,?,?>> cl) {
+	public void removeAnnotation(Class<? extends IAnnotator<?,?>> cl) {
 		if(annotations.containsKey(cl)){
 			annotations.remove(cl);
 		}
 	}
 
-	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> annotators) {
-		for(Class<? extends IAnnotator<?,?,?>> annotator : annotators){
+	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?>>> annotators) {
+		for(Class<? extends IAnnotator<?,?>> annotator : annotators){
 			removeAnnotation(annotator);
 		}
 	}
 
-	public void retainAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> includedAnnotators) {
+	public void retainAnnotations(Collection<Class<? extends IAnnotator<?,?>>> includedAnnotators) {
 		annotations.keySet().retainAll(includedAnnotators);
 	}
 	
@@ -83,7 +83,7 @@ public final class Sentence<A> {
 	}
 	
 	//TODO: type checking - although is enforced elsewhere 
-	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?,?>> annotator) {
+	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
 				filter.filter((List<? extends IAnnotation<AT>>) annotations.get(annotator));
@@ -91,7 +91,7 @@ public final class Sentence<A> {
 		}
 	}
 	
-	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?,?>> annotator) throws IllegalAnnotationStorageException{
+	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
 		Collections.sort(annotations.get(annotator), new FilterUtils.AnnotationOffsetComparator());
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));

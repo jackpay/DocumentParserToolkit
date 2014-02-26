@@ -1,23 +1,24 @@
 package ac.uk.susx.tag.document;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
-public interface IDocument<D>{
+public interface IDocument{
 	
-	public D getDocument();
+	public File getDocument();
 	
-	public Sentence<D> getSentence(int pos);
+	public Sentence getSentence(int pos);
 	
 	public boolean sentencesEmpty();
 	
-	public Iterator<Sentence<D>> getSentenceIterator();
+	public Iterator<Sentence> getSentenceIterator();
 	
-	public void addSentence(Sentence<D> sent, int pos);
+	public void addSentence(Sentence sent, int pos);
 	
-	public void addSentence(Sentence<D> sentence);
+	public void addSentence(Sentence sentence);
 	
-	public void addAllSentences(List<Sentence<D>> sentences);
+	public void addAllSentences(List<Sentence> sentences);
 //
 //	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations);
 //	

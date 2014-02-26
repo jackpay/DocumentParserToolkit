@@ -2,22 +2,24 @@
 
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+import ac.uk.susx.tag.input.CommandLineOption;
 
 @AnnotatorFactory
-public class OrganisationAnnotatorFactory extends AbstractNERAnnotator implements IAnnotatorFactory<String,String,String>{
+public class OrganisationAnnotatorFactory extends AbstractNERAnnotator implements IAnnotatorFactory<String,String>{
 	
-	public static final String CMD = "-org";
+	private static final String CMD = "-org";
+	private static final String DESC = "An organisation annotator, tagging a collection of token(s) if they appear to be describing an organisation.";
 
 	public OrganisationAnnotatorFactory() {
 		super("nerorganization.bin", TokenAnnotatorFactory.class);
 	}
 
-	public IAnnotator<String, String, String> create() {
+	public IAnnotator<String, String> create() {
 		return new OrganisationAnnotatorFactory();
 	}
 
-	public String getCommandLineOption() {
-		return CMD;
+	public CommandLineOption getCommandLineOption() {
+		return new CommandLineOption(CMD,DESC);
 	}
 
 }

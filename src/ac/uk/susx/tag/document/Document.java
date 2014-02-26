@@ -1,51 +1,54 @@
 package ac.uk.susx.tag.document;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AbstractDocument<D> implements IDocument<D> {
+public class Document implements IDocument {
 	
-	private final D document;
+	//private final D document;
 	//private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
-	private final List<Sentence<D>> sentences;
+	private final List<Sentence> sentences;
+	private File document;
 	
-	public AbstractDocument(D rawDoc){
-		this.document = rawDoc;
+	public Document(File document){
+		//this.document = rawDoc;
 		//annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
-		sentences = new ArrayList<Sentence<D>>();
+		sentences = new ArrayList<Sentence>();
+		this.document = document;
 	}
 	
-	public D getDocument(){
+	public File getDocument(){
 		return document;
 	}
 
 	/**
 	 * Retrieve a SentenceAnnotation from a specified position
 	 */
-	public Sentence<D> getSentence(int pos) {
+	public Sentence getSentence(int pos) {
 		return sentences.get(pos);
 	}
 
 	/**
 	 * Retrieve the iterator object for list of SentenceAnnotations
 	 */
-	public Iterator<Sentence<D>> getSentenceIterator() {
-		Iterator<Sentence<D>> iter = sentences.iterator();
+	public Iterator<Sentence> getSentenceIterator() {
+		Iterator<Sentence> iter = sentences.iterator();
 		return iter;
 	}
 
 	/**
 	 * Add a SentenceAnnotation to a specified position in the list
 	 */
-	public void addSentence(Sentence<D> sent, int pos) {
+	public void addSentence(Sentence sent, int pos) {
 		sentences.add(pos, sent);
 	}
 
 	/**
 	 * Add a SentenceAnnotation to the end of list.
 	 */
-	public void addSentence(Sentence<D> sentence) {
+	public void addSentence(Sentence sentence) {
 		sentences.add(sentence);
 	}
 
@@ -53,9 +56,8 @@ public class AbstractDocument<D> implements IDocument<D> {
 		return sentences.isEmpty();
 	}
 
-	public void addAllSentences(List<Sentence<D>> sentences) {
-		// TODO Auto-generated method stub
-		
+	public void addAllSentences(List<Sentence> sentences) {
+		sentences.addAll(sentences);
 	}
 
 //	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl) {

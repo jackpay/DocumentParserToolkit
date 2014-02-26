@@ -75,6 +75,6 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		
 	}
 	
-	public abstract IConfiguration<?,?> parseInputParameters(String[] args);
+	public abstract IConfiguration<?> parseInputParameters(String[] args);
 
 }

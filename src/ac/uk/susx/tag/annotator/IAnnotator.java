@@ -15,14 +15,14 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
  * @param <DT> The document type
  * @param <ACT> The accepted input annotation type
  */
-public interface IAnnotator <AT,DT,ACT> {
+public interface IAnnotator <AT,ACT> {
 	
 	/**
 	 * Annotate the text of an entire document object
 	 * @param doc The document to be annotated
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public IDocument<DT> annotate(IDocument<DT> doc) throws IncompatibleAnnotationException;
+	public IDocument annotate(IDocument doc) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a list of exisiting annotations.
@@ -38,7 +38,7 @@ public interface IAnnotator <AT,DT,ACT> {
 	 * @return The list of newly created annotations
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<AT>> annotate(Sentence<ACT> sentence) throws IncompatibleAnnotationException;
+	public List<? extends IAnnotation<AT>> annotate(Sentence sentence) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single annotation

@@ -60,13 +60,13 @@ public class FilterUtils {
 		return annoMap;
 	}
 	
-	public static Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations){
+	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations){
 		return annotationsToMap(annotations, TermOffsetIndexToken.class);
 	}
 	
-	public static Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations, Class<? extends IIndexToken> index){
-		Map<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = new HashMap<Class<? extends IAnnotator<?,?,?>>, Map<IIndexToken, IAnnotation<?>>>();
-		for(Class<? extends IAnnotator<?,?,?>> annotator : annotations.keySet()){
+	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations, Class<? extends IIndexToken> index){
+		Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = new HashMap<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>>();
+		for(Class<? extends IAnnotator<?,?>> annotator : annotations.keySet()){
 			annoMap.put(annotator, annotationsToMap(annotations.get(annotator),index));
 		}
 		return annoMap;

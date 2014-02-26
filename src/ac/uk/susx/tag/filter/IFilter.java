@@ -26,6 +26,6 @@ public interface IFilter<AT>{
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations);
+	public Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations);
 
 }

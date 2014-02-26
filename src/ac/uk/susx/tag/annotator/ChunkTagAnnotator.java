@@ -18,16 +18,16 @@ import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
-public final class ChunkTagAnnotator extends AbstractAnnotator<String,String,String>{
+public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 
 	private ChunkerME chunker;
 	private static final String CHUNKSTART = "B-";
 	private static final String INCHUNK = "I-";
-	private final Class<? extends IAnnotatorFactory<String,String,String>> tokeniser;
-	private final Class<? extends IAnnotatorFactory<String,String,String>> postagger;
+	private final Class<? extends IAnnotatorFactory<String,String>> tokeniser;
+	private final Class<? extends IAnnotatorFactory<String,String>> postagger;
 	
-	public ChunkTagAnnotator(Class<? extends IAnnotatorFactory<String,String,String>> tokeniser,
-			Class<? extends IAnnotatorFactory<String,String,String>> postagger) {
+	public ChunkTagAnnotator(Class<? extends IAnnotatorFactory<String,String>> tokeniser,
+			Class<? extends IAnnotatorFactory<String,String>> postagger) {
 		this.postagger = postagger;
 		this.tokeniser = tokeniser;
 	}
@@ -37,13 +37,13 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String,Str
 			throws IncompatibleAnnotationException {
 		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		Collection<? extends IAnnotation<String>> tokens = null;
+		List<? extends IAnnotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Collection<? extends IAnnotation<String>> postags = null;
+		List<? extends IAnnotation<String>> postags = null;
 		try {
 			postags = AnnotatorRegistry.getAnnotator(postagger).annotate(sentence);
 		} catch (Exception e) {
@@ -84,7 +84,7 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String,Str
 	}
 
 	public List<? extends IAnnotation<String>> annotate(
-			Sentence<String> sentence) throws IncompatibleAnnotationException {
+			Sentence sentence) throws IncompatibleAnnotationException {
 		// TODO Auto-generated method stub
 		return null;
 	}

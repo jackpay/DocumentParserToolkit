@@ -6,11 +6,11 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class RemoveAnnotationFilter<AT> extends AbstractAnnotationFilter<AT>{
 
-	public RemoveAnnotationFilter(AT annotation, Class<? extends IAnnotator<AT,?,?>> annotator, boolean remAllTok) {
+	public RemoveAnnotationFilter(AT annotation, Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok) {
 		super(annotation, annotator, remAllTok, true);
 	}
 	
-	public RemoveAnnotationFilter(List<AT> filterAnnotations, Class<? extends IAnnotator<AT,?,?>> annotator, boolean remAllTok) {
+	public RemoveAnnotationFilter(List<AT> filterAnnotations, Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok) {
 		super(filterAnnotations, annotator, remAllTok, true);
 	}
 
