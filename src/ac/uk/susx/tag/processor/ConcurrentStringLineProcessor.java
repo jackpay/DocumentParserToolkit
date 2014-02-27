@@ -18,19 +18,18 @@ import java.util.concurrent.TimeoutException;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
-import ac.uk.susx.tag.document.StringDocument;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
-import ac.uk.susx.tag.writer.StringWriter;
+import ac.uk.susx.tag.writer.CharSequenceWriter;
 
-public class ConcurrentStringLineProcessor implements IProcessor<String,String> {
+public class ConcurrentStringLineProcessor implements IProcessor<String> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
-	private final IConfiguration<String,String> config;
+	private final IConfiguration<String> config;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 	
-	public ConcurrentStringLineProcessor(IConfiguration<String,String> config) {
+	public ConcurrentStringLineProcessor(IConfiguration<String> config) {
 		this.config = config;
 		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
@@ -75,12 +74,11 @@ public class ConcurrentStringLineProcessor implements IProcessor<String,String> 
 					executor = Executors.newFixedThreadPool(NTHREADS);
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					String currLine = br.readLine();
-					StringWriter writer = new StringWriter(config.getOutputLocation() + "/" + file.getName());
+					CharSequenceWriter writer = new CharSequenceWriter(config.getOutputLocation() + "/" + file.getName());
 					int lineCount = 0;
 					while(currLine != null){
 						String line = new String(currLine);
-						StringDocument document = new StringDocument(line);
-						DocumentCallable docCaller = new DocumentCallable(document,writer);
+						DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line),writer);
 						queue.put(executor.submit(docCaller));
 						currLine = br.readLine();
 						lineCount++;
@@ -129,16 +127,16 @@ public class ConcurrentStringLineProcessor implements IProcessor<String,String> 
 	
 	public final class DocumentCallable implements Callable<Boolean> {
 			
-			private final IDocument<String> document;
-			private final StringWriter writer;
+			private final IDocument document;
+			private final CharSequenceWriter writer;
 			
-			public DocumentCallable(IDocument<String> document, StringWriter writer){
+			public DocumentCallable(IDocument document, CharSequenceWriter writer){
 				this.document = document;
 				this.writer = writer;
 			}
 	
 			public Boolean call() throws Exception {
-				for(IAnnotator<?,?,?> annotator : config.getAnnotators()){
+				for(IAnnotator<?,?> annotator : config.getAnnotators()){
 					try {
 						annotator.annotate(document);
 					} catch (IncompatibleAnnotationException e) {

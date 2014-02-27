@@ -5,26 +5,27 @@ import java.util.Iterator;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 
-public class StringTokenAnnotatorFormatter implements TokenFormatter<String, String>{
+public class BasicTabSeperatedTokenFormatter implements TokenFormatter<CharSequence>{
 	
-	private final String ANN_DELIM;
+	private final CharSequence ANN_DELIM;
 	
-	public StringTokenAnnotatorFormatter(){
+	public BasicTabSeperatedTokenFormatter(){
 		this("-");
 	}
 	
-	public StringTokenAnnotatorFormatter(String delimiter){
+	public BasicTabSeperatedTokenFormatter(CharSequence delimiter){
 		ANN_DELIM = delimiter;
 	}
 
 	/**
 	 * Used to create a token assuming there is no empty annotations contained within the input collection.
 	 */
-	public String createToken(Collection<? extends IAnnotation<String>> tokens) {
+	public CharSequence createToken(Collection<? extends IAnnotation<?>> tokens) {
 		StringBuilder sb = new StringBuilder();
-		Iterator<? extends IAnnotation<String>> iter = tokens.iterator();
+		Iterator<? extends IAnnotation<?>> iter = tokens.iterator();
 		for(int i = 0; i < tokens.size(); i++){
-			sb.append(iter.next().getAnnotation());
+			IAnnotation<?> token = iter.next();
+			sb.append(token.formatForOutput());
 			if(i < tokens.size()-1){
 				sb.append(ANN_DELIM);
 			}

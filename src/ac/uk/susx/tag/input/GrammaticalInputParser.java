@@ -8,9 +8,10 @@ import ac.uk.susx.tag.annotator.LocationAnnotatorFactory;
 import ac.uk.susx.tag.annotator.OrganisationAnnotatorFactory;
 import ac.uk.susx.tag.annotator.PersonAnnotatorFactory;
 import ac.uk.susx.tag.annotator.PoSTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.configuration.StringConfiguration;
+import ac.uk.susx.tag.configuration.CharSequenceConfiguration;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {
 	
@@ -87,11 +88,11 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 
 	@SuppressWarnings("unused")
 	@Override
-	public StringConfiguration parseInputParameters(String[] args) {
+	public CharSequenceConfiguration parseInputParameters(String[] args) {
 		GrammaticalInputReader reader = new GrammaticalInputReader();
 		JCommander jcomm = new JCommander(reader, args);
 		String output = reader.singleFileOutput() ? reader.output() : reader.output() + "/" + reader.buildOutputName();
-		StringConfiguration gc = new StringConfiguration(reader.input(), output);
+		CharSequenceConfiguration gc = new CharSequenceConfiguration(reader.input(), output);
 
 		gc.setInputSuff(reader.suffix());
 		gc.setOutSuff(reader.outSuffix());
@@ -104,10 +105,22 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 				e.printStackTrace();
 			}
 		}
-		//TODO: Fix how sentences work
-//		if(reader.sentence()){
-//			gc.addAnnotator(AnnotatorRegistry.getAnnotator(SentenceAnnotatorFactory.class), true);
-//		}
+		
+		if(reader.help()) {
+			for(CommandLineOption s : AnnotatorRegistry.getOptions()) {
+				System.err.println(s.getCommand() + "	" + s.getDescription());
+			}
+		}
+		
+		if(reader.sentence()){
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(SentenceAnnotatorFactory.class), true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		if(reader.posTag()){
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(PoSTagAnnotatorFactory.class), true);

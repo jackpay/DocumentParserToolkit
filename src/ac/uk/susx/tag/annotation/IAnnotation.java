@@ -14,4 +14,6 @@ public interface IAnnotation<A>{
 	
 	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception;
 	
+	public CharSequence formatForOutput();
+	
 }

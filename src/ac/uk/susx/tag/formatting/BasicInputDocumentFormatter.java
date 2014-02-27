@@ -14,4 +14,5 @@ public class BasicInputDocumentFormatter implements IInputDocumentFormatter{
 	public IDocument createDocument(File file) {
 		return new Document(file);
 	}
+	
 }

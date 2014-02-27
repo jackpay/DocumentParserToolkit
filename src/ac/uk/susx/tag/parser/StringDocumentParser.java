@@ -9,7 +9,7 @@ import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
-import ac.uk.susx.tag.formatting.StringBagOfWordsOutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.BagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
@@ -21,7 +21,7 @@ import ac.uk.susx.tag.utils.FileUtils;
 public class StringDocumentParser extends AbstractParser<String,String> {
 	
 	private ConcurrentStringLineProcessor parser;
-	private IConfiguration<String,String> config;
+	private IConfiguration<CharSequence> config;
 
 	/**
 	 * @param args
@@ -39,7 +39,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-		IOutputDocumentFormatter<String,String> outputWriter = new StringBagOfWordsOutputDocumentFormatter();
+		IOutputDocumentFormatter<CharSequence> outputWriter = new BagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
 		config.setDocumentBuilder(new BasicInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();

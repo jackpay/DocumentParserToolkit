@@ -3,9 +3,7 @@ package ac.uk.susx.tag.configuration;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
-import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.IInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;

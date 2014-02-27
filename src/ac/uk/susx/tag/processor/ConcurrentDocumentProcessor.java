@@ -14,7 +14,7 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentDocumentProcessor<DT,AT> implements IProcessor<DT,AT> {
+public class ConcurrentDocumentProcessor<AT> implements IProcessor<AT> {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final IConfiguration<IDocument<DT,AT>,AT,DT> config;

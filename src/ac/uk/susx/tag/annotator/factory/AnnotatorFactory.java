@@ -6,7 +6,6 @@ import java.lang.annotation.Target;
 /**
  * Used to annotate AnnotatorFactory classes in order for automatic class registration to occur.
  * @author jp242
- *
  */
 @Target({ElementType.TYPE})
 public @interface AnnotatorFactory {}

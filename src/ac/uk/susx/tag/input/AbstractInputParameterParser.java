@@ -46,8 +46,16 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		private boolean singleFile = false;
 		
 		@Parameter
+		(names = {"-h","--help"}, description="Lists the available annotator options.")
+		private boolean help;
+		
+		@Parameter
 		(names = "-A", description = "Additional annotators")
 		private List<String> params = new ArrayList<String>();
+		
+		public boolean help() {
+			return help;
+		}
 		
 		public String input(){
 			return inputLocation;

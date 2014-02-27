@@ -48,6 +48,10 @@ public final class AnnotatorRegistry {
 			throw new Exception("There is no registered AbstractAnnotatorFactory with that command line option.");
 		}
 	}
+	
+	public static Set<CommandLineOption> getOptions(){
+		return cmdRegistry.keySet();
+	}
 
 	public static void registerAnnotator(IAnnotatorFactory<?,?> abstractAnnotatorFactory) {
 		facRegistry.put((Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass(), abstractAnnotatorFactory);

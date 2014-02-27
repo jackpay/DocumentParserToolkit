@@ -1,7 +1,6 @@
 package ac.uk.susx.tag.formatting;
 
 import java.util.Collection;
-
 import ac.uk.susx.tag.annotation.IAnnotation;
 
 /**
@@ -10,8 +9,8 @@ import ac.uk.susx.tag.annotation.IAnnotation;
  *
  * @param <A>
  */
-public interface TokenFormatter<A,AT> {
+public interface TokenFormatter<A> {
 
-	public A createToken(Collection<? extends IAnnotation<AT>> tokens);
+	public A createToken(Collection<? extends IAnnotation<?>> tokens);
 	
 }
