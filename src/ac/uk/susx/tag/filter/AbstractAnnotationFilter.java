@@ -9,7 +9,7 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 
 public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
@@ -49,16 +49,16 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 			annotations.put(annotator, filter((List<IAnnotation<AT>>) annotations.get(annotator)));
 		}
 		else{
-			Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = FilterUtils.annotationsToMap(annotations, TermOffsetIndexToken.class);
+			Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = FilterUtils.annotationsToMap(annotations, OffsetIndexToken.class);
 			Collection<IAnnotation<AT>> filtAnno = (List<IAnnotation<AT>>) annotations.get(annotator);
 			Iterator<IAnnotation<AT>> iter = filtAnno.iterator();
 			while(iter.hasNext()){
 				IAnnotation<AT> next = iter.next();
 				if((matchAnnotation(next.getAnnotation()) && remove) || (!matchAnnotation(next.getAnnotation()) && !remove)){
 					iter.remove();
-					TermOffsetIndexToken index = null;
+					OffsetIndexToken index = null;
 					try {
-						index = next.getIndexToken(TermOffsetIndexToken.class);
+						index = next.getIndexToken(OffsetIndexToken.class);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
 import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 
 
 /**
@@ -15,12 +15,12 @@ import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
 public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	
 	private final AnnotationIndexToken<A> annotation;
-	private final TermOffsetIndexToken offset;
+	private final OffsetIndexToken offset;
 	private final HashMap<Class<? extends IIndexToken>, IIndexToken> index;
 	
 	public AbstractAnnotation(A annotation, int start, int end){
 		this.annotation = (annotation == null)? null : new AnnotationIndexToken<A>(annotation);
-		this.offset = new TermOffsetIndexToken(start,end);
+		this.offset = new OffsetIndexToken(start,end);
 		this.index = new HashMap<Class<? extends IIndexToken>, IIndexToken>();
 		index.put(this.annotation.getClass(), this.annotation);
 		index.put(this.offset.getClass(), this.offset);
@@ -36,6 +36,10 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	
 	public A getAnnotation(){
 		return (annotation == null) ? null : annotation.getAnnotation();
+	}
+	
+	public OffsetIndexToken getOffsetIndex() {
+		return offset;
 	}
 	
 	public void addIndexToken(IIndexToken token) {

@@ -12,7 +12,7 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
-import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 
 public class FilterUtils {
 	
@@ -43,7 +43,7 @@ public class FilterUtils {
 	}
 	
 	public static Map<IIndexToken, IAnnotation<?>> annotationsToMap(List<? extends IAnnotation<?>> annotations){
-		return annotationsToMap(annotations, TermOffsetIndexToken.class);
+		return annotationsToMap(annotations, OffsetIndexToken.class);
 	}
 	
 	public static Map<IIndexToken, IAnnotation<?>> annotationsToMap(List<? extends IAnnotation<?>> annotations, Class<? extends IIndexToken> index){
@@ -61,7 +61,7 @@ public class FilterUtils {
 	}
 	
 	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations){
-		return annotationsToMap(annotations, TermOffsetIndexToken.class);
+		return annotationsToMap(annotations, OffsetIndexToken.class);
 	}
 	
 	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations, Class<? extends IIndexToken> index){

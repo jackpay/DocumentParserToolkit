@@ -10,7 +10,7 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
-public interface IDocument{
+public interface IDocument {
 	
 	public File getDocument();
 	

@@ -6,12 +6,12 @@ package ac.uk.susx.tag.indexing;
  * @author jp242
  *
  */
-public class TermOffsetIndexToken implements IIndexToken{
+public class OffsetIndexToken implements IIndexToken{
 	
 	private final int startOffset; // Start position in document 
 	private final int endOffset; // End position in document
 	
-	public TermOffsetIndexToken(int startOffset, int endOffset){
+	public OffsetIndexToken(int startOffset, int endOffset){
 		this.startOffset = startOffset;
 		this.endOffset = endOffset;
 	}
@@ -43,7 +43,7 @@ public class TermOffsetIndexToken implements IIndexToken{
 			return false;
 		}
 		if(obj.getClass() == this.getClass()){
-			TermOffsetIndexToken pos = (TermOffsetIndexToken) obj;
+			OffsetIndexToken pos = (OffsetIndexToken) obj;
 			if(this.startOffset == pos.startOffset && this.endOffset == pos.endOffset){
 				return true;
 			}

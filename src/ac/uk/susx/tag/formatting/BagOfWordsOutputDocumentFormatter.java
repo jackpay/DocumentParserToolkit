@@ -1,11 +1,14 @@
 package ac.uk.susx.tag.formatting;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.CharSequenceWriter;
@@ -30,9 +33,14 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for(List<IAnnotation<?>> tokenColl : sortedCollection.values()){
-			CharSequence token = tokenMaker.createToken(tokenColl);
-			docWriter.writeToken(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
+		
+		Iterator<Sentence> iter = document.getSentenceIterator();
+		while(iter.hasNext()) {
+			Collection<List<? extends IAnnotation<?>>> groupedAnnotations = iter.next().getAllIndexedAnnotations();
+			for(List<? extends IAnnotation<?>> annotations : groupedAnnotations){
+				CharSequence token = tokenMaker.createToken(annotations);
+				docWriter.writeToken(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
+			}
 		}
 		try {
 			docWriter.closeDocument();
@@ -43,12 +51,16 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 
 	public void processSubDocument(IOutputWriter<CharSequence> writer, IDocument document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
-		for(List<IAnnotation<?>> tokenColl : sortedCollection.values()){
-			CharSequence token = tokenMaker.createToken(tokenColl);
-			try {
-				writer.writeToken(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
-			} catch (IOException e) {
-				e.printStackTrace();
+		Iterator<Sentence> iter = document.getSentenceIterator();
+		while(iter.hasNext()) {
+			Collection<List<? extends IAnnotation<?>>> groupedAnnotations = iter.next().getAllIndexedAnnotations();
+			for(List<? extends IAnnotation<?>> annotations : groupedAnnotations){
+				CharSequence token = tokenMaker.createToken(annotations);
+				try {
+					writer.writeToken(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

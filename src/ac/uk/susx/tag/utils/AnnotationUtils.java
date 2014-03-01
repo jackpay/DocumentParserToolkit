@@ -10,7 +10,7 @@ import java.util.Map;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.TermOffsetIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 
 public class AnnotationUtils {
 	

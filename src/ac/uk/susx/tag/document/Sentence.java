@@ -1,6 +1,7 @@
 package ac.uk.susx.tag.document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +13,8 @@ import com.google.common.collect.Maps;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
-import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
@@ -20,10 +22,9 @@ public final class Sentence {
 	
 	private final IAnnotation<String> sentence;
 	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations;
-	private final HashMap<IIndexToken, List<? extends IAnnotation<?>>> indexAnnotations;
+	private final HashMap<OffsetIndexToken, List<? extends IAnnotation<?>>> indexAnnotations;
 
 	public Sentence(IAnnotation<String> sentence, int start, int end) {
-		//super(new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(), start, end);
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
@@ -45,6 +46,32 @@ public final class Sentence {
 		} catch (IllegalAnnotationStorageException e) {
 			e.printStackTrace();
 		}
+		
+		for(IAnnotation<AT> annotation : annos) {
+			try {
+				if(indexAnnotations.get(annotation.getOffsetIndex()) == null){
+					indexAnnotations.put(annotation.getOffsetIndex(), new ArrayList<IAnnotation<AT>>(Arrays.asList(annotation)));
+				}
+				else {
+					List<IAnnotation<?>> list = (List<IAnnotation<?>>) indexAnnotations.get(annotation.getOffsetIndex());
+					list.add(annotation);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public List<? extends IAnnotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
+		return indexAnnotations.get(index);
+	}
+	
+	public Set<OffsetIndexToken> getAnnotationIndexes() {
+		return indexAnnotations.keySet();
+	} 
+	
+	public Collection<List<? extends IAnnotation<?>>> getAllIndexedAnnotations() {
+		return indexAnnotations.values();
 	}
 	
 	public <IT> List<IAnnotation<IT>> getSentenceAnnotations(Class<? extends IAnnotator<IT,?>> annotator) throws IllegalAnnotationStorageException{

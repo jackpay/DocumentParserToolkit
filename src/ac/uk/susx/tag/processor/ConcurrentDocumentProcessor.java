@@ -11,15 +11,14 @@ import java.util.concurrent.Future;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
-import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ConcurrentDocumentProcessor<AT> implements IProcessor<AT> {
+public class ConcurrentDocumentProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
-	private final IConfiguration<IDocument<DT,AT>,AT,DT> config;
+	private final IConfiguration<CharSequence> config;
 	
-	public ConcurrentDocumentProcessor(IConfiguration<IDocument<DT,AT>,AT,DT> config){
+	public ConcurrentDocumentProcessor(IConfiguration<CharSequence> config){
 		this.config = config;
 	}
 	
@@ -27,7 +26,7 @@ public class ConcurrentDocumentProcessor<AT> implements IProcessor<AT> {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		for(File file : files){
-			IDocument<DT,AT> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
+			IDocument doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
 			Callable<Boolean> docCaller = new DocumentCallable(doc, file.getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
@@ -43,17 +42,17 @@ public class ConcurrentDocumentProcessor<AT> implements IProcessor<AT> {
 	
 	public class DocumentCallable implements Callable<Boolean> {
 		
-		private final IDocument<DT,AT> document;
+		private final IDocument document;
 		private final String fileName;
 		
-		public DocumentCallable(IDocument<DT, AT> document, String fileName){
+		public DocumentCallable(IDocument document, String fileName){
 			this.document = document;
 			this.fileName = fileName;
 		}
 
 		public Boolean call() throws Exception {
 			System.err.println("Beginning processing of file: " + fileName);
-			for(IAnnotator<IDocument<DT,AT>,?,AT,DT> annotator : config.getAnnotators()){
+			for(IAnnotator<?,?> annotator : config.getAnnotators()){
 				try {
 					annotator.annotate(document);
 				} catch (IncompatibleAnnotationException e) {
@@ -61,9 +60,9 @@ public class ConcurrentDocumentProcessor<AT> implements IProcessor<AT> {
 					return false;
 				}
 			}
-			document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-			document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + fileName, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations(), config.getOutputIncludedAnnotators()));
+			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
+			document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + fileName, document);
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}
