@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-import ac.uk.susx.tag.annotation.AbstractAnnotation;
+import com.google.common.collect.Maps;
+
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
+import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
@@ -18,11 +20,14 @@ public final class Sentence {
 	
 	private final IAnnotation<String> sentence;
 	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations;
+	private final HashMap<IIndexToken, List<? extends IAnnotation<?>>> indexAnnotations;
 
 	public Sentence(IAnnotation<String> sentence, int start, int end) {
 		//super(new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(), start, end);
-		annotations = new HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>>();
+		annotations = Maps.newHashMap();
+		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
+		
 	}
 	
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends IAnnotation<AT>> annos) {
@@ -42,7 +47,7 @@ public final class Sentence {
 		}
 	}
 	
-	public <IT> List<IAnnotation<IT>> getAnnotations(Class<? extends IAnnotator<IT,?>> annotator) throws IllegalAnnotationStorageException{
+	public <IT> List<IAnnotation<IT>> getSentenceAnnotations(Class<? extends IAnnotator<IT,?>> annotator) throws IllegalAnnotationStorageException{
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
 		} catch (ClassCastException ex) {
@@ -54,8 +59,12 @@ public final class Sentence {
 		return sentence;
 	}
 	
-	public Collection<List<? extends IAnnotation<?>>> getSentenceAnnotations() {
+	public Collection<List<? extends IAnnotation<?>>> getSentenceAllAnnotations() {
 		return annotations.values();
+	}
+	
+	public Set<Class<? extends IAnnotator<?, ?>>> getSentenceAllAnnotators() {
+		return annotations.keySet();
 	}
 	
 	public void removeAnnotation(Class<? extends IAnnotator<?,?>> cl) {

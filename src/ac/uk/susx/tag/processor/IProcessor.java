@@ -3,7 +3,7 @@ package ac.uk.susx.tag.processor;
 import java.io.File;
 import java.util.List;
 
-public interface IProcessor <AT>{
+public interface IProcessor {
 	
 	public void processFiles(List<File> files);
 	

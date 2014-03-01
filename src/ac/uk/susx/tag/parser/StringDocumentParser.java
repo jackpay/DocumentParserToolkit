@@ -11,7 +11,7 @@ import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.processor.ConcurrentStringLineProcessor;
+import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
 
 /**
@@ -20,7 +20,7 @@ import ac.uk.susx.tag.utils.FileUtils;
  */
 public class StringDocumentParser extends AbstractParser<String,String> {
 	
-	private ConcurrentStringLineProcessor parser;
+	private ConcurrentLineProcessor parser;
 	private IConfiguration<CharSequence> config;
 
 	/**
@@ -47,7 +47,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CC");
 		anns.add("CD");
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
-		parser = new ConcurrentStringLineProcessor(config);
+		parser = new ConcurrentLineProcessor(config);
 	}
 
 	public boolean parse() throws IOException {

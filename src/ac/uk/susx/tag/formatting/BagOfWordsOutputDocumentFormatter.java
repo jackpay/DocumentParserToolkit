@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.CharSequenceWriter;
@@ -21,7 +22,7 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		TOKEN_DELIM = delimiter;
 	}
 
-	public void processDocument(String outputFileName, Map<IIndexToken, List<IAnnotation<?>>> sortedCollection) {
+	public void processDocument(String outputFileName, IDocument document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
 		CharSequenceWriter docWriter = null;
 		try {
@@ -40,7 +41,7 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		}
 	}
 
-	public void processSubDocument(IOutputWriter<CharSequence> writer, Map<IIndexToken, List<IAnnotation<?>>> sortedCollection) {
+	public void processSubDocument(IOutputWriter<CharSequence> writer, IDocument document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
 		for(List<IAnnotation<?>> tokenColl : sortedCollection.values()){
 			CharSequence token = tokenMaker.createToken(tokenColl);

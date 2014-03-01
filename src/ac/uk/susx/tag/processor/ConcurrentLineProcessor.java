@@ -22,14 +22,14 @@ import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.writer.CharSequenceWriter;
 
-public class ConcurrentStringLineProcessor implements IProcessor<String> {
+public class ConcurrentLineProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
-	private final IConfiguration<String> config;
+	private final IConfiguration<CharSequence> config;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 	
-	public ConcurrentStringLineProcessor(IConfiguration<String> config) {
+	public ConcurrentLineProcessor(IConfiguration<CharSequence> config) {
 		this.config = config;
 		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
@@ -144,9 +144,9 @@ public class ConcurrentStringLineProcessor implements IProcessor<String> {
 						return false;
 					}
 				}
-				document.retainAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-				document.filterAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-				config.getOutputWriter().processSubDocument(writer, AnnotationUtils.collateAnnotations(document.getDocumentAnnotations(), config.getOutputIncludedAnnotators()));
+				document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
+				document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+				config.getOutputWriter().processSubDocument(writer, document);
 				return true;
 			}
 	}

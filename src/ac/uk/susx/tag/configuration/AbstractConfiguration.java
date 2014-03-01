@@ -3,9 +3,7 @@ package ac.uk.susx.tag.configuration;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
-import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.IInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
@@ -15,7 +13,7 @@ import ac.uk.susx.tag.utils.FileUtils;
  * An abstract class for a global config file.
  * @author jackpay
  */
-public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
+public abstract class AbstractConfiguration<CharSequence> implements IConfiguration<CharSequence> {
 	
 	private ArrayList<IAnnotator<?,?>> annotators; // Specify the annotator's to use when parsing.
 	private ArrayList<Class<? extends IAnnotator<?,?>>> includedAnnotators; // Specify which annotator's should be included in the output.
@@ -24,7 +22,7 @@ public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
-	private IOutputDocumentFormatter<AT> outputWriter;
+	private IOutputDocumentFormatter<CharSequence> outputWriter;
 	private IInputDocumentFormatter docBuilder;
 	private ArrayList<IFilter<?>> filters;
 	
@@ -90,14 +88,14 @@ public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(IOutputDocumentFormatter<AT> outputWriter){
+	public void setOutputWriter(IOutputDocumentFormatter<CharSequence> outputWriter){
 		this.outputWriter = outputWriter;
 	}
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public IOutputDocumentFormatter<AT> getOutputWriter(){
+	public IOutputDocumentFormatter<CharSequence> getOutputWriter(){
 		return outputWriter;
 	}
 	

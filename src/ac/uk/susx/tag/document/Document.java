@@ -2,19 +2,21 @@ package ac.uk.susx.tag.document;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.filter.IFilter;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
+
 public class Document implements IDocument {
 	
-	//private final D document;
-	//private final Map<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>> annotations;
 	private final List<Sentence> sentences;
 	private File document;
 	
 	public Document(File document){
-		//this.document = rawDoc;
-		//annotations = new HashMap<Class<? extends IAnnotator<?,?,?>>, List<? extends IAnnotation<?>>>(10);
 		sentences = new ArrayList<Sentence>();
 		this.document = document;
 	}
@@ -52,65 +54,70 @@ public class Document implements IDocument {
 		sentences.add(sentence);
 	}
 
+	/**
+	 * Returns true if there are no sentences contained in the Document object.
+	 */
 	public boolean sentencesEmpty() {
 		return sentences.isEmpty();
 	}
 
+	/**
+	 * Adds a list of Sentence objects to the Documents Sentence list.
+	 */
 	public void addAllSentences(List<Sentence> sentences) {
 		sentences.addAll(sentences);
 	}
 
-//	public <AT> List<IAnnotation<AT>> getAnnotations(Class<? extends IAnnotator<AT,?,?>> cl) {
-//		return (List<IAnnotation<AT>>) annotations.get(cl);
-//	}
-
-//	public Collection<List<? extends IAnnotation<?>>> getDocumentAnnotations() {
-//		return annotations.values();
-//	}
-
-//	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?,?>> cl, List<? extends IAnnotation<AT>> annotations) {
-//		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
-//		if(anns == null){
-//			this.annotations.put(cl, new ArrayList<IAnnotation<AT>>());
-//			anns = (List<IAnnotation<AT>>) this.annotations.get(cl);
-//			anns.addAll(annotations);
+//	/**
+//	 * Returns all Annotations contained in the Sentence objects of the calling Document object.
+//	 */
+//	public Collection<List<? extends IAnnotation<?>>> getAllDocumentAnnotations() {
+//		Collection<List<? extends IAnnotation<?>>> allAnnotations = new ArrayList<List<? extends IAnnotation<?>>>();
+//		for(Sentence sentence : sentences){
+//			for(Class<? extends IAnnotator<?,?>> cl : sentence.getSentenceAnnotators()) {
+//				
+//			}
 //		}
-//		else{
-//			anns.addAll(annotations);
-//		}
-//	}
-
-//	public void removeAnnotation(Class<? extends IAnnotator<?,?,?>> cl) {
-//		if(annotations.containsKey(cl)){
-//			annotations.remove(cl);
-//		}
-//	}
 //
-//	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> annotators) {
-//		for(Class<? extends IAnnotator<?,?,?>> annotator : annotators){
-//			removeAnnotation(annotator);
-//		}
+//		System.err.println(allAnnotations.size() + " Size of document annotations.");
+//		return allAnnotations;
 //	}
 
-//	public void retainAnnotations(Collection<Class<? extends IAnnotator<?,?,?>>> includedAnnotators) {
-//		annotations.keySet().retainAll(includedAnnotators);
-//	}
-//	
-//	public void filterAnnotations(Collection<IFilter<?>> filters){
-//		if(filters != null && !filters.isEmpty()){
-//			for(IFilter<?> filter : filters){
-//				filter.filterCollection(annotations);
-//			}
-//		}
-//	}
-//	
-//	//TODO: type checking - although is enforced elsewhere 
-//	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?,?>> annotator) {
-//		if(filters != null && !filters.isEmpty()){
-//			for(IFilter<AT> filter : filters){
-//				filter.filter((List<? extends IAnnotation<AT>>) annotations.get(annotator));
-//			}
-//		}
-//	}
+	/**
+	 * Returns all Annotations of a given class contained the Document objects Sentence list.
+	 */
+	public <AT> List<IAnnotation<AT>> getDocumentAnnotations(Class<? extends IAnnotator<AT, ?>> cl) throws IllegalAnnotationStorageException {
+		List<IAnnotation<AT>> anns = new ArrayList<IAnnotation<AT>>();
+		for(Sentence sentence : sentences){
+			anns.addAll(sentence.getSentenceAnnotations(cl));
+		}
+		return anns;
+	}
+
+	/**
+	 * Removes all IAnnotation objects created by a given class list of IAnnotator from all the Documents Sentences 
+	 */
+	public void removeDocumentAnnotations(Collection<Class<? extends IAnnotator<?, ?>>> excludedAnnotators) {
+		for(Sentence sentence : sentences) {
+			sentence.removeAnnotations(excludedAnnotators);
+		}
+	}
+	
+	/**
+	 * Retains all IAnnotation objects created by the given IAnnotator class list, from the Document's Sentences.
+	 */
+	public void retainDocumentAnnotations(Collection<Class<? extends IAnnotator<?, ?>>> includedAnnotators) {
+		for(Sentence sentence : sentences) {
+			sentence.retainAnnotations(includedAnnotators);
+		}
+	}
+	/**
+	 * Applies a collection of IFilter to all IAnnotations in the Document objects Sentence list.
+	 */
+	public void filterDocumentAnnotations(Collection<IFilter<?>> filters) {
+		for(Sentence sentence : sentences) {
+			sentence.filterAnnotations(filters);
+		}
+	}
 
 }
