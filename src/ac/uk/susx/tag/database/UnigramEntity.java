@@ -1,10 +1,11 @@
 package ac.uk.susx.tag.database;
 
+
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
 @Entity
-public class UnigramEntity {
+public class UnigramEntity implements IEntity {
 
 	@PrimaryKey
 	private final String unigrm;

@@ -1,9 +1,9 @@
 package ac.uk.susx.tag.preparser;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import com.sleepycat.persist.model.Entity;
 
 import ac.uk.susx.tag.database.IDatabaseIndexer;
 import ac.uk.susx.tag.database.UnigramEntity;
@@ -19,7 +19,6 @@ public class TermFrequencyPreParser implements IPreParser<String,UnigramEntity,S
 
 	public IDatabaseIndexer<String,UnigramEntity> parse() {
 		UnigramIndexer ui = new UnigramIndexer();
-
 		return null;
 	}
 
@@ -28,9 +27,12 @@ public class TermFrequencyPreParser implements IPreParser<String,UnigramEntity,S
 
 	}
 
-	public void index(List<Entity> entities) {
-		// TODO Auto-generated method stub
-
+	public void index(List<UnigramEntity> entities) {
+		
+	}
+	
+	public void index(UnigramEntity entity) {
+		index(new ArrayList<UnigramEntity>(Arrays.asList(entity)));
 	}
 
 }
