@@ -59,7 +59,7 @@ public final class AnnotatorRegistry {
 	}
 
 	public static void register() {
-		Reflections reflections = new Reflections();
+		Reflections reflections = new Reflections("ac.uk.susx.tag.annotator");
 		Set<Class<?>> annotators = reflections.getTypesAnnotatedWith(AnnotatorFactory.class);
 		for(Class<?> annotator : annotators) {
 			IAnnotatorFactory<?,?> anf = null;

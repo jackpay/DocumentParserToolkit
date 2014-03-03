@@ -75,7 +75,9 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 	}
 
 	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		return annotate(sentence.getSentence());
+		List<IAnnotation<String>> postagged = annotate(sentence.getSentence());
+		sentence.addAnnotations(this.getClass(), postagged);
+		return postagged;
 	}
 	
 }

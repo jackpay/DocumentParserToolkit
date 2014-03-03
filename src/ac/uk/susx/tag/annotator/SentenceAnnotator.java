@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.codehaus.plexus.util.FileUtils;
-
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
@@ -24,13 +22,9 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 	private SentenceDetectorME sentencetagger;
 	
 	public IDocument annotate(IDocument doc) throws IncompatibleAnnotationException {
-		String docStr = "";
-		try {
-			docStr = FileUtils.fileRead(doc.getDocument());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		StringAnnotation ga = new StringAnnotation(docStr,0,docStr.length());
+		CharSequence docStr = doc.getDocument();
+		System.err.println("annotating");
+		StringAnnotation ga = new StringAnnotation(docStr.toString(),0,docStr.length());
 		ArrayList<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
 		annotations.addAll(annotate(ga));
 		for(IAnnotation<Sentence> sentence : annotations) {

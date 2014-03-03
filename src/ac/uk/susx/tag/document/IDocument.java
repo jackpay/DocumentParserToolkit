@@ -1,6 +1,5 @@
 package ac.uk.susx.tag.document;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +11,7 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 public interface IDocument {
 	
-	public File getDocument();
+	public CharSequence getDocument();
 	
 	public Sentence getSentence(int pos);
 	

@@ -25,7 +25,6 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 		
 		List<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		String docStr = annotation.getAnnotation();
-
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
 			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
@@ -59,6 +58,8 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 
 	public List<IAnnotation<String>> annotate(Sentence sentence)
 			throws IncompatibleAnnotationException {
-		return annotate(sentence.getSentence());
+		List<IAnnotation<String>> tokens = annotate(sentence.getSentence());
+		sentence.addAnnotations(this.getClass(), tokens);
+		return tokens;
 	}
 }

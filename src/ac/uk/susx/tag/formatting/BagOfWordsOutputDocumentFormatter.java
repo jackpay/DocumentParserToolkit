@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
-import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.CharSequenceWriter;
 

@@ -14,14 +14,14 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 public class Document implements IDocument {
 	
 	private final List<Sentence> sentences;
-	private File document;
+	private CharSequence document;
 	
-	public Document(File document){
+	public Document(CharSequence document){
 		sentences = new ArrayList<Sentence>();
 		this.document = document;
 	}
 	
-	public File getDocument(){
+	public CharSequence getDocument(){
 		return document;
 	}
 
