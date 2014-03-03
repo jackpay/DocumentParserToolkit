@@ -122,7 +122,7 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 				}
 			}
 		}
-		reader.getAdditionalAnnotators();
+		//reader.getAdditionalAnnotators();
 		if(reader.sentence()){
 			gc.addAnnotator(StringAnnotatorEnum.SENTENCE.getAnnotator(), true);
 		}

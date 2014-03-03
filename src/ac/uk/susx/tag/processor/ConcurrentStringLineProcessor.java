@@ -118,6 +118,7 @@ public class ConcurrentStringLineProcessor implements IProcessor<String,String> 
 					out.get();
 					complete = out instanceof ConsumerShutdownFuture;
 				}
+				System.err.println("finished");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
