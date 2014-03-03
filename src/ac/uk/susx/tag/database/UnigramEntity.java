@@ -23,5 +23,9 @@ public class UnigramEntity implements IEntity {
 	public int getFrequency() {
 		return freq;
 	}
+	
+	public void incrementFrequency() {
+		freq++;
+	}
 
 }

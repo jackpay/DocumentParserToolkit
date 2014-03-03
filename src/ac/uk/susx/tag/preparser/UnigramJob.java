@@ -24,7 +24,7 @@ public class UnigramJob implements IJob<String>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return entities;
 	}
 
 

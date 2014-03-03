@@ -33,28 +33,30 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 		for(File file : files){
 			IDocument document = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
-			final ArrayList<Future<Void>> futures = new ArrayList<Future<Void>>();
+			final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 			try {
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				break;
 			}
 			Iterator<Sentence> sentences = document.getSentenceIterator();
 			while(sentences.hasNext()){
 				SentenceCallable sentCaller = new SentenceCallable(sentences.next());
-				Future<Void> future = executor.submit(sentCaller);
+				Future<Boolean> future = executor.submit(sentCaller);
 				futures.add(future);
 			}
-			for(Future<Void> future : futures){
+			for(Future<Boolean> future : futures){
 				try {
-					@SuppressWarnings("unused")
-					Void sent = future.get();
+					if(future.get() == false) {
+						break;
+					}
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				}
 			}
 			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
@@ -70,7 +72,7 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 		processFiles(fileList);
 	}
 	
-public class SentenceCallable implements Callable<Void> {
+public class SentenceCallable implements Callable<Boolean> {
 		
 		private final Sentence sentenceAnn;
 		
@@ -78,15 +80,16 @@ public class SentenceCallable implements Callable<Void> {
 			this.sentenceAnn = sentence;
 		}
 
-		public Void call() throws Exception {
+		public Boolean call() throws Exception {
 			for(IAnnotator<?,?> annotator : config.getAnnotators()){
 				try {
 					annotator.annotate(sentenceAnn);
 				} catch (IncompatibleAnnotationException e) {
 					e.printStackTrace();
+					return false;
 				}
 			}
-			return null;
+			return true;
 		}
 		
 	}

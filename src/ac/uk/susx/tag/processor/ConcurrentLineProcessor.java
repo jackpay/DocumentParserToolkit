@@ -94,8 +94,10 @@ public class ConcurrentLineProcessor implements IProcessor {
 					br.close();
 				} catch (IOException e) {
 					e.printStackTrace();
+					break;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					break;
 				}
 			}
 		}
@@ -113,13 +115,18 @@ public class ConcurrentLineProcessor implements IProcessor {
 			try {
 				while(!complete){
 					Future<Boolean> out = queue.take();
-					out.get();
+					if(out.get() == false){
+						complete = true;
+						return;
+					}
 					complete = out instanceof ConsumerShutdownFuture;
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				return;
 			} catch (ExecutionException e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 		

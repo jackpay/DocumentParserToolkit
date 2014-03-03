@@ -7,21 +7,21 @@ import java.util.List;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.PrimaryIndex;
 
-public class UnigramIndexer implements IDatabaseIndexer<String,UnigramEntity> {
-
+public class TermFrequencyIndexer implements IDatabaseIndexer<String,UnigramEntity>{
+	
 	private PrimaryIndex<String,UnigramEntity> pIndx;
-	private DatabaseEntityStore entityStore;
+	private final DatabaseEntityStore entityStore;
 
-	public UnigramIndexer () {
+	public TermFrequencyIndexer() {
 		entityStore = new DatabaseEntityStore();
 		try {
 			pIndx = entityStore.getStore().getPrimaryIndex(String.class, UnigramEntity.class);
 		} catch (DatabaseException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
 
-	public PrimaryIndex<String,UnigramEntity> getPrimaryIndex() {
+	public PrimaryIndex<String, UnigramEntity> getPrimaryIndex() {
 		return pIndx;
 	}
 
@@ -31,10 +31,21 @@ public class UnigramIndexer implements IDatabaseIndexer<String,UnigramEntity> {
 
 	public void index(List<UnigramEntity> entities) {
 		for(UnigramEntity entity : entities) {
+			UnigramEntity dbEntity = null;
 			try {
-				pIndx.put(entity);
+				dbEntity = pIndx.get(entity.getUnigram());
 			} catch (DatabaseException e) {
 				e.printStackTrace();
+			}
+			if(dbEntity == null) {
+				try {
+					pIndx.put(entity);
+				} catch (DatabaseException e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				dbEntity.incrementFrequency();
 			}
 		}
 	}
