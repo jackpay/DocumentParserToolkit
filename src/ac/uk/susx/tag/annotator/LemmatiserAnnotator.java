@@ -18,11 +18,11 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 public class LemmatiserAnnotator extends AbstractAnnotator<String,String> {
 
 	private Lemmatizer lemmatizer;
-	private Class<IAnnotatorFactory<String,String>> tokeniser;
+	private Class<? extends IAnnotatorFactory<String,String>> tokeniser;
 	private static final String smModelLoc = "resources/lemmatizer-eng-4M-v36.mdl";
 	private static final String lrgModelLoc = "resources/CoNLL2009-ST-English-ALL.anna-3.3.lemmatizer.model";
 	
-	public LemmatiserAnnotator(Class<IAnnotatorFactory<String,String>> tokeniser) {
+	public LemmatiserAnnotator(Class<? extends IAnnotatorFactory<String,String>> tokeniser) {
 		this.tokeniser = tokeniser;
 	}
 

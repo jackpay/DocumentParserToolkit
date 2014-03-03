@@ -43,8 +43,18 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		return annotations;
 	}
 	
+	public AbstractAnnotationFilter(Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok, boolean remove) {
+		filterAnnotations = null;
+		this.annotator = annotator;
+		this.remAllTok = remAllTok;
+		this.remove = remove;
+	}
+	
 	public Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations) {
 		
+		if(annotations.get(annotator) == null) {
+			return annotations;
+		}
 		if(!remAllTok){
 			annotations.put(annotator, filter((List<IAnnotation<AT>>) annotations.get(annotator)));
 		}
@@ -73,14 +83,10 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		return annotations;
 	}
 	
-	private boolean matchAnnotation(AT annotation){
-		boolean match = false;
-		for(AT exAnn : filterAnnotations){
-			if(annotation.equals(exAnn)){
-				return true;
-			}
-		}
-		return match;
+	public List<AT> getFilterAnnotations() {
+		return filterAnnotations;
 	}
+	
+	public abstract boolean matchAnnotation(AT annotation);
 
 }

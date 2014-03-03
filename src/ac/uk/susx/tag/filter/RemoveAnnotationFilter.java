@@ -14,4 +14,15 @@ public class RemoveAnnotationFilter<AT> extends AbstractAnnotationFilter<AT>{
 		super(filterAnnotations, annotator, remAllTok, true);
 	}
 
+	@Override
+	public boolean matchAnnotation(AT annotation){
+		boolean match = false;
+		for(AT exAnn : getFilterAnnotations()){
+			if(annotation.equals(exAnn)){
+				return true;
+			}
+		}
+		return match;
+	}
+
 }

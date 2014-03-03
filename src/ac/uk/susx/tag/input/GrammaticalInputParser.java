@@ -4,10 +4,12 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import ac.uk.susx.tag.annotator.ChunkTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.LemmatiserAnnotatorFactory;
 import ac.uk.susx.tag.annotator.LocationAnnotatorFactory;
 import ac.uk.susx.tag.annotator.OrganisationAnnotatorFactory;
 import ac.uk.susx.tag.annotator.PersonAnnotatorFactory;
 import ac.uk.susx.tag.annotator.PoSTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.PorterStemmerAnnotatorFactory;
 import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -20,6 +22,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		@Parameter 
 		(names = {"-t", "--token"}, description="Token annotations")
 		private boolean token = true;
+		
+		@Parameter
+		(names = {"-lem", "--lemmatise"}, description="Text lemmatiser")
+		private boolean lemmatise =  false;
+
+		@Parameter
+		(names = {"-stem", "--stemmer"}, description="Stems words")
+		private boolean stem = false;
 		
 		@Parameter
 		(names = {"-pos", "--posTag"}, description="Pos tag annotations")
@@ -73,6 +83,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			return location;
 		}
 		
+		public boolean lemmatise() {
+			return lemmatise;
+		}
+
+		public boolean stem() {
+			return stem;
+		}
+		
 		public String buildOutputName(){
 			StringBuilder sb = new StringBuilder();
 			if(token) { sb.append("tok-"); }
@@ -82,7 +100,9 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			if(person) { sb.append("per-"); }
 			if(location) { sb.append("loc-"); }
 			if(organisation) { sb.append("org-"); }
-			return sb.toString().substring(0, sb.toString().length()-1);
+			if(lemmatise) { sb.append("l-"); }
+			if(stem){ sb.append("stem-"); }
+			return sb.toString().length() > 0 ? sb.toString().substring(0, sb.toString().length()-1) : "output";
 		}
 	}
 
@@ -98,11 +118,29 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setOutSuff(reader.outSuffix());
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
-		if(reader.token()){
+		if(reader.lemmatise()) {
 			try {
-				gc.addAnnotator(AnnotatorRegistry.getAnnotator(TokenAnnotatorFactory.class), true);
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(LemmatiserAnnotatorFactory.class),true);
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+		}
+		else{
+			if(reader.stem()) {
+				try {
+					gc.addAnnotator(AnnotatorRegistry.getAnnotator(PorterStemmerAnnotatorFactory.class), true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				if(reader.token()) {
+					try {
+						gc.addAnnotator(AnnotatorRegistry.getAnnotator(TokenAnnotatorFactory.class), true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		
@@ -125,7 +163,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(PoSTagAnnotatorFactory.class), true);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -133,7 +170,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(ChunkTagAnnotatorFactory.class), true);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -141,7 +177,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(PersonAnnotatorFactory.class), true);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -149,7 +184,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(LocationAnnotatorFactory.class), true);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -157,7 +191,6 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			try {
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(OrganisationAnnotatorFactory.class), true);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

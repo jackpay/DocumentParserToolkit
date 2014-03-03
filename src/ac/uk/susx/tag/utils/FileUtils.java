@@ -1,8 +1,6 @@
 package ac.uk.susx.tag.utils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,17 +40,17 @@ public class FileUtils {
 	}
 	
 
-	public static String readFileAsString(String fileLocation) throws IOException{
-		return readFileAsString(new File(fileLocation));
-	}
-
-	public static String readFileAsString(File file) throws java.io.IOException{ 
-		byte[] buffer = new byte[(int) file.length()]; 
-		BufferedInputStream f = new BufferedInputStream(new FileInputStream(file)); 
-		f.read(buffer); 
-		f.close();
-		return new String(buffer);
-	}
+//	public static String readFileAsString(String fileLocation) throws IOException{
+//		return readFileAsString(new File(fileLocation));
+//	}
+//
+//	public static String readFileAsString(File file) throws java.io.IOException{ 
+//		byte[] buffer = new byte[(int) file.length()]; 
+//		BufferedInputStream f = new BufferedInputStream(new FileInputStream(file)); 
+//		f.read(buffer); 
+//		f.close();
+//		return new String(buffer);
+//	}
 
 	public static String createOutputDirectory(String startingLocation) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
