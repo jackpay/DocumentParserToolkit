@@ -76,16 +76,17 @@ public class ConcurrentLineProcessor implements IProcessor {
 					CharSequenceWriter writer = new CharSequenceWriter(config.getOutputLocation() + "/" + file.getName());
 					int lineCount = 0;
 					while(currLine != null){
-						String line = new String(currLine);
-						DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line),writer);
-						queue.put(executor.submit(docCaller));
+						String line = new String(currLine).trim();
+						if(line.length() > 0) {
+							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line),writer);
+							queue.put(executor.submit(docCaller));
+						}
 						currLine = br.readLine();
 						lineCount++;
 						if(lineCount%1000 == 0){
 							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
 						}
 					}
-					
 					executor.shutdown();
 					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 					System.err.println("Finished processing file: " + file.getName());

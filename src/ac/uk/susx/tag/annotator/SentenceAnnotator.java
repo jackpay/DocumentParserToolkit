@@ -23,7 +23,6 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 	
 	public IDocument annotate(IDocument doc) throws IncompatibleAnnotationException {
 		CharSequence docStr = doc.getDocument();
-		System.err.println("annotating");
 		StringAnnotation ga = new StringAnnotation(docStr.toString(),0,docStr.length());
 		ArrayList<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
 		annotations.addAll(annotate(ga));
@@ -36,7 +35,6 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 	public synchronized List<? extends IAnnotation<Sentence>> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
 		List<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
-		
 		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
 			int startOffset = sentPos[i].getStart() + offset;

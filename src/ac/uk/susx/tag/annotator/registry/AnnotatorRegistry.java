@@ -21,7 +21,7 @@ public final class AnnotatorRegistry {
 	private AnnotatorRegistry(){}
 
 	@SuppressWarnings("unchecked")
-	public static <AT,ACT> IAnnotator<AT,ACT> getAnnotator(Class<? extends IAnnotatorFactory<AT,ACT>> cl) throws Exception {
+	public static synchronized <AT,ACT> IAnnotator<AT,ACT> getAnnotator(Class<? extends IAnnotatorFactory<AT,ACT>> cl) throws Exception {
 		if(facRegistry.get(cl) != null) {
 			if(registry.get(cl) == null){
 				Class<? extends IAnnotatorFactory<?,?>> anomCl = cl;
@@ -37,10 +37,13 @@ public final class AnnotatorRegistry {
 		}
 	}
 	
-	public static IAnnotator<?,?> getAnnotator(String cmd) throws Exception {
+	public static synchronized IAnnotator<?,?> getAnnotator(String cmd) throws Exception {
 		if(cmdRegistry.get(cmd) != null) {
 			if(registry.get(cmdRegistry.get(cmd)) == null){
 				registry.put(cmdRegistry.get(cmd), facRegistry.get(cmdRegistry.get(cmd)).create());
+			}
+			if(!registry.get(cmdRegistry.get(cmd)).modelStarted()){
+				registry.get(cmdRegistry.get(cmd)).startModel();
 			}
 			return registry.get(cmdRegistry.get(cmd)); 
 		}

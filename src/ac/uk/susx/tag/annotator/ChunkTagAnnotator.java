@@ -31,11 +31,8 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		this.tokeniser = tokeniser;
 	}
 
-	public synchronized List<StringAnnotation> annotate(
-			IAnnotation<String> sentence)
-			throws IncompatibleAnnotationException {
-		startModel(); // Ensure model is live.
-		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
+	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
+		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		List<? extends IAnnotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
@@ -82,10 +79,11 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		return chunker != null;
 	}
 
-	public List<? extends IAnnotation<String>> annotate(
-			Sentence sentence) throws IncompatibleAnnotationException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		List<IAnnotation<String>> annos = annotate(sentence.getSentence());
+		sentence.addAnnotations(this.getClass(), annos);
+		return annos;
+		
 	}
 
 }

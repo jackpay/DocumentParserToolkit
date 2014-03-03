@@ -24,7 +24,6 @@ public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
 				e.printStackTrace();
 			}
 		}
-		System.err.println("HERe");
 		Iterator<Sentence> sentences = document.getSentenceIterator();
 		while(sentences.hasNext()){
 			annotate(sentences.next());

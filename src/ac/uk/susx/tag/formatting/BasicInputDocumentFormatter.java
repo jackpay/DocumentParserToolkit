@@ -11,7 +11,7 @@ import ac.uk.susx.tag.document.IDocument;
 public class BasicInputDocumentFormatter implements IInputDocumentFormatter{
 
 	public IDocument createDocument(String file) {
-		return createDocument(file);
+		return new Document(file);
 	}
 
 	public IDocument createDocument(File file) {
