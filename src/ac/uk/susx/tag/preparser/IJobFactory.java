@@ -1,7 +1,9 @@
 package ac.uk.susx.tag.preparser;
 
-public interface IJobFactory<T> {
+import ac.uk.susx.tag.database.IEntity;
+
+public interface IJobFactory<ET extends IEntity,T> {
 	
-	public IJob<T> createJob(T obj);
+	public IJob<ET> createJob(T obj);
 
 }

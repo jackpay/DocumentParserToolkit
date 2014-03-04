@@ -103,7 +103,7 @@ public class ConcurrentLineProcessor implements IProcessor {
 		}
 	}
 	
-	public final class Consumer implements Runnable {
+	private final class Consumer implements Runnable {
 		
 		private final ArrayBlockingQueue<Future<Boolean>> queue;
 		
@@ -132,7 +132,7 @@ public class ConcurrentLineProcessor implements IProcessor {
 		
 	}
 	
-	public final class DocumentCallable implements Callable<Boolean> {
+	private final class DocumentCallable implements Callable<Boolean> {
 			
 			private final IDocument document;
 			private final CharSequenceWriter writer;
@@ -159,7 +159,7 @@ public class ConcurrentLineProcessor implements IProcessor {
 	}
 	
 	// Used as a poison pill to shut down the consumer object.
-	public final class ConsumerShutdownFuture implements Future<Boolean> {
+	private final class ConsumerShutdownFuture implements Future<Boolean> {
 
 		public boolean cancel(boolean arg0) {
 			// TODO Auto-generated method stub

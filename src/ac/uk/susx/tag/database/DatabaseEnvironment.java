@@ -15,7 +15,7 @@ public final class DatabaseEnvironment {
 		try{
 			EnvironmentConfig ec = new EnvironmentConfig();
 			ec.setAllowCreate(true);
-			environment = new Environment(new File("/database"),ec);
+			environment = new Environment(new File("database"),ec);
 		}
 		catch (DatabaseException dbe){
 			dbe.printStackTrace();

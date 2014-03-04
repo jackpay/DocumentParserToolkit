@@ -46,6 +46,11 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<String,UnigramEnti
 			}
 			else {
 				dbEntity.incrementFrequency();
+				try {
+					pIndx.put(dbEntity);
+				} catch (DatabaseException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

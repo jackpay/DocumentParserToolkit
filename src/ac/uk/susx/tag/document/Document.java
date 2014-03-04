@@ -12,27 +12,31 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 public class Document implements IDocument {
 	
-	private final List<Sentence> sentences;
-	private CharSequence document;
+	private final List<Sentence> sentences; // The document represented as Sentences.
+	private CharSequence document; // The raw text of the document.
+	private CharSequence id; // Allows a document to have an identifier. Document objects are able to have the same id, for purposes of document consolidation.
 	
 	public Document(CharSequence document){
 		sentences = new ArrayList<Sentence>();
 		this.document = document;
 	}
 	
+	/**
+	 * Returns a CharSequence representation of the raw document.
+	 */
 	public CharSequence getDocument(){
 		return document;
 	}
 
 	/**
-	 * Retrieve a SentenceAnnotation from a specified position
+	 * Retrieve a SentenceAnnotation from a specified position.
 	 */
 	public Sentence getSentence(int pos) {
 		return sentences.get(pos);
 	}
 
 	/**
-	 * Retrieve the iterator object for list of SentenceAnnotations
+	 * Retrieve the iterator object for list of SentenceAnnotations.
 	 */
 	public Iterator<Sentence> getSentenceIterator() {
 		Iterator<Sentence> iter = sentences.iterator();
@@ -40,7 +44,7 @@ public class Document implements IDocument {
 	}
 
 	/**
-	 * Add a SentenceAnnotation to a specified position in the list
+	 * Add a SentenceAnnotation to a specified position in the list.
 	 */
 	public void addSentence(Sentence sent, int pos) {
 		sentences.add(pos, sent);
@@ -67,21 +71,6 @@ public class Document implements IDocument {
 		sentences.addAll(sentences);
 	}
 
-//	/**
-//	 * Returns all Annotations contained in the Sentence objects of the calling Document object.
-//	 */
-//	public Collection<List<? extends IAnnotation<?>>> getAllDocumentAnnotations() {
-//		Collection<List<? extends IAnnotation<?>>> allAnnotations = new ArrayList<List<? extends IAnnotation<?>>>();
-//		for(Sentence sentence : sentences){
-//			for(Class<? extends IAnnotator<?,?>> cl : sentence.getSentenceAnnotators()) {
-//				
-//			}
-//		}
-//
-//		System.err.println(allAnnotations.size() + " Size of document annotations.");
-//		return allAnnotations;
-//	}
-
 	/**
 	 * Returns all Annotations of a given class contained the Document objects Sentence list.
 	 */
@@ -94,7 +83,7 @@ public class Document implements IDocument {
 	}
 
 	/**
-	 * Removes all IAnnotation objects created by a given class list of IAnnotator from all the Documents Sentences 
+	 * Removes all IAnnotation objects created by a given class list of IAnnotator from all the Documents Sentences. 
 	 */
 	public void removeDocumentAnnotations(Collection<Class<? extends IAnnotator<?, ?>>> excludedAnnotators) {
 		for(Sentence sentence : sentences) {
@@ -117,6 +106,20 @@ public class Document implements IDocument {
 		for(Sentence sentence : sentences) {
 			sentence.filterAnnotations(filters);
 		}
+	}
+
+	/**
+	 * Sets the id for the document.
+	 */
+	public void setDocumentId(CharSequence id) {
+		this.id = id;
+	}
+
+	/**
+	 * Returns the id for the document.
+	 */
+	public CharSequence getDocumentId() {
+		return id;
 	}
 
 }

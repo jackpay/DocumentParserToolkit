@@ -10,14 +10,19 @@ import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.database.UnigramEntity;
 
-public class UnigramJob implements IJob<String>{
+public class UnigramJob implements IJob<UnigramEntity>{
 	
-	public static final Class<? extends IAnnotatorFactory<String,String>> tokeniser = TokenAnnotatorFactory.class;
+	public static Class<? extends IAnnotatorFactory<String,String>> tokeniser = TokenAnnotatorFactory.class;
+	private String document;
+	
+	public UnigramJob(String document) {
+		this.document = document;
+	}
 
-	public List<UnigramEntity> process(String obj) {
+	public List<UnigramEntity> process() {
 		ArrayList<UnigramEntity> entities = new ArrayList<UnigramEntity>();
 		try {
-			for(IAnnotation<String> token : AnnotatorRegistry.getAnnotator(tokeniser).annotate(new StringAnnotation(obj,0,0))){
+			for(IAnnotation<String> token : AnnotatorRegistry.getAnnotator(tokeniser).annotate(new StringAnnotation(document,0,0))){
 				UnigramEntity ue = new UnigramEntity(token.getAnnotation());
 				entities.add(ue);
 			}
@@ -26,6 +31,9 @@ public class UnigramJob implements IJob<String>{
 		}
 		return entities;
 	}
-
+	
+	public void setTokeniser(Class<? extends IAnnotatorFactory<String,String>> cl) {
+		tokeniser = cl;
+	}
 
 }

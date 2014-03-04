@@ -35,4 +35,8 @@ public interface IDocument {
 	
 	public void filterDocumentAnnotations(Collection<IFilter<?>> filters);
 	
+	public void setDocumentId(CharSequence id);
+	
+	public CharSequence getDocumentId();
+	
 }

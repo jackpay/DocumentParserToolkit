@@ -29,6 +29,7 @@ public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntit
 		return entityStore;
 	}
 
+	//TODO: check for equality?!
 	public void index(List<NGramEntity> entities) {
 		for(NGramEntity entity : entities) {
 			try {

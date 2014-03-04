@@ -8,12 +8,18 @@ import com.sleepycat.persist.model.PrimaryKey;
 public class UnigramEntity implements IEntity {
 
 	@PrimaryKey
-	private final String unigrm;
+	private String unigrm;
 	private int freq;
-
+	
+	public UnigramEntity() {}
+	
 	public UnigramEntity(String uni) {
 		this.unigrm = uni;
-		freq = 0;
+		freq = 1;
+	}
+	
+	public void setUnigram(String unigrm) {
+		this.unigrm = unigrm;
 	}
 
 	public String getUnigram() {
