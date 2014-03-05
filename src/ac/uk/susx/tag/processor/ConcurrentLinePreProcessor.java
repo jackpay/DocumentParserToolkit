@@ -18,6 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 import ac.uk.susx.tag.database.IDatabaseIndexer;
 import ac.uk.susx.tag.database.IEntity;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.preparser.IJobFactory;
 
 /**
@@ -31,11 +32,11 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
 	private final IDatabaseIndexer<PE,ET> indexer;
-	private final IJobFactory<ET,String> jobFactory;
+	private final IJobFactory<ET> jobFactory;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 
-	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<ET,String> jobFactory) { 
+	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<ET> jobFactory) { 
 		this.indexer = indexer;
 		this.jobFactory = jobFactory;
 		this.queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
@@ -69,6 +70,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 
 		public void run() {
 			ExecutorService executor;
+			int id = 0;
 			for(File file : files){
 				try {
 					executor = Executors.newFixedThreadPool(NTHREADS);
@@ -79,7 +81,9 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 					while(currLine != null){
 						String line = new String(currLine).trim();
 						if(line.length() > 0) {
-							JobCallable jc = new JobCallable(indexer,line);
+							Document doc = new Document(line);
+							doc.setDocumentId(String.valueOf(id));
+							JobCallable jc = new JobCallable(indexer,doc);
 							queue.put(executor.submit(jc));
 						}
 						currLine = br.readLine();
@@ -88,6 +92,10 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
 						}
 					}
+					executor.shutdown();
+					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+					System.err.println("Finished pre-processing file: " + file.getName());
+					br.close();
 				}
 				catch (IOException e){
 					e.printStackTrace();
@@ -96,6 +104,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 					e.printStackTrace();
 					break;
 				}
+				id++;
 			}
 		}
 	}
@@ -135,9 +144,9 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	private final class JobCallable implements Callable<Boolean> {
 		
 		private final IDatabaseIndexer<PE,ET> indexer;
-		private final String document;
+		private final Document document;
 		
-		public JobCallable(IDatabaseIndexer<PE,ET> indexer, String document) {
+		public JobCallable(IDatabaseIndexer<PE,ET> indexer, Document document) {
 			this.indexer = indexer;
 			this.document = document;
 		}

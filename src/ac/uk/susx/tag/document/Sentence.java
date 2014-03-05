@@ -74,7 +74,7 @@ public final class Sentence {
 		return indexAnnotations.values();
 	}
 	
-	public <IT> List<IAnnotation<IT>> getSentenceAnnotations(Class<? extends IAnnotator<IT,?>> annotator) throws IllegalAnnotationStorageException{
+	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
 		} catch (ClassCastException ex) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.PrimaryIndex;
+import com.sleepycat.persist.SecondaryIndex;
 
 public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntity>{
 
@@ -42,5 +43,12 @@ public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntit
 
 	public void index(NGramEntity entity) {
 		index(new ArrayList<NGramEntity>(Arrays.asList(entity)));
+	}
+
+	/**
+	 * No secondary index.
+	 */
+	public <SE> SecondaryIndex<UnigramEntity[], SE, NGramEntity> getSecondaryIndex() {
+		return null;
 	}
 }

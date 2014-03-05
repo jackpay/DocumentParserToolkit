@@ -7,7 +7,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 @Entity
 public class UnigramEntity implements IEntity {
 
-	@PrimaryKey
+	@PrimaryKey(sequence="UNIGRAM")
 	private String unigrm;
 	private int freq;
 	

@@ -13,16 +13,16 @@ import ac.uk.susx.tag.database.UnigramEntity;
 public class UnigramJob implements IJob<UnigramEntity>{
 	
 	public static Class<? extends IAnnotatorFactory<String,String>> tokeniser = TokenAnnotatorFactory.class;
-	private String document;
+	private CharSequence document;
 	
-	public UnigramJob(String document) {
+	public UnigramJob(CharSequence document) {
 		this.document = document;
 	}
 
 	public List<UnigramEntity> process() {
 		ArrayList<UnigramEntity> entities = new ArrayList<UnigramEntity>();
 		try {
-			for(IAnnotation<String> token : AnnotatorRegistry.getAnnotator(tokeniser).annotate(new StringAnnotation(document,0,0))){
+			for(IAnnotation<String> token : AnnotatorRegistry.getAnnotator(tokeniser).annotate(new StringAnnotation(document.toString(),0,0))){
 				UnigramEntity ue = new UnigramEntity(token.getAnnotation());
 				entities.add(ue);
 			}

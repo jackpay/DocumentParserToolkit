@@ -10,12 +10,17 @@ public final class DatabaseEnvironment {
 
 	private Environment environment;
 	private static DatabaseEnvironment self;
+	private String databaseLoc = "database";
 
+	private DatabaseEnvironment(String databaseLoc) {
+		this.databaseLoc = databaseLoc;
+	}
+	
 	private DatabaseEnvironment() {
 		try{
 			EnvironmentConfig ec = new EnvironmentConfig();
 			ec.setAllowCreate(true);
-			environment = new Environment(new File("database"),ec);
+			environment = new Environment(new File(databaseLoc),ec);
 		}
 		catch (DatabaseException dbe){
 			dbe.printStackTrace();

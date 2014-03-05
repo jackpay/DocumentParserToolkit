@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import com.sleepycat.je.DatabaseException;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
+import ac.uk.susx.tag.annotator.TermFrequencyAnnotator;
+import ac.uk.susx.tag.annotator.TermFrequencyAnnotatorFactory;
+import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.database.TermFrequencyIndexer;
-import ac.uk.susx.tag.database.UnigramEntity;
+import ac.uk.susx.tag.database.DocFreqUnigramEntity;
+import ac.uk.susx.tag.database.TFDFIndexer;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.preparser.UnigramJobFactory;
+import ac.uk.susx.tag.preparser.DocFreqUnigramJobFactory;
 import ac.uk.susx.tag.processor.ConcurrentLinePreProcessor;
 import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
@@ -27,9 +30,9 @@ import ac.uk.susx.tag.utils.FileUtils;
 public class StringDocumentParser extends AbstractParser<String,String> {
 	
 	private ConcurrentLineProcessor parser;
-	private ConcurrentLinePreProcessor<String,UnigramEntity> preparser;
+	private ConcurrentLinePreProcessor<String, DocFreqUnigramEntity> preparser;
 	private IConfiguration<CharSequence> config;
-	private TermFrequencyIndexer indexer;
+	private TFDFIndexer indexer;
 
 	/**
 	 * @param args
@@ -56,8 +59,8 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CD");
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
 		parser = new ConcurrentLineProcessor(config);
-		indexer = new TermFrequencyIndexer();
-		preparser = new ConcurrentLinePreProcessor<String,UnigramEntity>(indexer, new UnigramJobFactory());
+		indexer = new TFDFIndexer();
+		preparser = new ConcurrentLinePreProcessor<String,DocFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
 
 	public boolean parse() throws IOException {
@@ -77,12 +80,30 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		
 		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
 		preparser.processFiles(files);
+		TermFrequencyAnnotator anno = null;
+		try {
+			anno = (TermFrequencyAnnotator) AnnotatorRegistry.getAnnotator(TermFrequencyAnnotatorFactory.class);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		parser.processFiles(files);
 		try {
-			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
+			System.err.println(indexer.getPrimaryIndex().get("4").getFrequency("cell"));
 		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+//		try {
+//			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
+//		} catch (DatabaseException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
+//		} catch (DatabaseException e) {
+//			e.printStackTrace();
+//		}
+		
 		return true;
 	}
 }

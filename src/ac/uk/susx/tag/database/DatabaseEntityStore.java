@@ -28,6 +28,7 @@ public class DatabaseEntityStore {
 	public void close() {
 		if (entityStore != null) {
 			try {
+				entityStore.getEnvironment().close();
 				entityStore.close();
 			} catch (DatabaseException e) {
 				e.printStackTrace();

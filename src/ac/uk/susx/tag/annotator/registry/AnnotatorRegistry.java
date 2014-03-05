@@ -1,6 +1,8 @@
 package ac.uk.susx.tag.annotator.registry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -16,7 +18,8 @@ public final class AnnotatorRegistry {
 	
 	private static final HashMap<Class<? extends IAnnotatorFactory<?,?>>,IAnnotator<?,?>> registry = Maps.newHashMap();
 	private static final HashMap<Class<? extends IAnnotatorFactory<?,?>>,IAnnotatorFactory<?,?>> facRegistry = Maps.newHashMap();
-	private static final HashMap<CommandLineOption,Class<IAnnotatorFactory<?,?>>> cmdRegistry = Maps.newHashMap();
+	private static final HashMap<String,Class<IAnnotatorFactory<?,?>>> cmdRegistry = Maps.newHashMap();
+	private static final ArrayList<CommandLineOption> commands = new ArrayList<CommandLineOption>();
 	
 	private AnnotatorRegistry(){}
 
@@ -52,13 +55,14 @@ public final class AnnotatorRegistry {
 		}
 	}
 	
-	public static Set<CommandLineOption> getOptions(){
-		return cmdRegistry.keySet();
+	public static List<CommandLineOption> getOptions(){
+		return commands;
 	}
 
 	public static void registerAnnotator(IAnnotatorFactory<?,?> abstractAnnotatorFactory) {
 		facRegistry.put((Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass(), abstractAnnotatorFactory);
-		cmdRegistry.put(abstractAnnotatorFactory.getCommandLineOption(), (Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass());
+		cmdRegistry.put(abstractAnnotatorFactory.getCommandLineOption().getCommand(), (Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass());
+		commands.add(abstractAnnotatorFactory.getCommandLineOption());
 	}
 
 	public static void register() {

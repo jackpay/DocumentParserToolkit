@@ -4,7 +4,7 @@ import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
 @Entity
-public class NGramEntity {
+public class NGramEntity implements IEntity{
 
 	@PrimaryKey
 	private final UnigramEntity[] ngram;
