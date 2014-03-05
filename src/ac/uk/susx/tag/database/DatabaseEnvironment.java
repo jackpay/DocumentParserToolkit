@@ -20,6 +20,7 @@ public final class DatabaseEnvironment {
 		try{
 			EnvironmentConfig ec = new EnvironmentConfig();
 			ec.setAllowCreate(true);
+			ec.setTransactional(true);
 			environment = new Environment(new File(databaseLoc),ec);
 		}
 		catch (DatabaseException dbe){

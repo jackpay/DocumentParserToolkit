@@ -16,6 +16,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import ac.uk.susx.tag.database.DocIndexEntity;
+import ac.uk.susx.tag.database.DocumentIndexer;
 import ac.uk.susx.tag.database.IDatabaseIndexer;
 import ac.uk.susx.tag.database.IEntity;
 import ac.uk.susx.tag.document.Document;
@@ -34,11 +36,13 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	private final IDatabaseIndexer<PE,ET> indexer;
 	private final IJobFactory<ET> jobFactory;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
+	private final DocumentIndexer docIndex;
 	private boolean complete;
 
 	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<ET> jobFactory) { 
 		this.indexer = indexer;
 		this.jobFactory = jobFactory;
+		this.docIndex = new DocumentIndexer();
 		this.queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
 	
@@ -72,6 +76,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 			ExecutorService executor;
 			int id = 0;
 			for(File file : files){
+				docIndex.index(new DocIndexEntity(file.getName(),String.valueOf(id)));
 				try {
 					executor = Executors.newFixedThreadPool(NTHREADS);
 					BufferedReader br = new BufferedReader(new FileReader(file));
@@ -192,6 +197,10 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 			// TODO Auto-generated method stub
 			return false;
 		}
+	}
+	
+	public DocumentIndexer getDocumentIndex() {
+		return docIndex;
 	}
 
 }

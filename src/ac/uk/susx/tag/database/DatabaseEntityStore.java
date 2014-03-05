@@ -11,6 +11,7 @@ public class DatabaseEntityStore {
 
 	public DatabaseEntityStore() {
 		StoreConfig sc = new StoreConfig();
+		sc.setTransactional(true);
 		sc.setAllowCreate(true);
 		try {
 			entityStore = new EntityStore(DatabaseEnvironment.getInstance().getEnvironment(),"EntityStore",sc);

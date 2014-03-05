@@ -93,11 +93,13 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		try {
-//			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
-//		} catch (DatabaseException e) {
-//			e.printStackTrace();
-//		}
+		
+		try {
+			System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get("4").getDocName());
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		try {
 //			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
 //		} catch (DatabaseException e) {

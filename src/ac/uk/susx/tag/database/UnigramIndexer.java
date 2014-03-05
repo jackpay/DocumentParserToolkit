@@ -41,7 +41,11 @@ public class UnigramIndexer implements IDatabaseIndexer<CharSequence,UnigramEnti
 	}
 
 	public void index(UnigramEntity entity) {
-		index(new ArrayList<UnigramEntity>(Arrays.asList(entity)));
+		try {
+			pIndx.put(entity);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

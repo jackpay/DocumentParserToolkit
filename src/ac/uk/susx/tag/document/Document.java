@@ -21,6 +21,11 @@ public class Document implements IDocument {
 		this.document = document;
 	}
 	
+	public Document(CharSequence document, CharSequence id){
+		this(document);
+		this.id = id;
+	}
+	
 	/**
 	 * Returns a CharSequence representation of the raw document.
 	 */
@@ -120,6 +125,10 @@ public class Document implements IDocument {
 	 */
 	public CharSequence getDocumentId() {
 		return id;
+	}
+	
+	public String toString() {
+		return document.toString();
 	}
 
 }

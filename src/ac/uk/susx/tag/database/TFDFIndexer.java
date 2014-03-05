@@ -25,7 +25,7 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity
 	public PrimaryIndex<String, DocFreqUnigramEntity> getPrimaryIndex() {
 		return pIndx;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SecondaryIndex<String, String, DocFreqUnigramEntity> getSecondaryIndex() {
 		try {
@@ -67,7 +67,7 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity
 	}
 
 	public void index(DocFreqUnigramEntity entity) {
-		index(new ArrayList<DocFreqUnigramEntity>(Arrays.asList(entity)));
+		index(Arrays.asList(entity));
 	}
 
 }
