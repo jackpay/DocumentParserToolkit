@@ -3,6 +3,11 @@ package ac.uk.susx.tag.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.sleepycat.je.DatabaseException;
 
@@ -21,6 +26,7 @@ import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.preparser.DocFreqUnigramJobFactory;
 import ac.uk.susx.tag.processor.ConcurrentLinePreProcessor;
 import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
+import ac.uk.susx.tag.processor.IProcessor;
 import ac.uk.susx.tag.utils.FileUtils;
 
 /**
@@ -79,27 +85,46 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		}
 		
 		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
-		preparser.processFiles(files);
+		
+		ExecutorService es = Executors.newSingleThreadExecutor();
+		es.submit(new ProcessorCallable(preparser,files));
+		es.shutdown();
+		try {
+			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
+		System.err.println("Finished pre-processing");
 		TermFrequencyAnnotator anno = null;
 		try {
 			anno = (TermFrequencyAnnotator) AnnotatorRegistry.getAnnotator(TermFrequencyAnnotatorFactory.class);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		parser.processFiles(files);
+		es = Executors.newSingleThreadExecutor();
+		es.submit(new ProcessorCallable(parser, files));
+		es.shutdown();
 		try {
-			System.err.println(indexer.getPrimaryIndex().get("4").getFrequency("cell"));
+			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
+		System.err.println("Finished all parsing.");
+		
+		try {
+			System.err.println(indexer.getPrimaryIndex().get("4").getFrequency("the"));
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		try {
 			System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get("4").getDocName());
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+//		indexer.entityStore().close();
+//		preparser.getDocumentIndex().entityStore().close();
 //		try {
 //			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
 //		} catch (DatabaseException e) {
@@ -107,5 +132,23 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 //		}
 		
 		return true;
+	}
+	
+	private class ProcessorCallable implements Callable<Void> {
+		
+		private final IProcessor processor;
+		private final List<File> files;
+		
+		public ProcessorCallable(IProcessor processor, List<File> files) {
+			this.processor = processor;
+			this.files = files;
+		}
+
+		@Override
+		public Void call() throws Exception {
+			processor.processFiles(files);
+			return null;
+		}
+		
 	}
 }

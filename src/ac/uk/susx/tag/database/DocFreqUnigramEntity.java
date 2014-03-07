@@ -28,7 +28,7 @@ public class DocFreqUnigramEntity implements IEntity {
 	}
 	
 	public void addUnigram(String token) {
-		freq.put(token, 1);
+		freq.put(token, 0);
 	}
 	
 	public String getUnigram() {

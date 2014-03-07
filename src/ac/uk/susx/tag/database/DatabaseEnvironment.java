@@ -5,6 +5,8 @@ import java.io.File;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.Transaction;
+import com.sleepycat.je.TransactionConfig;
 
 public final class DatabaseEnvironment {
 
@@ -22,6 +24,10 @@ public final class DatabaseEnvironment {
 			ec.setAllowCreate(true);
 			ec.setTransactional(true);
 			environment = new Environment(new File(databaseLoc),ec);
+			TransactionConfig txnConfig = new TransactionConfig();
+			txnConfig.setReadCommitted(true);
+			Transaction txn = environment.beginTransaction(null, txnConfig);
+			
 		}
 		catch (DatabaseException dbe){
 			dbe.printStackTrace();

@@ -1,10 +1,11 @@
 package ac.uk.susx.tag.database;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.LockMode;
+import com.sleepycat.je.Transaction;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
@@ -43,20 +44,34 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity
 	public void index(List<DocFreqUnigramEntity> entities) {
 		for(DocFreqUnigramEntity entity : entities) {
 			DocFreqUnigramEntity dbEntity = null;
+			Transaction txn = null;
 			try {
-				dbEntity = pIndx.get(entity.getDocId());
+				txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
+			} catch (DatabaseException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				//dbEntity = pIndx.get(entity.getDocId());
+				dbEntity = pIndx.get(txn, entity.getDocId(), LockMode.RMW);
 			} catch (DatabaseException e) {
 				e.printStackTrace();
 			}
 			if(dbEntity == null) {
 				try {
 					pIndx.put(entity);
+					txn.commit();
 				} catch (DatabaseException e) {
 					e.printStackTrace();
 				}
 			}
 			else {
 				dbEntity.incrementFrequency(entity.getUnigram());
+				try {
+					txn.commit();
+				} catch (DatabaseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				try {
 					pIndx.put(dbEntity);
 				} catch (DatabaseException e) {
