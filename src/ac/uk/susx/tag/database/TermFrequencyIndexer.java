@@ -5,11 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.DeadlockException;
+import com.sleepycat.je.LockMode;
+import com.sleepycat.je.Transaction;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
 public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,UnigramEntity>{
 	
+	private static final int MAX_DEADLOCK_RETRIES = 2000;
 	private PrimaryIndex<CharSequence,UnigramEntity> pIndx;
 	private final DatabaseEntityStore entityStore;
 
@@ -32,26 +36,42 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 
 	public void index(List<UnigramEntity> entities) {
 		for(UnigramEntity entity : entities) {
-			UnigramEntity dbEntity = null;
-			try {
-				dbEntity = pIndx.get(entity.getUnigram());
-			} catch (DatabaseException e) {
-				e.printStackTrace();
-			}
-			if(dbEntity == null) {
+			int retry_count = 0;
+			while(retry_count < MAX_DEADLOCK_RETRIES) {
+				Transaction txn = null;
 				try {
-					pIndx.put(entity);
+					txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
+					UnigramEntity dbEnt =  pIndx.get(txn, entity.getUnigram(), LockMode.RMW);
+					if(dbEnt == null) {
+						pIndx.put(txn,entity);
+						txn.commit();
+					}
+					else {
+						dbEnt.incrementFrequency();
+						pIndx.put(txn,dbEnt);
+						txn.commit();
+					}
+				} catch (DeadlockException e) {
+					retry_count++;
+					try {
+						if(txn != null) {
+							txn.abort();
+						}
+						System.err.println("AVERTED");
+					} catch (DatabaseException e1) {
+						System.err.println("FAILED TO AVERT");
+					}
 				} catch (DatabaseException e) {
-					e.printStackTrace();
+					try {
+						if(txn != null) {
+							txn.abort();
+						}
+					} catch (DatabaseException e1) {
+						System.err.println("FAILED TXN ABORT ON GENERIC FAILURE");
+					}
+					System.err.println("GENERIC SYSTEM FAILURE - ABORTING");
 				}
-			}
-			else {
-				dbEntity.incrementFrequency();
-				try {
-					pIndx.put(dbEntity);
-				} catch (DatabaseException e) {
-					e.printStackTrace();
-				}
+				retry_count = MAX_DEADLOCK_RETRIES;
 			}
 		}
 	}

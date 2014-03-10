@@ -16,8 +16,9 @@ import ac.uk.susx.tag.annotator.TermFrequencyAnnotator;
 import ac.uk.susx.tag.annotator.TermFrequencyAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
+import ac.uk.susx.tag.database.DatabaseEnvironment;
 import ac.uk.susx.tag.database.DocFreqUnigramEntity;
-import ac.uk.susx.tag.database.TFDFIndexer;
+import ac.uk.susx.tag.database.DocFrequencyIndexer;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
@@ -38,7 +39,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	private ConcurrentLineProcessor parser;
 	private ConcurrentLinePreProcessor<String, DocFreqUnigramEntity> preparser;
 	private IConfiguration<CharSequence> config;
-	private TFDFIndexer indexer;
+	private DocFrequencyIndexer indexer;
 
 	/**
 	 * @param args
@@ -65,7 +66,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CD");
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
 		parser = new ConcurrentLineProcessor(config);
-		indexer = new TFDFIndexer();
+		indexer = new DocFrequencyIndexer();
 		preparser = new ConcurrentLinePreProcessor<String,DocFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
 
@@ -112,24 +113,21 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		System.err.println("Finished all parsing.");
 		
 		try {
-			System.err.println(indexer.getPrimaryIndex().get("4").getFrequency("the"));
+			System.err.println(indexer.getPrimaryIndex().get("3").getFrequency("overload"));
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get("4").getDocName());
+			System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get("3").getDocName());
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
 		
-//		indexer.entityStore().close();
-//		preparser.getDocumentIndex().entityStore().close();
-//		try {
-//			System.err.println(indexer.getPrimaryIndex().get("the").getFrequency());
-//		} catch (DatabaseException e) {
-//			e.printStackTrace();
-//		}
+		System.err.println("Closing database.");
+		preparser.getDocumentIndex().entityStore().close();
+		indexer.entityStore().close();
+		DatabaseEnvironment.getInstance().close();
 		
 		return true;
 	}

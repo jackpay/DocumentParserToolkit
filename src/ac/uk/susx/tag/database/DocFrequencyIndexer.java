@@ -4,17 +4,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.DeadlockException;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.Transaction;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
-public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity> {
+public class DocFrequencyIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity> {
 	
+	private static final int MAX_DEADLOCK_RETRIES = 2000; // Arbitrary but large retry limit.
 	private PrimaryIndex<String, DocFreqUnigramEntity> pIndx;
 	private final DatabaseEntityStore entityStore;
 	
-	public TFDFIndexer() {
+	public DocFrequencyIndexer() {
 		entityStore = new DatabaseEntityStore();
 		try {
 			pIndx = entityStore.getStore().getPrimaryIndex(String.class, DocFreqUnigramEntity.class);
@@ -43,40 +45,42 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity
 
 	public void index(List<DocFreqUnigramEntity> entities) {
 		for(DocFreqUnigramEntity entity : entities) {
-			DocFreqUnigramEntity dbEntity = null;
-			Transaction txn = null;
-			try {
-				txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
-			} catch (DatabaseException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				//dbEntity = pIndx.get(entity.getDocId());
-				dbEntity = pIndx.get(txn, entity.getDocId(), LockMode.RMW);
-			} catch (DatabaseException e) {
-				e.printStackTrace();
-			}
-			if(dbEntity == null) {
+			int retry_count = 0;
+			while(retry_count < MAX_DEADLOCK_RETRIES) {
+				Transaction txn = null;
 				try {
-					pIndx.put(entity);
-					txn.commit();
+					txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
+					DocFreqUnigramEntity dbEnt =  pIndx.get(txn, entity.getDocId(), LockMode.RMW);
+					if(dbEnt == null) {
+						pIndx.put(txn,entity);
+						txn.commit();
+					}
+					else {
+						dbEnt.incrementFrequency(entity.getUnigram());
+						pIndx.put(txn,dbEnt);
+						txn.commit();
+					}
+				} catch (DeadlockException e) {
+					retry_count++;
+					try {
+						if(txn != null) {
+							txn.abort();
+						}
+						System.err.println("AVERTED");
+					} catch (DatabaseException e1) {
+						System.err.println("FAILED TO AVERT");
+					}
 				} catch (DatabaseException e) {
-					e.printStackTrace();
+					try {
+						if(txn != null) {
+							txn.abort();
+						}
+					} catch (DatabaseException e1) {
+						System.err.println("FAILED TXN ABORT ON GENERIC FAILURE");
+					}
+					System.err.println("GENERIC SYSTEM FAILURE - ABORTING");
 				}
-			}
-			else {
-				dbEntity.incrementFrequency(entity.getUnigram());
-				try {
-					txn.commit();
-				} catch (DatabaseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					pIndx.put(dbEntity);
-				} catch (DatabaseException e) {
-					e.printStackTrace();
-				}
+				retry_count = MAX_DEADLOCK_RETRIES;
 			}
 		}
 	}

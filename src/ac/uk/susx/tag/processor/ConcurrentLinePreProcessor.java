@@ -76,12 +76,11 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 		}
 
 		public void run() {
-			ExecutorService executor;
 			int id = 0;
+			ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 			for(File file : files){
 				docIndex.index(new DocIndexEntity(file.getName(),String.valueOf(id)));
 				try {
-					executor = Executors.newFixedThreadPool(NTHREADS);
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					String currLine;
 					currLine = br.readLine();
@@ -100,8 +99,6 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
 						}
 					}
-					executor.shutdown();
-					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 					System.err.println("Finished pre-processing file: " + file.getName());
 					br.close();
 				}
@@ -113,6 +110,12 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 					break;
 				}
 				id++;
+			}
+			executor.shutdown();
+			try {
+				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

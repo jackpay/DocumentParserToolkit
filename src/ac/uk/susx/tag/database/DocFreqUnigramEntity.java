@@ -46,12 +46,13 @@ public class DocFreqUnigramEntity implements IEntity {
 		return freq.get(token);
 	}
 	
-	public void incrementFrequency(String token) {
+	public DocFreqUnigramEntity incrementFrequency(String token) {
 		if(freq.get(token) == null){
 			freq.put(token, 0);
 		}
 		int f = freq.get(token).intValue() + 1;
 		freq.put(token,f);
+		return this;
 	}
 	
 }

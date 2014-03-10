@@ -13,20 +13,26 @@ public final class DatabaseEnvironment {
 	private Environment environment;
 	private static DatabaseEnvironment self;
 	private String databaseLoc = "database";
+	private Transaction tnx;
 
 	private DatabaseEnvironment(String databaseLoc) {
+		this();
 		this.databaseLoc = databaseLoc;
 	}
 	
 	private DatabaseEnvironment() {
+		tnx = null;
 		try{
 			EnvironmentConfig ec = new EnvironmentConfig();
+			ec.setTxnTimeout(300000L);
+			ec.setLockTimeout(300000L); // Set to 5mins max timeout.
+			ec.setCachePercent(25);
 			ec.setAllowCreate(true);
 			ec.setTransactional(true);
 			environment = new Environment(new File(databaseLoc),ec);
-			TransactionConfig txnConfig = new TransactionConfig();
-			txnConfig.setReadCommitted(true);
-			Transaction txn = environment.beginTransaction(null, txnConfig);
+			TransactionConfig tc = new TransactionConfig();
+			tc.setReadCommitted(true);
+			tnx = environment.beginTransaction(null, tc);
 			
 		}
 		catch (DatabaseException dbe){
@@ -41,6 +47,8 @@ public final class DatabaseEnvironment {
 	public void close() {
 		if (environment != null) {
 			try {
+				tnx.commit();
+				environment.cleanLog();
 				environment.close();
 			}
 			catch (DatabaseException dbe) {
@@ -52,6 +60,23 @@ public final class DatabaseEnvironment {
 	public static DatabaseEnvironment getInstance() {
 		if(self == null) {
 			self = new DatabaseEnvironment();
+		}
+		return self;
+	}
+	
+	/**
+	 * Returns a database instance at a given location adhering to the singleton pattern.
+	 * If one already exists at another location it is closed and a new one opened at the new location.
+	 * @param databaseLoc
+	 * @return DatabaseEnvironment singleton currently running.
+	 */
+	public static DatabaseEnvironment getInstance(String databaseLoc) {
+		if(self == null) {
+			self = new DatabaseEnvironment(databaseLoc);
+		}
+		else {
+			self.close();
+			self = new DatabaseEnvironment(databaseLoc); 
 		}
 		return self;
 	}

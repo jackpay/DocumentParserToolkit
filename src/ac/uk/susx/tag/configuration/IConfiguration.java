@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.database.DocumentIndexer;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.IInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;

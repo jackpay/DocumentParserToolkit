@@ -27,8 +27,6 @@ public interface IDocument {
 
 	public <AT> List<IAnnotation<AT>> getDocumentAnnotations(Class<? extends IAnnotator<AT,?>> cl) throws IllegalAnnotationStorageException;
 	
-	//public Collection<List<? extends IAnnotation<?>>> getAllDocumentAnnotations();
-	
 	public void removeDocumentAnnotations(Collection<Class<? extends IAnnotator<?,?>>> excludedAnnotators);
 	
 	public void retainDocumentAnnotations(Collection<Class<? extends IAnnotator<?,?>>> includedAnnotators);
