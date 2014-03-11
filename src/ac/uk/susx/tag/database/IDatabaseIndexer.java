@@ -2,6 +2,7 @@ package ac.uk.susx.tag.database;
 
 import java.util.List;
 
+import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 /**
@@ -13,11 +14,9 @@ import com.sleepycat.persist.SecondaryIndex;
  */
 public interface IDatabaseIndexer<PE,ET extends IEntity>{
 
-	public PrimaryIndex<PE,ET> getPrimaryIndex();
-	
-	public <SE> SecondaryIndex<PE,SE,ET> getSecondaryIndex();
-
 	public DatabaseEntityStore entityStore();
+	
+	public <T> EntityIndex<?,T> getIndex(Class<T> indexType);
 	
 	public void index(List<ET> entities);
 	

@@ -16,9 +16,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.Transaction;
-
 import ac.uk.susx.tag.database.DocIndexEntity;
 import ac.uk.susx.tag.database.DocumentIndexer;
 import ac.uk.susx.tag.database.IDatabaseIndexer;

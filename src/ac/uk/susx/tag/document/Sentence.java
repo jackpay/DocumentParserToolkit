@@ -14,7 +14,6 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.indexing.OffsetIndexToken;
-import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
@@ -23,12 +22,23 @@ public final class Sentence {
 	private final IAnnotation<String> sentence;
 	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations;
 	private final HashMap<OffsetIndexToken, List<? extends IAnnotation<?>>> indexAnnotations;
+	private final OffsetIndexToken offset;
+	private final CharSequence docId;
 
 	public Sentence(IAnnotation<String> sentence, int start, int end) {
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
-		
+		this.offset = new OffsetIndexToken(start,end);
+		docId = null;
+	}
+	
+	public Sentence(IAnnotation<String> sentence, int start, int end, CharSequence docId) {
+		annotations = Maps.newHashMap();
+		indexAnnotations = Maps.newHashMap();
+		this.sentence = sentence;
+		this.offset = new OffsetIndexToken(start,end);
+		this.docId = docId;
 	}
 	
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends IAnnotation<AT>> annos) {
@@ -134,6 +144,14 @@ public final class Sentence {
 		} catch (ClassCastException ex) {
 			throw new IllegalAnnotationStorageException(annotator.getClass());
 		}
+	}
+	
+	public OffsetIndexToken getOffsetIndex() {
+		return offset;
+	}
+	
+	public CharSequence docReference() {
+		return docId;
 	}
 
 }

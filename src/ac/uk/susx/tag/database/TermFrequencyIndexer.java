@@ -15,6 +15,7 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 	
 	private static final int MAX_DEADLOCK_RETRIES = 2000;
 	private PrimaryIndex<CharSequence,UnigramEntity> pIndx;
+	private SecondaryIndex<String,String,UnigramEntity> sIndx;
 	private final DatabaseEntityStore entityStore;
 
 	public TermFrequencyIndexer() {
@@ -51,6 +52,7 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 						pIndx.put(txn,dbEnt);
 						txn.commit();
 					}
+					retry_count = MAX_DEADLOCK_RETRIES;
 				} catch (DeadlockException e) {
 					retry_count++;
 					try {
@@ -71,7 +73,6 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 					}
 					System.err.println("GENERIC SYSTEM FAILURE - ABORTING");
 				}
-				retry_count = MAX_DEADLOCK_RETRIES;
 			}
 		}
 	}
@@ -80,11 +81,8 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 		index(new ArrayList<UnigramEntity>(Arrays.asList(entity)));
 	}
 
-	/** 
-	 * No secondary index.
-	 */
-	public <SE> SecondaryIndex<CharSequence, SE, UnigramEntity> getSecondaryIndex() {
-		return null;
+	public SecondaryIndex<String, String, UnigramEntity> getSecondaryIndex() {
+		return sIndx;
 	}
 
 }

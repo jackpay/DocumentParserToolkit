@@ -1,7 +1,5 @@
 package ac.uk.susx.tag.database;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
@@ -22,12 +20,10 @@ public class DocumentIndexer implements IDatabaseIndexer<String,DocIndexEntity> 
 		}
 	}
 	
-	@Override
 	public PrimaryIndex<String, DocIndexEntity> getPrimaryIndex() {
 		return pIndx;
 	}
 
-	@Override
 	public <SE> SecondaryIndex<String, SE, DocIndexEntity> getSecondaryIndex() {
 		try {
 			return (SecondaryIndex<String, SE, DocIndexEntity>) entityStore().getStore().getSecondaryIndex(getPrimaryIndex(), String.class, "docId");

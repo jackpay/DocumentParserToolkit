@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.google.common.collect.Maps;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 
 @Entity
 public class DocFreqUnigramEntity implements IEntity {
@@ -27,10 +29,6 @@ public class DocFreqUnigramEntity implements IEntity {
 		this.docId = docId;
 	}
 	
-	public void addUnigram(String token) {
-		freq.put(token, 0);
-	}
-	
 	public String getUnigram() {
 		return token;
 	}
@@ -46,13 +44,14 @@ public class DocFreqUnigramEntity implements IEntity {
 		return freq.get(token);
 	}
 	
-	public DocFreqUnigramEntity incrementFrequency(String token) {
+	public void incrementFrequency(String token) {
 		if(freq.get(token) == null){
-			freq.put(token, 0);
+			freq.put(token, 1);
 		}
-		int f = freq.get(token).intValue() + 1;
-		freq.put(token,f);
-		return this;
+		else {
+			int f = freq.get(token).intValue() + 1;
+			freq.put(token,f);
+		}
 	}
 	
 }

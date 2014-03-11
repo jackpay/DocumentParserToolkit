@@ -10,15 +10,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.persist.EntityCursor;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
-import ac.uk.susx.tag.annotator.TermFrequencyAnnotator;
-import ac.uk.susx.tag.annotator.TermFrequencyAnnotatorFactory;
+import ac.uk.susx.tag.annotator.FrequencyAnnotator;
+import ac.uk.susx.tag.annotator.FrequencyAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.database.DatabaseEnvironment;
 import ac.uk.susx.tag.database.DocFreqUnigramEntity;
-import ac.uk.susx.tag.database.DocFrequencyIndexer;
+import ac.uk.susx.tag.database.TFDFIndexer;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
@@ -39,7 +40,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	private ConcurrentLineProcessor parser;
 	private ConcurrentLinePreProcessor<String, DocFreqUnigramEntity> preparser;
 	private IConfiguration<CharSequence> config;
-	private DocFrequencyIndexer indexer;
+	private TFDFIndexer indexer;
 
 	/**
 	 * @param args
@@ -66,7 +67,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CD");
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
 		parser = new ConcurrentLineProcessor(config);
-		indexer = new DocFrequencyIndexer();
+		indexer = new TFDFIndexer();
 		preparser = new ConcurrentLinePreProcessor<String,DocFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
 
@@ -96,9 +97,9 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 			e2.printStackTrace();
 		}
 		System.err.println("Finished pre-processing");
-		TermFrequencyAnnotator anno = null;
+		FrequencyAnnotator anno = null;
 		try {
-			anno = (TermFrequencyAnnotator) AnnotatorRegistry.getAnnotator(TermFrequencyAnnotatorFactory.class);
+			anno = (FrequencyAnnotator) AnnotatorRegistry.getAnnotator(FrequencyAnnotatorFactory.class);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -113,7 +114,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		System.err.println("Finished all parsing.");
 		
 		try {
-			System.err.println(indexer.getPrimaryIndex().get("3").getFrequency("overload"));
+			System.err.println(indexer.getDocFrequencyIndex().get("3").getFrequency("overload"));
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
@@ -124,7 +125,31 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 			e.printStackTrace();
 		}
 		
-		System.err.println("Closing database.");
+		for(String token : indexer.getFailed().keySet()) {
+			try {
+				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getDocFrequencyIndex().get(indexer.getFailed().get(token)).getFrequency(token));
+				System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get(indexer.getFailed().get(token)).getDocName());
+			} catch (DatabaseException e) {
+				e.printStackTrace();
+			}
+		}
+		int freq = 0;
+		try {
+			EntityCursor<DocFreqUnigramEntity> ec = indexer.getDocFrequencyIndex().entities();
+			for(DocFreqUnigramEntity entity : ec){
+				freq += entity.getFrequency("and");
+			}
+			ec.close();
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("SumFreq: " + freq + " Freq: " + indexer.getCorpusFrequencyIndex().get("and").getFrequency());
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		preparser.getDocumentIndex().entityStore().close();
 		indexer.entityStore().close();
 		DatabaseEnvironment.getInstance().close();

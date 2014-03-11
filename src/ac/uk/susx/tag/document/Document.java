@@ -14,7 +14,7 @@ public class Document implements IDocument {
 	
 	private final List<Sentence> sentences; // The document represented as Sentences.
 	private CharSequence document; // The raw text of the document.
-	private CharSequence id; // Allows a document to have an identifier. Document objects are able to have the same id, for purposes of document consolidation.
+	private CharSequence id; // Allows a document to have an identifier. Different Document objects are able to have the same id, for purposes of document consolidation.
 	
 	public Document(CharSequence document){
 		sentences = new ArrayList<Sentence>();
