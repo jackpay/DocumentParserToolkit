@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
@@ -49,6 +50,12 @@ public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntit
 	 * No secondary index.
 	 */
 	public <SE> SecondaryIndex<UnigramEntity[], SE, NGramEntity> getSecondaryIndex() {
+		return null;
+	}
+
+	@Override
+	public <T> EntityIndex<?, T> getIndex(Class<T> indexType) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

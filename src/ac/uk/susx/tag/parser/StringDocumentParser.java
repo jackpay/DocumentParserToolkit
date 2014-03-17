@@ -114,7 +114,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		System.err.println("Finished all parsing.");
 		
 		try {
-			System.err.println(indexer.getDocFrequencyIndex().get("3").getFrequency("overload"));
+			System.err.println(indexer.getTermFrequencyIndex().get("3").getFrequency("overload"));
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
@@ -127,7 +127,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		
 		for(String token : indexer.getFailed().keySet()) {
 			try {
-				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getDocFrequencyIndex().get(indexer.getFailed().get(token)).getFrequency(token));
+				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getTermFrequencyIndex().get(indexer.getFailed().get(token)).getFrequency(token));
 				System.err.println(preparser.getDocumentIndex().getPrimaryIndex().get(indexer.getFailed().get(token)).getDocName());
 			} catch (DatabaseException e) {
 				e.printStackTrace();
@@ -135,7 +135,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		}
 		int freq = 0;
 		try {
-			EntityCursor<DocFreqUnigramEntity> ec = indexer.getDocFrequencyIndex().entities();
+			EntityCursor<DocFreqUnigramEntity> ec = indexer.getTermFrequencyIndex().entities();
 			for(DocFreqUnigramEntity entity : ec){
 				freq += entity.getFrequency("and");
 			}

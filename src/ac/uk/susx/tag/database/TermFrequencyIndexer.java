@@ -8,6 +8,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.DeadlockException;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.Transaction;
+import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
@@ -83,6 +84,12 @@ public class TermFrequencyIndexer implements IDatabaseIndexer<CharSequence,Unigr
 
 	public SecondaryIndex<String, String, UnigramEntity> getSecondaryIndex() {
 		return sIndx;
+	}
+
+	@Override
+	public <T> EntityIndex<?, T> getIndex(Class<T> indexType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
