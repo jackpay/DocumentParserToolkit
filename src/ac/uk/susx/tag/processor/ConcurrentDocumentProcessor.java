@@ -28,9 +28,11 @@ public class ConcurrentDocumentProcessor<DT,AT> implements IProcessor<DT,AT> {
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		for(File file : files){
 			IDocument<DT,AT> doc = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
-			Callable<Boolean> docCaller = new DocumentCallable(doc, file.getName());
-			Future<Boolean> future = executor.submit(docCaller);
-			futures.add(future); // Only really there to allow return values in the future.
+			if(doc != null) {
+				Callable<Boolean> docCaller = new DocumentCallable(doc, file.getName());
+				Future<Boolean> future = executor.submit(docCaller);
+				futures.add(future); // Only really there to allow return values in the future.
+			}
 		}
 		executor.shutdown();
 	}
