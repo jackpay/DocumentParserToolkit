@@ -44,14 +44,15 @@ public class LumiMsgPackDocumentFormatter implements InputDocumentFormatter<Stri
 			for(Value key : mv.keySet()) {
 				ArrayValue aKey = (ArrayValue) key;
 				String keyVal = aKey.get(1).toString().replace("\"", "");
-				if(keyVal.equals(LANG)) {
-					System.out.println(mv.get(key).toString());
-					if(!mv.get(key).asArrayValue().get(1).toString().replace("\"", "").equals(LANG_CODE)) {
-						return null;
+				if(keyVal != null && keyVal.equals(LANG) && !mv.get(key).isNilValue()) {
+					if(!mv.get(key).toString().equals(null)){
+						if(!mv.get(key).asArrayValue().get(1).toString().replace("\"", "").equals(LANG_CODE) && !mv.get(key).asArrayValue().get(1).toString().replace("\"", "").equals("en-US")) {
+							return null;
+						}
 					}
 				}
 				else{
-					if(keyVal.equals(TITLE) || keyVal.equals(BODY)) {
+					if(!mv.get(key).isNilValue() && (keyVal.equals(TITLE) || keyVal.equals(BODY))) {
 						sb.append(parseHTML(mv.get(key).asArrayValue().get(1).toString()));
 					}
 				}
@@ -66,8 +67,6 @@ public class LumiMsgPackDocumentFormatter implements InputDocumentFormatter<Stri
 	
 	private String parseHTML(String html) {
 		Document doc = Jsoup.parse(html);
-		System.err.println(doc.text());
-		System.out.println(doc.text());
 		return doc.text().replace("\\n", " ").replace("\\t", " ");
 	}
 
