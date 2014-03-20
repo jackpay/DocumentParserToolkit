@@ -10,6 +10,7 @@ import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.filter.RegexFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.filter.RetainAnnotationFilter;
 import ac.uk.susx.tag.filter.StopWordFilter;
 import ac.uk.susx.tag.formatting.LumiMsgPackDocumentFormatter;
 import ac.uk.susx.tag.formatting.OutputDocumentFormatter;
@@ -63,7 +64,7 @@ public class LumiParser implements IParser<String,String>{
 		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
 		config.addFilter(new RemoveAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("-lrb-","-rrb-")),StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass(),true));
-		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
+		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		parser = new ConcurrentDocumentProcessor<String,String>(config);
