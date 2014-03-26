@@ -1,5 +1,6 @@
 package ac.uk.susx.tag.filter;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class MinimumTokenLengthFilter extends AbstractAnnotationFilter<String>{
@@ -12,8 +13,8 @@ public class MinimumTokenLengthFilter extends AbstractAnnotationFilter<String>{
 	}
 
 	@Override
-	public boolean matchAnnotation(String annotation) {
-		if(annotation.length() < len) {
+	public boolean matchAnnotation(IAnnotation<String> annotation) {
+		if(annotation.getAnnotation().length() < len) {
 			return true;
 		}
 		return false;

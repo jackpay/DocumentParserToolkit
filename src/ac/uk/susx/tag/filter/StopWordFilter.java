@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class StopWordFilter extends AbstractAnnotationFilter<String>{
@@ -17,8 +18,8 @@ public class StopWordFilter extends AbstractAnnotationFilter<String>{
 	}
 
 	@Override
-	public boolean matchAnnotation(String annotation) {
-		String lann = annotation.toLowerCase();
+	public boolean matchAnnotation(IAnnotation<String> annotation) {
+		String lann = annotation.getAnnotation().toLowerCase();
 		for(String s : stopwords){
 			if(s.equals(lann)){
 				return true;

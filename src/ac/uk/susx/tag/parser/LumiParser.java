@@ -8,7 +8,9 @@ import java.util.Arrays;
 import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.filter.IntersectFilter;
 import ac.uk.susx.tag.filter.LowercaseFilter;
+import ac.uk.susx.tag.filter.MinimumTokenLengthFilter;
 import ac.uk.susx.tag.filter.RegexFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.filter.RetainAnnotationFilter;
@@ -71,6 +73,12 @@ public class LumiParser implements IParser<String,String>{
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		config.addFilter(new LowercaseFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		config.addFilter(new MinimumTokenLengthFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),true,2));
+//		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.PERSON.getAnnotator().getClass(),true,true));
+//		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.LOCATION.getAnnotator().getClass(),true,true));
+//		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.ORGANISATION.getAnnotator().getClass(),true,true));
+		
+		
 		parser = new ConcurrentStringLineProcessor(config);
 		try {
 			files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());

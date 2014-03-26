@@ -2,6 +2,7 @@ package ac.uk.susx.tag.filter;
 
 import java.util.List;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class RemoveAnnotationFilter<AT> extends AbstractAnnotationFilter<AT>{
@@ -14,10 +15,10 @@ public class RemoveAnnotationFilter<AT> extends AbstractAnnotationFilter<AT>{
 		super(filterAnnotations, annotator, remAllTok, true);
 	}
 	
-	public boolean matchAnnotation(AT annotation){
+	public boolean matchAnnotation(IAnnotation<AT> annotation){
 		boolean match = false;
 		for(AT exAnn : getFilterAnnotations()){
-			if(annotation.equals(exAnn)){
+			if(annotation.getAnnotation().equals(exAnn)){
 				return true;
 			}
 		}
