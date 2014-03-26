@@ -9,7 +9,9 @@ public class StringWriter extends AbstractOutputWriter<String>{
 	}
 
 	public synchronized void writeToken(String seq) {
-		getWriter().print(seq);
+		if(seq != null) {
+			getWriter().print(seq);
+		}
 	}
 
 }
