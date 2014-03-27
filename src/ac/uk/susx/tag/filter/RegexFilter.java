@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class RegexFilter extends AbstractAnnotationFilter<String>{
@@ -16,10 +17,10 @@ public class RegexFilter extends AbstractAnnotationFilter<String>{
 		super(pattern, annotator,true, remove);
 	}
 
-	public boolean matchAnnotation(String annotation){
+	public boolean matchAnnotation(IAnnotation<String> annotation){
 		for(String fAnn : getFilterAnnotations()){
 			Pattern patt = Pattern.compile(fAnn);
-			Matcher matcher = patt.matcher(annotation);
+			Matcher matcher = patt.matcher(annotation.getAnnotation());
 			if(matcher.matches()){
 				return true;
 			}

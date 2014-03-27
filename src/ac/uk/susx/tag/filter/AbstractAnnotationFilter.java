@@ -87,6 +87,6 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		return filterAnnotations;
 	}
 	
-	public abstract boolean matchAnnotation(AT annotation);
+	public abstract boolean matchAnnotation(IAnnotation<AT> annotation);
 
 }
