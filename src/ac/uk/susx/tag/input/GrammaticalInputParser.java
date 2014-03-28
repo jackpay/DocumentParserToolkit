@@ -26,9 +26,9 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		(names = {"-s", "--sentence"}, description="Sentence annotations")
 		private boolean sentenceTag = false;
 		
-		@Parameter
-		(names = {"-lem", "--lemmatise"}, description="Text lemmatiser")
-		private boolean lemmatise =  false;
+//		@Parameter
+//		(names = {"-lem", "--lemmatise"}, description="Text lemmatiser")
+//		private boolean lemmatise =  false;
 		
 		@Parameter
 		(names = {"-stem", "--stemmer"}, description="Stems words")
@@ -74,9 +74,9 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			return location;
 		}
 		
-		public boolean lemmatise() {
-			return lemmatise;
-		}
+//		public boolean lemmatise() {
+//			return lemmatise;
+//		}
 		
 		public boolean stem() {
 			return stem;
@@ -91,7 +91,7 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			if(person) { sb.append("per-"); }
 			if(location) { sb.append("loc-"); }
 			if(organisation) { sb.append("org-"); }
-			if(lemmatise) { sb.append("l-"); }
+			//if(lemmatise) { sb.append("l-"); }
 			if(stem){ sb.append("stem-"); }
 			return sb.toString().length() > 0 ? sb.toString().substring(0, sb.toString().length()-1) : "output";
 		}
@@ -109,18 +109,24 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setOutSuff(reader.outSuffix());
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
-		if(reader.lemmatise()) {
-			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
-		}
-		else{
-			if(reader.stem()) {
-				gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
-			}
-			else {
-				if(reader.token()) {
-					gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
-				}
-			}
+//		if(reader.lemmatise()) {
+//			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
+//			System.out.println("Lemmatising");
+//		}
+//		else{
+//			if(reader.stem()) {
+//				gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
+//			}
+//			else {
+//				if(reader.token()) {
+//					gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+//				}
+//			}
+//		}
+		
+		if(reader.token()) {
+			System.err.println("token");
+			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
 		}
 		//reader.getAdditionalAnnotators();
 		if(reader.sentence()){

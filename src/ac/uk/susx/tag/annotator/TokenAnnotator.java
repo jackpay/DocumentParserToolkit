@@ -27,7 +27,6 @@ public class TokenAnnotator extends AbstractStringAnnotator{
 	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
 	 */
 	public synchronized List<StringAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException{
-		
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		String docStr = annotation.getAnnotation();
 

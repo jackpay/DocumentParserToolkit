@@ -20,10 +20,10 @@ import ac.uk.susx.tag.utils.AnnotationUtils;
 public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
 	
 	private NameFinderME nameFinder;
-	private static final String TOKDELIM = "-";
+	private static final String TOKDELIM = "_";
 	private final String modelName;
 	
-	public AbstractNERAnnotator(String modelName){
+	public AbstractNERAnnotator(String modelName) {
 		this.modelName = modelName;
 	}
 

@@ -19,7 +19,7 @@ public class LowercaseFilter implements IFilter<String> {
 		for(IAnnotation<String> anno : annotations) {
 			annotations.set(annotations.indexOf(anno), new StringAnnotation(anno.getAnnotation().toLowerCase(),anno.getStart(),anno.getEnd()));
 		}
-		return null;
+		return annotations;
 	}
 
 	public Map<Class<? extends IAnnotator>, List<IAnnotation<String>>> filterCollection(Map<Class<? extends IAnnotator>, List<IAnnotation<String>>> annotations) {
