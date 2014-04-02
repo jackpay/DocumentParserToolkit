@@ -2,6 +2,7 @@ package ac.uk.susx.tag.annotator.enums;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.ChunkSpanAnnotator;
+import ac.uk.susx.tag.annotator.EntityLinkingAnnotator;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.ChunkTagAnnotator;
 import ac.uk.susx.tag.annotator.LemmatiserAnnotator;
@@ -32,9 +33,11 @@ public enum StringAnnotatorEnum {
 		
 		LOCATION(new LocationAnnotator()),
 		
-		//LEMMATISER(new LemmatiserAnnotator()),
+		LEMMATISER(new LemmatiserAnnotator()),
 		
-		STEMMER(new PorterStemmerAnnotator());
+		STEMMER(new PorterStemmerAnnotator()),
+		
+		ENTITY(new EntityLinkingAnnotator());
 		
 		private final IAnnotator<IDocument<String,String>,? extends IAnnotation<String>,String,String> annotator;
 		
