@@ -70,7 +70,7 @@ public class LumiParser implements IParser<String,String>{
 		//config.addFilter(new StopWordFilter(StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
 		//config.addFilter(new RemoveAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("-lrb-","-rrb-")),StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
-		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
+		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		config.addFilter(new LowercaseFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
