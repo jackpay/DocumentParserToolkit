@@ -12,28 +12,35 @@ import java.util.regex.Pattern;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.annotator.enums.StringAnnotatorEnum;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class EntityLinkingAnnotator extends AbstractStringAnnotator {
 	
-	private HashSet<String> entities;
+	private HashSet<List<? extends IAnnotation<String>>> entities;
 	private static final String TAG = "entity";
 	private static final String DELIM = "_";
 	
 	public EntityLinkingAnnotator() {
-		entities = new HashSet<String>();
+		entities = new HashSet<List<? extends IAnnotation<String>>>();
 	}
 
 	public List<StringAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		String ann = annotation.getAnnotation();
-		for(String entity : entities) {
-			if(ann.contains(entity)) {
+		List<? extends IAnnotation<String>> ann = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(annotation);
+		for(IAnnotation<String> a : ann) {
+			if(entities.contains(a)) {
+				
+			}
+		}
+		for(List<? extends IAnnotation<String>> entity : entities) {
+			if(ann.contains(entity) && entity.length() > 3) {
+				System.out.println("FOUND: " + entity + " " + ann.indexOf(entity)  + " " + ann.substring(ann.indexOf(entity)));
 				boolean found = true;
 				int i = 0;
 				while(i < ann.length() && found) {
-					Pattern patt = Pattern.compile(Pattern.quote(entity));
-					Matcher match = patt.matcher(Pattern.quote(ann.substring(i)));
+					Pattern patt = Pattern.compile(entity);
+					Matcher match = patt.matcher(ann.substring(i));
 					if(match.matches()){
 						String strEntity = ann.substring(match.start(), match.end());
 						System.out.println(strEntity);
@@ -57,7 +64,11 @@ public class EntityLinkingAnnotator extends AbstractStringAnnotator {
 			try {
 				line = br.readLine();
 				while(line != null) {
-					entities.add(line.replace("\n", ""));
+					try {
+						entities.add(StringAnnotatorEnum.TOKEN.getAnnotator().annotate(new StringAnnotation(line.replace("\n", ""),0,0)));
+					} catch (IncompatibleAnnotationException e) {
+						e.printStackTrace();
+					}
 					line = br.readLine();
 				}
 			} catch (IOException e) {

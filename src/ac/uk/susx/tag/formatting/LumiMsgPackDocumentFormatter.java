@@ -44,7 +44,6 @@ public class LumiMsgPackDocumentFormatter implements InputDocumentFormatter<Stri
 			for(Value key : mv.keySet()) {
 				ArrayValue aKey = (ArrayValue) key;
 				String keyVal = aKey.get(1).toString().replace("\"", "");
-				System.out.println(keyVal);
 				if(keyVal != null && keyVal.equals(LANG) && !mv.get(key).isNilValue()) {
 					if(!mv.get(key).toString().equals(null)){
 						if(!mv.get(key).asArrayValue().get(1).toString().replace("\"", "").equals(LANG_CODE) && !mv.get(key).asArrayValue().get(1).toString().replace("\"", "").equals("en-US")) {
