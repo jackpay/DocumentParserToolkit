@@ -100,7 +100,8 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			if(location) { sb.append("loc-"); }
 			if(organisation) { sb.append("org-"); }
 			//if(lemmatise) { sb.append("l-"); }
-			if(stem){ sb.append("stem-"); }
+			if(stem) { sb.append("stem-"); }
+			if(entities) { sb.append("el-");}
 			return sb.toString().length() > 0 ? sb.toString().substring(0, sb.toString().length()-1) : "output";
 		}
 	}
@@ -117,29 +118,29 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		gc.setOutSuff(reader.outSuffix());
 		gc.setSingleFileOutput(reader.singleFileOutput());
 		
-		if(reader.lemmatise()) {
-			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
-			System.out.println("Lemmatising");
-		}
-		else{
-			if(reader.stem()) {
-				gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
-			}
-			else {
-				if(reader.token()) {
-					gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
-				}
-			}
-		}
+//		if(reader.lemmatise()) {
+//			gc.addAnnotator(StringAnnotatorEnum.LEMMATISER.getAnnotator(),true);
+//			System.out.println("Lemmatising");
+//		}
+//		else{
+//			if(reader.stem()) {
+//				gc.addAnnotator(StringAnnotatorEnum.STEMMER.getAnnotator(), true);
+//			}
+//			else {
+//				if(reader.token()) {
+//					gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+//				}
+//			}
+//		}
 		
 		if(reader.entities()){
 			gc.addAnnotator(StringAnnotatorEnum.ENTITY.getAnnotator(),true);
 		}
 		
-//		if(reader.token()) {
-//			System.err.println("token");
-//			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
-//		}
+		if(reader.token()) {
+			System.err.println("token");
+			gc.addAnnotator(StringAnnotatorEnum.TOKEN.getAnnotator(), true);
+		}
 		//reader.getAdditionalAnnotators();
 		if(reader.sentence()){
 			gc.addAnnotator(StringAnnotatorEnum.SENTENCE.getAnnotator(), true);

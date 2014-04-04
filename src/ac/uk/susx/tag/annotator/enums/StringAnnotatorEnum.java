@@ -33,7 +33,7 @@ public enum StringAnnotatorEnum {
 		
 		LOCATION(new LocationAnnotator()),
 		
-		LEMMATISER(new LemmatiserAnnotator()),
+		//LEMMATISER(new LemmatiserAnnotator()),
 		
 		STEMMER(new PorterStemmerAnnotator()),
 		

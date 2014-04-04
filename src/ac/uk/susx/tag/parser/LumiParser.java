@@ -27,7 +27,7 @@ import ac.uk.susx.tag.utils.FileUtils;
 public class LumiParser implements IParser<String,String>{
 
 	
-	private ConcurrentStringLineProcessor parser;
+	private ConcurrentDocumentProcessor<String, String> parser;
 	private IConfiguration<IDocument<String,String>,String,String> config;
 	private ArrayList<File> files;
 
@@ -66,8 +66,8 @@ public class LumiParser implements IParser<String,String>{
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
-		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
-		config.addFilter(new StopWordFilter(StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
+//		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
+//		config.addFilter(new StopWordFilter(StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));
 		//config.addFilter(new RemoveAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("-lrb-","-rrb-")),StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
@@ -83,7 +83,7 @@ public class LumiParser implements IParser<String,String>{
 		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.LOCATION.getAnnotator().getClass(),true));
 		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.ORGANISATION.getAnnotator().getClass(),true));
 		
-		parser = new ConcurrentStringLineProcessor(config);
+		parser = new ConcurrentDocumentProcessor<String,String>(config);
 		try {
 			files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
 		} catch (IOException e) {

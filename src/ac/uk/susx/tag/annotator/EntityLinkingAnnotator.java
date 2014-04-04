@@ -28,12 +28,23 @@ public class EntityLinkingAnnotator extends AbstractStringAnnotator {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		String ann = annotation.getAnnotation();
 		for(String entity : entities) {
-			Pattern patt = Pattern.compile(Pattern.quote(entity));
-			Matcher match = patt.matcher(ann);
-			if(match.matches()){
-				String strEntity = ann.substring(match.start(), match.end());
-				strEntity = strEntity.replace("\\s* ", DELIM).replace("\t", DELIM) + DELIM + TAG;
-				annotations.add(new StringAnnotation(strEntity,match.start(),match.end()));
+			if(ann.contains(entity)) {
+				boolean found = true;
+				int i = 0;
+				while(i < ann.length() && found) {
+					Pattern patt = Pattern.compile(Pattern.quote(entity));
+					Matcher match = patt.matcher(Pattern.quote(ann.substring(i)));
+					if(match.matches()){
+						String strEntity = ann.substring(match.start(), match.end());
+						System.out.println(strEntity);
+						strEntity = strEntity.replace("\\s* ", DELIM).replace("\t", DELIM) + DELIM + TAG;
+						annotations.add(new StringAnnotation(strEntity,match.start(),match.end()));
+						i = match.end();
+					}
+					else{
+						found = false;
+					}
+				}
 			}
 		}
 		return annotations;
