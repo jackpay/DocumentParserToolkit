@@ -1,9 +1,10 @@
 package ac.uk.susx.tag.annotator;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,39 +26,54 @@ public class EntityLinkingAnnotator extends AbstractStringAnnotator {
 		entities = new HashMap<IAnnotation<String>, List<List<? extends IAnnotation<String>>>>();
 	}
 
-	public List<StringAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
+	public synchronized List<StringAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
-		List<? extends IAnnotation<String>> ann = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(annotation);
+		List<? extends IAnnotation<String>> document = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(annotation);
 		int i = 0;
-		while(i < ann.size()) {
-			List<List<? extends IAnnotation<String>>> anns = entities.get(ann.get(i));
-			if(anns != null) {
+		while(i < document.size()) {
+			List<List<? extends IAnnotation<String>>> entityPossibilities = entities.get(document.get(i));
+			if(entityPossibilities != null) {
 				StringBuilder sb = new StringBuilder();
-				sb.append(ann.get(i)+ DELIM);
-				int offsetEnd = ann.get(i).getEnd();
+				if(document.get(i).getAnnotation() != null){
+					sb.append(document.get(i).getAnnotation()).append(DELIM);
+				}
+				int offsetEnd = document.get(i).getEnd();
+				boolean foundAny = false;
 				innerloop: // label the loop to ensure correct breaking.
-				for(List<? extends IAnnotation<String>> annL : anns) {
+				for(List<? extends IAnnotation<String>> entityPoss : entityPossibilities) {
 					StringBuilder sb2 = new StringBuilder();
 					boolean found = true;
 					int j = 0;
 					whileloop:
-					while(found && j < annL.size()) {
-						found = annL.get(j).getAnnotation().equals(ann.get(i+j).getAnnotation()) ? true : false;
-						j++;
-						sb2.append(annL.get(j) + DELIM);
-						if(!found) {
+					while(found && j < entityPoss.size()) {
+						if((i+j)+1 <  document.size()) {
+							if(!entityPoss.get(j).getAnnotation().equals(document.get((i+j)+1).getAnnotation())) {
+								found = false;
+							}
+						}
+						if(found && entityPoss.get(j).getAnnotation() != null) {
+							sb2.append(entityPoss.get(j).getAnnotation()).append(DELIM);
+						}
+						else {
 							break whileloop;
 						}
+						j++;
 					}
 					if(found) {
-						sb.append(sb2.toString() + DELIM);
-						offsetEnd = annL.get(j).getEnd();
+						sb.append(sb2.toString());
+						offsetEnd = i+j < document.size() ? document.get(i+j).getEnd() : document.get(document.size()-1).getEnd();
 						i += j;
+						foundAny = true;
 						break innerloop;
 					}
 				}
 				sb.append(TAG);
-				annotations.add(new StringAnnotation(sb.toString(),ann.get(i).getStart(),offsetEnd));
+				StringAnnotation sa = new StringAnnotation(sb.toString(),document.get(i).getStart(),offsetEnd+1);
+				annotations.add(sa);
+				System.out.println(sa.getAnnotation());
+				if(!foundAny) {
+					i++;
+				}
 			}
 			else {
 				i++;
@@ -67,36 +83,38 @@ public class EntityLinkingAnnotator extends AbstractStringAnnotator {
 	}
 
 	public void startModel() {
+		if(!entities.isEmpty()){
+			return;
+		}
+		BufferedReader br;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(getClass().getClassLoader().getResource("entities.txt").getFile()));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(getClass().getClassLoader().getResource("entities.txt").getFile()),"UTF-8"));
 			String line;
-			try {
-				line = br.readLine();
-				while(line != null) {
-					try {
-						List<? extends IAnnotation<String>> entity = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(new StringAnnotation(line.replace("\n", ""),0,0));
-						if(entities.get(entity.get(0)) == null) {
-							entities.put(entity.get(0), new ArrayList<List<? extends IAnnotation<String>>>());
-						}
-						if(entity.size() > 1) {
-							entities.get(entity.get(0)).add(entity.subList(1, entity.size()));
-						}
-						Collections.sort(entities.get(entity.get(0)), new ListSorter());
-					} catch (IncompatibleAnnotationException e) {
-						e.printStackTrace();
+			line = br.readLine();
+			while(line != null) {
+				try {
+					List<? extends IAnnotation<String>> entity = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(new StringAnnotation(line.replace("\n", ""),0,0));
+					if(entities.get(entity.get(0)) == null) {
+						entities.put(entity.get(0), new ArrayList<List<? extends IAnnotation<String>>>());
 					}
-					line = br.readLine();
+					if(entity.size() > 1) {
+						entities.get(entity.get(0)).add(entity.subList(1, entity.size()));
+					}
+					Collections.sort(entities.get(entity.get(0)), new ListSorter());
+				} catch (IncompatibleAnnotationException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				line = br.readLine();
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
 	public boolean modelStarted() {
-		return entities == null ? false : true;
+		return entities.isEmpty() ? false : true;
 	}
 
 	private class ListSorter implements Comparator<List<? extends IAnnotation<String>>> {

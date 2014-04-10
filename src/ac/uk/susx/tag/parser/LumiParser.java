@@ -62,7 +62,7 @@ public class LumiParser implements IParser<String,String>{
 //		anns.add(")");
 //		anns.add("(");
 //		//config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
-		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+//		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
 		config.addFilter(new StopWordFilter(StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
@@ -73,15 +73,15 @@ public class LumiParser implements IParser<String,String>{
 		config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
 		//config.addFilter(new RetainAnnotationFilter<String>(new ArrayList<String>(Arrays.asList("NN","NNS","NNP","NNPS","VB","VBD","VBG","VBN","VBP","VBZ","JJ","JJR","JJS")), StringAnnotatorEnum.POSTAG.getAnnotator().getClass(),true));
-		config.addFilter(new LowercaseFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
-		config.addFilter(new MinimumTokenLengthFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),true,2));
-		config.addFilter(new EmptyAnnotationFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		//config.addFilter(new LowercaseFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+//		config.addFilter(new MinimumTokenLengthFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),true,2));
+//		config.addFilter(new EmptyAnnotationFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 //		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.PERSON.getAnnotator().getClass(),true,true));
 //		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.LOCATION.getAnnotator().getClass(),true,true));
 //		config.addFilter(new IntersectFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass(),StringAnnotatorEnum.ORGANISATION.getAnnotator().getClass(),true,true));
-		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.PERSON.getAnnotator().getClass(),true));
-		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.LOCATION.getAnnotator().getClass(),true));
-		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.ORGANISATION.getAnnotator().getClass(),true));
+//		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.PERSON.getAnnotator().getClass(),true));
+//		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.LOCATION.getAnnotator().getClass(),true));
+//		config.addFilter(new MatchingOffsetFilter(StringAnnotatorEnum.ENTITY.getAnnotator().getClass(),StringAnnotatorEnum.ORGANISATION.getAnnotator().getClass(),true));
 		
 		parser = new ConcurrentDocumentProcessor<String,String>(config);
 		try {

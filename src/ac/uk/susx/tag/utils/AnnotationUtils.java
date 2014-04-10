@@ -26,7 +26,7 @@ public class AnnotationUtils {
 	}
 	
 	public static <AT> Map<IIndexToken, List<IAnnotation<AT>>> collateAnnotations(Map<Class<? extends IAnnotator>, List<IAnnotation<AT>>> annotations, List<Class<? extends IAnnotator>> annotators){
-		Map<IIndexToken, List<IAnnotation<AT>>> collectedAnnotations = new HashMap<IIndexToken, List<IAnnotation<AT>>>(annotations.size()+((int)annotations.size()/4));
+		Map<IIndexToken, List<IAnnotation<AT>>> collectedAnnotations = new HashMap<IIndexToken, List<IAnnotation<AT>>>();
 		for(Class<? extends IAnnotator> annotator : annotators){
 				for(IAnnotation<AT> ann : annotations.get(annotator)){
 					try {

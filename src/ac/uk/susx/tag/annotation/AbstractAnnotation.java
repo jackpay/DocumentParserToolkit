@@ -50,5 +50,36 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		}
 		return indexClass.cast(index.get(indexClass));
 	}
+	
+	@Override
+	public final boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(getClass() != obj.getClass()) {
+			return false;
+		}
+		AbstractAnnotation aa = (AbstractAnnotation) obj;
+		try {
+			if(aa.getIndexToken(AnnotationIndexToken.class).equals(getIndexToken(AnnotationIndexToken.class))) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;	
+	}
+	
+	@Override
+	public final int hashCode() {
+		int hash = 0;
+		try {
+			hash = getIndexToken(AnnotationIndexToken.class).hashCode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hash;
+	}
 
 }

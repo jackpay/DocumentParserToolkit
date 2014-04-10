@@ -58,7 +58,7 @@ public class ConcurrentDocumentProcessor<DT,AT> implements IProcessor<DT,AT> {
 			for(IAnnotator<IDocument<DT,AT>,?,AT,DT> annotator : config.getAnnotators()){
 				try {
 					annotator.annotate(document);
-				} catch (IncompatibleAnnotationException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
 				}
