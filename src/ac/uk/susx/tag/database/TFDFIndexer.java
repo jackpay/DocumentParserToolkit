@@ -121,6 +121,7 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocFreqUnigramEntity
 						System.err.println("FAILED TXN ABORT ON GENERIC FAILURE TF");
 					}
 					System.err.println("GENERIC SYSTEM FAILURE - ABORTING - TF");
+					e.printStackTrace();
 				}
 			}
 		}

@@ -3,7 +3,6 @@ package ac.uk.susx.tag.database;
 
 import java.util.HashSet;
 
-import com.beust.jcommander.internal.Sets;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;

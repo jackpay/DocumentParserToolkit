@@ -36,7 +36,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		Iterator<? extends IAnnotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			IAnnotation<AT> anno = iter.next();
-			if((matchAnnotation(anno.getAnnotation()) && remove) || (!matchAnnotation(anno.getAnnotation()) && !remove)) {
+			if((matchAnnotation(anno) && remove) || (!matchAnnotation(anno) && !remove)) {
 				iter.remove();
 			}
 		}
@@ -64,7 +64,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 			Iterator<IAnnotation<AT>> iter = filtAnno.iterator();
 			while(iter.hasNext()){
 				IAnnotation<AT> next = iter.next();
-				if((matchAnnotation(next.getAnnotation()) && remove) || (!matchAnnotation(next.getAnnotation()) && !remove)){
+				if((matchAnnotation(next) && remove) || (!matchAnnotation(next) && !remove)){
 					iter.remove();
 					OffsetIndexToken index = null;
 					try {
