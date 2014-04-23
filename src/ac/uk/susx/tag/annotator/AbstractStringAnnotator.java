@@ -20,6 +20,7 @@ public abstract class AbstractStringAnnotator implements IAnnotator<IDocument<St
 
 	public void annotate(IDocument<String, String> doc, boolean parseRawText)
 			throws IncompatibleAnnotationException {
+		startModel();
 		List<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
 		List<? extends IAnnotation<String>> sentences = doc.getAnnotations(StringAnnotatorEnum.SENTENCE.getAnnotator().getClass());
 		if(sentences == null){

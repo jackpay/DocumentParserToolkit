@@ -29,7 +29,6 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
 
 	public synchronized List<StringAnnotation> annotate(IAnnotation<String> sentence)
 			throws IncompatibleAnnotationException {
-		startModel(); // Ensure model is live.
 		ArrayList<StringAnnotation> annotations = new ArrayList<StringAnnotation>();
 		Collection<? extends IAnnotation<String>> tokens = StringAnnotatorEnum.TOKEN.getAnnotator().annotate(sentence);
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
@@ -63,6 +62,7 @@ public abstract class AbstractNERAnnotator extends AbstractStringAnnotator {
 				e.printStackTrace();
 			}
 		}
+		nameFinder.clearAdaptiveData(); // clean model
 	}
 
 	public boolean modelStarted() {

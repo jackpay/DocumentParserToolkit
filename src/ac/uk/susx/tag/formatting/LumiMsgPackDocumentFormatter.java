@@ -5,14 +5,14 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.msgpack.MessagePack;
 import org.msgpack.type.ArrayValue;
 import org.msgpack.type.MapValue;
 import org.msgpack.type.Value;
 import org.msgpack.unpacker.Unpacker;
 
+import de.l3s.boilerpipe.BoilerpipeProcessingException;
+import de.l3s.boilerpipe.extractors.ArticleExtractor;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.StringDocument;
 
@@ -57,8 +57,12 @@ public class LumiMsgPackDocumentFormatter implements InputDocumentFormatter<Stri
 					}
 				}
 			}
-			return new StringDocument(sb.toString());
-			
+			if(sb.toString().length() == 0 || sb.toString() == null || sb.toString().replace("\n", "").replace("\t", "").length() == 0) {
+				return null;
+			}
+			else{
+				return new StringDocument(sb.toString());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,8 +70,14 @@ public class LumiMsgPackDocumentFormatter implements InputDocumentFormatter<Stri
 	}
 	
 	private String parseHTML(String html) {
-		Document doc = Jsoup.parse(html);
-		return doc.text().replace("\\n", " ").replace("\\t", " ");
+		String doc = null;
+		try {
+			doc = ArticleExtractor.INSTANCE.getText(html);
+		} catch (BoilerpipeProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return doc.replace("\\n", " ").replace("\\t", " ");
 	}
 
 }
