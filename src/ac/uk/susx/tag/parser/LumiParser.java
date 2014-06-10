@@ -62,8 +62,8 @@ public class LumiParser implements IParser<String,String>{
 //		anns.add(")");
 //		anns.add("(");
 //		//config.addFilter(new RemoveAnnotationFilter<String>(anns, StringAnnotatorEnum.POSTAG.getAnnotator().getClass(), true));
-//		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
-		//config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
+		config.addFilter(new StopWordFilter(StringAnnotatorEnum.TOKEN.getAnnotator().getClass()));
 		//config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
 		//config.addFilter(new StopWordFilter(StringAnnotatorEnum.STEMMER.getAnnotator().getClass()));
 //		config.addFilter(new RegexFilter("[^A-Za-z0-9 ]",StringAnnotatorEnum.LEMMATISER.getAnnotator().getClass()));

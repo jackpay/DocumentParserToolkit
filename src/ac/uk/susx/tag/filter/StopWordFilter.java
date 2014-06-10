@@ -2,15 +2,18 @@ package ac.uk.susx.tag.filter;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashSet;
 
 import org.apache.commons.io.IOUtils;
+
+import com.google.common.collect.Sets;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class StopWordFilter extends AbstractAnnotationFilter<String>{
 	
-	private final String[] stopwords;
+	private final HashSet<String> stopwords;
 
 	public StopWordFilter(Class<? extends IAnnotator> annotator) {
 		super(annotator, true, true);
@@ -20,15 +23,13 @@ public class StopWordFilter extends AbstractAnnotationFilter<String>{
 	@Override
 	public boolean matchAnnotation(IAnnotation<String> annotation) {
 		String lann = annotation.getAnnotation().toLowerCase();
-		for(String s : stopwords){
-			if(s.equals(lann)){
-				return true;
-			}
+		if(stopwords.contains(lann)) {
+			return true;
 		}
 		return false;
 	}
 	
-	private String[] getStopWords(){
+	private HashSet<String> getStopWords(){
 		StringWriter writer = new StringWriter();
 		try {
 			IOUtils.copy(this.getClass().getClassLoader().getResourceAsStream("stopwords.txt"), writer, "UTF-8");
@@ -37,7 +38,7 @@ public class StopWordFilter extends AbstractAnnotationFilter<String>{
 		}
 		String out = writer.toString().replace("\n\n", "\n");
 		String[] strs = out.split("\n");
-		return strs;
+		return Sets.newHashSet(strs);
 	}
 
 }
