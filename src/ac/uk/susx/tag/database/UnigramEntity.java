@@ -13,7 +13,6 @@ public class UnigramEntity implements IEntity {
 
 	@PrimaryKey
 	private String unigrm;
-	@SecondaryKey(relate=Relationship.ONE_TO_ONE)
 	private int freq;
 	private final HashSet<String> docsAppearing;
 	

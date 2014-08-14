@@ -6,8 +6,8 @@
   <packaging>jar</packaging>
   <name>docParser</name>
   <properties>
-		<jdk.version>1.6</jdk.version>
-	</properties>
+      <jdk.version>1.7</jdk.version>
+  </properties>
   <build>
   <plugins>
 	  <plugin>
@@ -15,8 +15,10 @@
 		<artifactId>maven-compiler-plugin</artifactId>
 		<version>2.3.2</version>
 		<configuration>
-			<source>1.7.0</source>
-			<target>1.7.0</target>
+			<source>1.7</source>
+			<target>1.7</target>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
 		</configuration>
 	  </plugin>
 	  <plugin>
@@ -85,6 +87,11 @@
     	<artifactId>msgpack</artifactId>
     	<version>0.6.0</version>
   	  </dependency>
+  	  <dependency>
+		<groupId>com.syncthemall</groupId>
+		<artifactId>boilerpipe</artifactId>
+		<version>1.2.1</version>
+	  </dependency>
   </dependencies>
   <repositories>
       <repository>
