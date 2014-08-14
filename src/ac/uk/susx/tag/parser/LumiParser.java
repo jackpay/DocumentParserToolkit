@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.parser;
+	package ac.uk.susx.tag.parser;
 
 import java.io.File;
 import java.io.IOException;
