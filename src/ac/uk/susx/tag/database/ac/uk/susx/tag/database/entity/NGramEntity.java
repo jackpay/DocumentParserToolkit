@@ -8,8 +8,10 @@ import com.sleepycat.persist.model.PrimaryKey;
 public class NGramEntity implements IEntity {
 
 	@PrimaryKey
-	private final UnigramEntity[] ngram;
+	private UnigramEntity[] ngram;
 	private int frequency;
+
+    public NGramEntity() {}
 
 	public NGramEntity(int size) {
 		ngram = new UnigramEntity[size];

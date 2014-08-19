@@ -13,9 +13,11 @@ import com.sleepycat.persist.model.SecondaryKey;
 public class DocumentEntity implements IEntity {
 
     @PrimaryKey
-    private final String name;
+    private String name;
     @SecondaryKey(relate=Relationship.ONE_TO_ONE)
-    private final Integer docId;
+    private int docId;
+
+    public DocumentEntity() {}
 
     public DocumentEntity(Integer docId, String name) {
         this.docId = docId;

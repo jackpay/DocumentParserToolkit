@@ -79,22 +79,22 @@ public class FrequencyAnnotator extends AbstractAnnotator<String,String> {
 			double n = 0.0;
 			double tf = 0.0;
 			double idf = 0.0;
-			try {
-				df = indexer.getCorpusFrequencyIndex().get(token.getAnnotation()).getAppearingDocIds().size();
-				n = indexer.getTermFrequencyIndex().count();
-				tf = indexer.getTermFrequencyIndex().get(sentence.docReference().toString()).getFrequency(token.getAnnotation());
-				idf = Math.log(n/df);
-			} catch (DatabaseException e1) {
-				e1.printStackTrace();
-			}
+//			try {
+////				df = indexer.getIndex().get(token.getAnnotation()).getAppearingDocIds().size();
+////				n = indexer.getUnigramIndexer().getIndex().count();
+////				tf = indexer.getTermFrequencyIndex().get(sentence.docReference().toString()).getFrequency(token.getAnnotation());
+////				idf = Math.log(n/df);
+//			} catch (DatabaseException e1) {
+//				e1.printStackTrace();
+//			}
 			for(Frequency freq : freqAnnotations) {
 				switch(freq) {
 					case CF:
-						try {
-							annotations.add(new StringAnnotation(new StringBuilder().append(CF_PREFIX).append(indexer.getCorpusFrequencyIndex().get(token.getAnnotation()).getFrequency()).append(CF_SUFFIX).toString(),token.getStart(),token.getEnd()));
-						} catch (DatabaseException e) {
-							e.printStackTrace();
-						}
+//						try {
+//							annotations.add(new StringAnnotation(new StringBuilder().append(CF_PREFIX).append(indexer.getCorpusFrequencyIndex().get(token.getAnnotation()).getFrequency()).append(CF_SUFFIX).toString(),token.getStart(),token.getEnd()));
+//						} catch (DatabaseException e) {
+//							e.printStackTrace();
+//						}
 						break;
 					case DF:
 						annotations.add(new StringAnnotation(new StringBuilder().append(DF_PREFIX).append(df).append(DF_SUFFIX).toString(),token.getStart(),token.getEnd()));

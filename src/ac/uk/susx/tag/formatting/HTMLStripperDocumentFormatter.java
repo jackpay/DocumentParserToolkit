@@ -13,8 +13,8 @@ public class HTMLStripperDocumentFormatter implements IInputDocumentFormatter {
 	
 
 	@Override
-	public IDocument createDocument(String fileLocation) {
-		return createDocument(new File(fileLocation));
+	public IDocument createDocument(String doc) {
+		return new Document(parseHTML(doc));
 	}
 
 	@Override

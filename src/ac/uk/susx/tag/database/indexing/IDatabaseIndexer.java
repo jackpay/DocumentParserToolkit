@@ -11,14 +11,14 @@ import com.sleepycat.persist.SecondaryIndex;
  * 
  * @author jp242
  *
- * @param <PE> Primary index key type.
+ * @param <PE> Recognised input class
  * @param <ET> Entity Output entity class/type.
  */
 public interface IDatabaseIndexer<PE,ET>{
 
 	public DatabaseEntityStore entityStore();
 	
-	public EntityIndex<PE,ET> getIndex();
+	public <A> EntityIndex<A,ET> getIndex();
 	
 	public void index(int id, List<PE> entities);
 	

@@ -6,35 +6,48 @@ import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
+import java.util.ArrayList;
+
 @Entity
 public class DocumentFreqUnigramEntity implements IEntity {
 	
 	@PrimaryKey
-	private final DocumentEntity docId;
-    @SecondaryKey(relate= Relationship.MANY_TO_MANY)
-    private final UnigramEntity token;
-    private int freq;
-	
+	private int docId;
+    private ArrayList<UnigramEntity> tokens;
+    private int numTokens;
+
+    public DocumentFreqUnigramEntity() {}
+
 	public DocumentFreqUnigramEntity(DocumentEntity docId, UnigramEntity token) {
-		this.docId = docId;
-		this.token = token;
-        this.freq = 1;
+        this(docId);
+        tokens.add(token);
+        numTokens = 1;
 	}
+
+    public DocumentFreqUnigramEntity(DocumentEntity docId) {
+        this.docId = docId.getId();
+        tokens = new ArrayList<UnigramEntity>();
+        numTokens = 0;
+    }
 	
-	public UnigramEntity getUnigram() {
-		return token;
-	}
-	
-	public DocumentEntity getDocId() {
+	public int getDocId() {
 		return docId;
 	}
 	
-	public int getFrequency(String token) {
-		return freq;
+	public int getFrequency(UnigramEntity entity) {
+		return tokens.get(tokens.indexOf(entity)).getFrequency();
 	}
 	
-	public void incrementFrequency() {
-        freq++;
+	public void incrementFrequency(UnigramEntity entity) {
+        numTokens++;
+        if(tokens.contains(entity)){
+            tokens.get(tokens.indexOf(entity)).incrementFrequency();
+            tokens.add(entity);
+        }
+        else{
+            entity.incrementFrequency();
+            tokens.add(entity);
+        }
 	}
 	
 }

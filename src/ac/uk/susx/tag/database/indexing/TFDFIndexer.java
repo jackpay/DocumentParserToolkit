@@ -16,12 +16,11 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.Transaction;
 import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
-import com.sleepycat.persist.SecondaryIndex;
 
-public class TFDFIndexer implements IDatabaseIndexer<String,DocumentFreqUnigramEntity> {
+public class TFDFIndexer implements IDatabaseIndexer<IAnnotation<String>,DocumentFreqUnigramEntity> {
 	
 	private static final int MAX_DEADLOCK_RETRIES = 2000; // Arbitrary but large retry limit.
-    private PrimaryIndex<DocumentEntity,DocumentFreqUnigramEntity> pIndex;
+    private PrimaryIndex<Integer,DocumentFreqUnigramEntity> pIndex;
 	private UnigramIndexer uIndx;
 	private final DatabaseEntityStore entityStore;
 	private final HashMap<String,Integer> failed = Maps.newHashMap();
@@ -30,7 +29,7 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocumentFreqUnigramE
 		entityStore = new DatabaseEntityStore();
         uIndx = new UnigramIndexer();
         try {
-            pIndex = entityStore.getStore().getPrimaryIndex(DocumentEntity.class, DocumentFreqUnigramEntity.class);
+            pIndex = entityStore.getStore().getPrimaryIndex(Integer.class, DocumentFreqUnigramEntity.class);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
@@ -40,44 +39,37 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocumentFreqUnigramE
 		return entityStore;
 	}
 
-    public void index(List<String> entities) {
-
-	}
-
-
-//	public PrimaryIndex<String, DocumentFreqUnigramEntity> getDocFrequencyIndex() {
-//		return pIndx;
-//	}
-//
-//    public PrimaryIndex<String, UnigramEntity> getUnigramFrequency() { return uniIndx; }
-//
-//    public PrimaryIndex<String, DocumentEntity> getDocumentFrequency() { return docIndex; }
-
     @Override
-    public void index(int id, List<String> entities) {
+    public void index(int id, List<IAnnotation<String>> entities) {
         DocumentEntity de = null;
         try {
             de = DocumentIndexer.getIdIndex().get(id); // Get the document entity for this id.
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
-        for(String entity : entities) {
+        for(IAnnotation<String> entity : entities) {
             int retry_count = 0;
             while(retry_count < MAX_DEADLOCK_RETRIES) {
                 Transaction txn = null;
                 try {
                     txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
-                    UnigramEntity ue = uIndx.getIndex().get(entity);
-                    if(ue == null) {
-                        uIndx.index(id,entity);
-                        pIndex.put(new DocumentFreqUnigramEntity(de,ue));
-                        txn.commit();
+                    DocumentFreqUnigramEntity dfue;
+                    if(pIndex.contains(txn,id,LockMode.DEFAULT)) {
+                        dfue = pIndex.get(txn,id,LockMode.DEFAULT);
                     }
                     else {
-                        pIndex.pu
-                        ue.incrementFrequency();
-                        txn.commit();
+                        dfue = new DocumentFreqUnigramEntity(de);
                     }
+                    UnigramEntity ue = null;
+                    if(uIndx.getIndex().contains(txn,entity.getAnnotation(),LockMode.DEFAULT)) {
+                        ue = uIndx.getIndex().get(txn,entity.getAnnotation(),LockMode.DEFAULT);
+                        ue.incrementFrequency();
+                    }
+                    else {
+                        ue = new UnigramEntity(entity.getAnnotation());
+                    }
+                    dfue.incrementFrequency(ue);
+                    txn.commit();
                     retry_count = MAX_DEADLOCK_RETRIES;
                 } catch (DeadlockException e) {
                     retry_count++;
@@ -86,7 +78,7 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocumentFreqUnigramE
                             txn.abort();
                         }
                         System.err.println("AVERTED");
-                        failed.put(entity, id);
+                        failed.put(entity.getAnnotation(), id);
                     } catch (DatabaseException e1) {
                         System.err.println("FAILED TO AVERT");
                     }
@@ -101,57 +93,24 @@ public class TFDFIndexer implements IDatabaseIndexer<String,DocumentFreqUnigramE
                     System.err.println("GENERIC SYSTEM FAILURE - ABORTING");
                 }
             }
-            retry_count = 0;
-            while(retry_count < MAX_DEADLOCK_RETRIES) {
-                Transaction txn = null;
-                try {
-                    txn = entityStore.getStore().getEnvironment().beginTransaction(null, null);
-                    UnigramEntity dbEnt =  sIndx.get(txn, entity.getUnigram(), LockMode.RMW);
-                    if(dbEnt == null) {
-                        UnigramEntity ue = new UnigramEntity(entity.getUnigram());
-                        ue.addDocId(entity.getDocId());
-                        sIndx.put(txn,ue);
-                        txn.commit();
-                    }
-                    else {
-                        dbEnt.incrementFrequency();
-                        dbEnt.addDocId(entity.getDocId());
-                        sIndx.put(txn,dbEnt);
-                        txn.commit();
-                    }
-                    retry_count = MAX_DEADLOCK_RETRIES;
-                } catch (DeadlockException e) {
-                    retry_count++;
-                    try {
-                        if(txn != null) {
-                            txn.abort();
-                        }
-                        System.err.println("AVERTED-TF");
-                        failed.put(entity.getUnigram(), entity.getDocId());
-                    } catch (DatabaseException e1) {
-                        System.err.println("FAILED TO AVERT TF");
-                    }
-                } catch (DatabaseException e) {
-                    try {
-                        if(txn != null) {
-                            txn.abort();
-                        }
-                    } catch (DatabaseException e1) {
-                        System.err.println("FAILED TXN ABORT ON GENERIC FAILURE TF");
-                    }
-                    System.err.println("GENERIC SYSTEM FAILURE - ABORTING - TF");
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    public HashMap<String,String> getFailed() {
+    @Override
+    public void index(int id, IAnnotation<String> entity) {
+        index(id, Arrays.asList(entity));
+    }
+
+    public HashMap<String,Integer> getFailed() {
 		return failed;
 	}
 
+    public UnigramIndexer getUnigramIndexer() {
+        return uIndx;
+    }
+
     @Override
-    public EntityIndex<String, DocumentFreqUnigramEntity> getIndex() {
+    public EntityIndex<Integer, DocumentFreqUnigramEntity> getIndex() {
         return pIndex;
     }
 

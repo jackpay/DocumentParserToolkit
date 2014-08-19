@@ -16,7 +16,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import ac.uk.susx.tag.database.DocIndexEntity;
 import ac.uk.susx.tag.database.indexing.DocumentIndexer;
 import ac.uk.susx.tag.database.indexing.IDatabaseIndexer;
 import ac.uk.susx.tag.database.IEntity;
@@ -27,19 +26,19 @@ import ac.uk.susx.tag.database.job.IJobFactory;
  * 
  * @author jp242
  *
- * @param <PE> The class type of the primary index.
- * @param <ET> The class type of the IEntity being indexed
+ * @param <PE> Recognised input class
+ * @param <ET> Entity Output entity class/type.
  */
 public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
 	private final IDatabaseIndexer<PE,ET> indexer;
-	private final IJobFactory<ET> jobFactory;
+	private final IJobFactory<PE> jobFactory;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private final DocumentIndexer docIndex;
 	private boolean complete;
 
-	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<ET> jobFactory) { 
+	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<PE> jobFactory) {
 		this.indexer = indexer;
 		this.jobFactory = jobFactory;
 		this.docIndex = new DocumentIndexer();
@@ -76,7 +75,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 			int id = 0;
 			ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 			for(File file : files){
-				docIndex.index(new DocumentEntity(file.getName(),String.valueOf(id)));
+				docIndex.index(id,file.getName());
 				try {
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					String currLine;
@@ -87,7 +86,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 						if(line.length() > 0) {
 							Document doc = new Document(line);
 							doc.setDocumentId(String.valueOf(id));
-							JobCallable jc = new JobCallable(indexer,doc);
+							JobCallable jc = new JobCallable(indexer,doc,id);
 							queue.put(executor.submit(jc));
 						}
 						currLine = br.readLine();
