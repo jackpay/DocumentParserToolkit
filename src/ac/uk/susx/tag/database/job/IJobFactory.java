@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.preparser;
+package ac.uk.susx.tag.database.job;
 
 import ac.uk.susx.tag.database.IEntity;
 import ac.uk.susx.tag.document.Document;

@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ac.uk.susx.tag.database.DocIndexEntity;
-import ac.uk.susx.tag.database.DocumentIndexer;
-import ac.uk.susx.tag.database.IDatabaseIndexer;
+import ac.uk.susx.tag.database.indexing.DocumentIndexer;
+import ac.uk.susx.tag.database.indexing.IDatabaseIndexer;
 import ac.uk.susx.tag.database.IEntity;
 import ac.uk.susx.tag.document.Document;
-import ac.uk.susx.tag.preparser.IJobFactory;
+import ac.uk.susx.tag.database.job.IJobFactory;
 
 /**
  * 
@@ -76,7 +76,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 			int id = 0;
 			ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
 			for(File file : files){
-				docIndex.index(new DocIndexEntity(file.getName(),String.valueOf(id)));
+				docIndex.index(new DocumentEntity(file.getName(),String.valueOf(id)));
 				try {
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					String currLine;
@@ -153,15 +153,17 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 		
 		private final IDatabaseIndexer<PE,ET> indexer;
 		private final Document document;
+        private final int docId;
 		
-		public JobCallable(IDatabaseIndexer<PE,ET> indexer, Document document) {
+		public JobCallable(IDatabaseIndexer<PE,ET> indexer, Document document, int docId) {
 			this.indexer = indexer;
 			this.document = document;
+            this.docId = docId;
 		}
 
 		public Boolean call() throws Exception {
 			try {
-				indexer.index(jobFactory.createJob(document).process());
+				indexer.index(docId, jobFactory.createJob(document).process());
 			}
 			catch (Exception e) {
 				e.printStackTrace();

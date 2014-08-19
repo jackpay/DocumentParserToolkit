@@ -1,10 +1,11 @@
-package ac.uk.susx.tag.database;
+package ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity;
 
+import ac.uk.susx.tag.database.IEntity;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
 @Entity
-public class NGramEntity implements IEntity{
+public class NGramEntity implements IEntity {
 
 	@PrimaryKey
 	private final UnigramEntity[] ngram;

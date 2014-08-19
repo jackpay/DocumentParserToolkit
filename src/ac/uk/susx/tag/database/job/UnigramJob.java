@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.preparser;
+package ac.uk.susx.tag.database.job;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.database.UnigramEntity;
+import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.UnigramEntity;
 
-public class UnigramJob implements IJob<UnigramEntity>{
+public class UnigramJob implements IJob<UnigramEntity> {
 	
 	public static Class<? extends IAnnotatorFactory<String,String>> tokeniser = TokenAnnotatorFactory.class;
 	private CharSequence document;

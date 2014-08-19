@@ -1,9 +1,9 @@
-package ac.uk.susx.tag.database;
+package ac.uk.susx.tag.database.indexing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import ac.uk.susx.tag.database.DatabaseEntityStore;
+import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.UnigramEntity;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
@@ -31,7 +31,22 @@ public class UnigramIndexer implements IDatabaseIndexer<CharSequence,UnigramEnti
 		return entityStore;
 	}
 
-	public void index(List<UnigramEntity> entities) {
+    @Override
+    public EntityIndex<CharSequence, UnigramEntity> getIndex() {
+        return null;
+    }
+
+    @Override
+    public void index(int id, List<CharSequence> entities) {
+
+    }
+
+    @Override
+    public void index(int id, CharSequence entity) {
+
+    }
+
+    public void index(List<UnigramEntity> entities) {
 		for(UnigramEntity entity : entities) {
 			try {
 				pIndx.put(entity);
@@ -41,25 +56,12 @@ public class UnigramIndexer implements IDatabaseIndexer<CharSequence,UnigramEnti
 		}
 	}
 
-	public void index(UnigramEntity entity) {
+    public void index(UnigramEntity entity) {
 		try {
 			pIndx.put(entity);
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * No secondary index.
-	 */
-	public <SE> SecondaryIndex<CharSequence, SE, UnigramEntity> getSecondaryIndex() {
-		return null;
-	}
-
-	@Override
-	public <T> EntityIndex<?, T> getIndex(Class<T> indexType) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -1,15 +1,18 @@
-package ac.uk.susx.tag.database;
+package ac.uk.susx.tag.database.indexing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ac.uk.susx.tag.database.DatabaseEntityStore;
+import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.NGramEntity;
+import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.UnigramEntity;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.EntityIndex;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
-public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntity>{
+public class NGramIndexer implements IDatabaseIndexer<UnigramEntity[],NGramEntity> {
 
 	private DatabaseEntityStore entityStore;
 	private PrimaryIndex<UnigramEntity[],NGramEntity> pIndex;
