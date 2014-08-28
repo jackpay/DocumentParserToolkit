@@ -1,53 +1,54 @@
 package ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity;
 
 import ac.uk.susx.tag.database.IEntity;
+
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 
 @Entity
 public class DocumentFreqUnigramEntity implements IEntity {
 	
 	@PrimaryKey
 	private int docId;
-    private ArrayList<UnigramEntity> tokens;
+    private HashMap<String,Integer> tokens;
     private int numTokens;
 
     public DocumentFreqUnigramEntity() {}
 
-	public DocumentFreqUnigramEntity(DocumentEntity docId, UnigramEntity token) {
+	public DocumentFreqUnigramEntity(DocumentEntity docId, String token) {
         this(docId);
-        tokens.add(token);
+        tokens = new HashMap<String,Integer>();
+        tokens.put(token,1);
         numTokens = 1;
 	}
 
     public DocumentFreqUnigramEntity(DocumentEntity docId) {
         this.docId = docId.getId();
-        tokens = new ArrayList<UnigramEntity>();
+        tokens = new HashMap<String,Integer>();;
         numTokens = 0;
+    }
+    
+    public int getNumTokens() {
+    	return numTokens;
     }
 	
 	public int getDocId() {
 		return docId;
 	}
 	
-	public int getFrequency(UnigramEntity entity) {
-		return tokens.get(tokens.indexOf(entity)).getFrequency();
+	public int getFrequency(String entity) {
+		return tokens.get(entity);
 	}
 	
-	public void incrementFrequency(UnigramEntity entity) {
+	public void incrementFrequency(String entity) {
         numTokens++;
-        if(tokens.contains(entity)){
-            tokens.get(tokens.indexOf(entity)).incrementFrequency();
-            tokens.add(entity);
+        if(tokens.get(entity) != null){
+            tokens.put(entity,tokens.get(entity)+1);
         }
         else{
-            entity.incrementFrequency();
-            tokens.add(entity);
+            tokens.put(entity,1);
+            numTokens++;
         }
 	}
-	
 }

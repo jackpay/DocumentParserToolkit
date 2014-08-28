@@ -31,7 +31,7 @@ import ac.uk.susx.tag.database.job.IJobFactory;
  */
 public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProcessor {
 	
-	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
+	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 4;
 	private final IDatabaseIndexer<PE,ET> indexer;
 	private final IJobFactory<PE> jobFactory;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
@@ -42,7 +42,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 		this.indexer = indexer;
 		this.jobFactory = jobFactory;
 		this.docIndex = new DocumentIndexer();
-		this.queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
+		this.queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS);
 	}
 	
 	public void processFiles(List<File> files) {
@@ -107,9 +107,11 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 				}
 				id++;
 			}
+			System.err.println("AWAITING SHUTDOWN");
 			executor.shutdown();
 			try {
 				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+				System.err.println("shut down");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

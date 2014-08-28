@@ -95,25 +95,23 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		ExecutorService es = Executors.newSingleThreadExecutor();
         ProcessorCallable pc = new ProcessorCallable(preparser,files);
 		es.submit(pc);
-		es.shutdown();
-
 		try {
 			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
-        try {
-            int freq = 0;
-            EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
-            for(UnigramEntity entity : ec){
-                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
-                freq += entity.getFrequency();
-            }
-            ec.close();
-        } catch (DatabaseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        try {
+//            int freq = 0;
+//            EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
+//            for(UnigramEntity entity : ec){
+//                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
+//                freq += entity.getFrequency();
+//            }
+//            ec.close();
+//        } catch (DatabaseException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 		System.err.println("Finished pre-processing");
 		FrequencyAnnotator anno = null;
 		try {
@@ -123,7 +121,6 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		}
 		es = Executors.newSingleThreadExecutor();
 		es.submit(new ProcessorCallable(parser, files));
-		es.shutdown();
 		try {
 			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 		} catch (InterruptedException e2) {
@@ -146,17 +143,17 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 			}
 		}
 		int freq = 0;
-		try {
-			EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
-			for(UnigramEntity entity : ec){
-                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
-				freq += entity.getFrequency();
-			}
-			ec.close();
-		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
+//			for(UnigramEntity entity : ec){
+//                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
+//				freq += entity.getFrequency();
+//			}
+//			ec.close();
+//		} catch (DatabaseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //		try {
 //			System.out.println("SumFreq: " + freq + " Freq: " + indexer.getIndex().g.get("and").getFrequency());
 //		} catch (DatabaseException e) {
@@ -165,7 +162,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 //		}
 		preparser.getDocumentIndex().entityStore().close();
 		indexer.entityStore().close();
-        indexer.getUnigramIndexer().entityStore().close();
+        //indexer.getUnigramIndexer().entityStore().close();
 		DatabaseEnvironment.getInstance().close();
 		
 		return true;
