@@ -5,6 +5,7 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.document.Sentence;
 
 /**
  * A filter interface to allow removal or exclusive inclusion of specific annotations.
@@ -12,20 +13,20 @@ import ac.uk.susx.tag.annotator.IAnnotator;
  *
  * @param <AT>
  */
-public interface IFilter<AT>{
+public interface IFilter<AT> {
 	
 	/**
 	 * Filter a single set of annotations.
 	 * @param list
 	 * @return
 	 */
-	public List<? extends IAnnotation<AT>> filter(List<? extends IAnnotation<AT>> list);
+	public List<? extends IAnnotation<AT>> filterList(List<? extends IAnnotation<AT>> list);
 	
 	/**
 	 * Filter an entire collection of annotations.
 	 * @param annotations
 	 * @return
 	 */
-	public Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations);
+	public Sentence filterSentence(Sentence sentence);
 
 }

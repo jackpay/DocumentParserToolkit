@@ -109,6 +109,14 @@ public final class Sentence {
 			annotations.remove(cl);
 		}
 	}
+	
+	public boolean removeAnnotation(OffsetIndexToken index) {
+		if(indexAnnotations.containsKey(index)) {
+			indexAnnotations.remove(index);
+			return true;
+		}
+		return false;
+	}
 
 	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?>>> annotators) {
 		for(Class<? extends IAnnotator<?,?>> annotator : annotators){
@@ -123,7 +131,7 @@ public final class Sentence {
 	public void filterAnnotations(Collection<IFilter<?>> filters){
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<?> filter : filters){
-				filter.filterCollection(annotations);
+				filter.filterSentence(this);
 			}
 		}
 	}
@@ -132,7 +140,7 @@ public final class Sentence {
 	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
-				filter.filter((List<? extends IAnnotation<AT>>) annotations.get(annotator));
+				filter.filterList((List<? extends IAnnotation<AT>>) annotations.get(annotator));
 			}
 		}
 	}

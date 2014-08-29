@@ -69,10 +69,12 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("DT");
 		anns.add("CC");
 		anns.add("CD");
-		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
+		anns.add("NNP");
+		anns.add("JJ");
+		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 		parser = new ConcurrentLineProcessor(config);
-		indexer = new TFDFIndexer();
-		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
+//		indexer = new TFDFIndexer();
+//		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
 
 	public boolean parse() throws IOException {
@@ -91,58 +93,61 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		}
 		
 		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
-        System.err.println("Started pre-processing");
-		ExecutorService es = Executors.newSingleThreadExecutor();
-        ProcessorCallable pc = new ProcessorCallable(preparser,files);
-		es.submit(pc);
-		try {
-			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
-		}
-//        try {
-//            int freq = 0;
-//            EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
-//            for(UnigramEntity entity : ec){
-//                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
-//                freq += entity.getFrequency();
-//            }
-//            ec.close();
-//        } catch (DatabaseException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-		System.err.println("Finished pre-processing");
-		FrequencyAnnotator anno = null;
-		try {
-			anno = (FrequencyAnnotator) AnnotatorRegistry.getAnnotator(FrequencyAnnotatorFactory.class);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		es = Executors.newSingleThreadExecutor();
-		es.submit(new ProcessorCallable(parser, files));
-		try {
-			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
-		}
+//        System.err.println("Started pre-processing");
+//		ExecutorService es = Executors.newSingleThreadExecutor();
+//        ProcessorCallable pc = new ProcessorCallable(preparser,files);
+//		es.submit(pc);
+//		try {
+//			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+//		} catch (InterruptedException e2) {
+//			e2.printStackTrace();
+//		}
+////        try {
+////            int freq = 0;
+////            EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
+////            for(UnigramEntity entity : ec){
+////                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
+////                freq += entity.getFrequency();
+////            }
+////            ec.close();
+////        } catch (DatabaseException e) {
+////            // TODO Auto-generated catch block
+////            e.printStackTrace();
+////        }
+//		System.err.println("Finished pre-processing");
+//		FrequencyAnnotator anno = null;
+//		try {
+//			anno = (FrequencyAnnotator) AnnotatorRegistry.getAnnotator(FrequencyAnnotatorFactory.class);
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		ExecutorService pr = Executors.newSingleThreadExecutor();
+//		pr.submit(new ProcessorCallable(parser, files));
+//		pr.shutdown();
+//		try {
+//			pr.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+//		} catch (InterruptedException e2) {
+//			e2.printStackTrace();
+//		}
+		parser.processFiles(files);
 		System.err.println("Finished all parsing.");
 		
-		try {
-			System.err.println(preparser.getDocumentIndex().getIdIndex().get(3));
-		} catch (DatabaseException e) {
-			e.printStackTrace();
-		}
 		
-		for(String token : indexer.getFailed().keySet()) {
-			try {
-				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getFailed().get(token));
-				System.err.println(preparser.getDocumentIndex().getIdIndex().get(indexer.getFailed().get(token)).name());
-			} catch (DatabaseException e) {
-				e.printStackTrace();
-			}
-		}
-		int freq = 0;
+//		try {
+//			System.err.println(preparser.getDocumentIndex().getIdIndex().get(3));
+//		} catch (DatabaseException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		for(String token : indexer.getFailed().keySet()) {
+//			try {
+//				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getFailed().get(token));
+//				System.err.println(preparser.getDocumentIndex().getIdIndex().get(indexer.getFailed().get(token)).name());
+//			} catch (DatabaseException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		int freq = 0;
 //		try {
 //			EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
 //			for(UnigramEntity entity : ec){
@@ -160,10 +165,10 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		preparser.getDocumentIndex().entityStore().close();
-		indexer.entityStore().close();
+//		preparser.getDocumentIndex().entityStore().close();
+//		indexer.entityStore().close();
         //indexer.getUnigramIndexer().entityStore().close();
-		DatabaseEnvironment.getInstance().close();
+//		DatabaseEnvironment.getInstance().close();
 		
 		return true;
 	}

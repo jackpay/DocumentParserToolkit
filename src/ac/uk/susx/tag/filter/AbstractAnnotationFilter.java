@@ -8,9 +8,11 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.IIndexToken;
 import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 	
@@ -32,7 +34,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		filterAnnotations.add(annotation);
 	}
 	
-	public List<? extends IAnnotation<AT>> filter(List<? extends IAnnotation<AT>> annotations) {
+	public List<? extends IAnnotation<AT>> filterList(List<? extends IAnnotation<AT>> annotations) {
 		Iterator<? extends IAnnotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			IAnnotation<AT> anno = iter.next();
@@ -50,37 +52,42 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		this.remove = remove;
 	}
 	
-	public Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> filterCollection(Map<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations) {
+	public Sentence filterSentence(Sentence sentence) {
 		
-		if(annotations.get(annotator) == null) {
-			return annotations;
+		try {
+			if(sentence.getSentenceAnnotations(annotator) == null) {
+				return sentence;
+			}
+		} catch (IllegalAnnotationStorageException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		if(!remAllTok){
-			annotations.put(annotator, filter((List<IAnnotation<AT>>) annotations.get(annotator)));
+			try {
+				sentence.addAnnotations(annotator, filterList((List<IAnnotation<AT>>) sentence.getSentenceAnnotations(annotator)));
+			} catch (IllegalAnnotationStorageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else{
-			Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = FilterUtils.annotationsToMap(annotations, OffsetIndexToken.class);
-			Collection<IAnnotation<AT>> filtAnno = (List<IAnnotation<AT>>) annotations.get(annotator);
+			// Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = FilterUtils.annotationsToMap(annotations, OffsetIndexToken.class);
+			Collection<IAnnotation<AT>> filtAnno = null;
+			try {
+				filtAnno = (List<IAnnotation<AT>>) sentence.getSentenceAnnotations(annotator);
+			} catch (IllegalAnnotationStorageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Iterator<IAnnotation<AT>> iter = filtAnno.iterator();
 			while(iter.hasNext()){
 				IAnnotation<AT> next = iter.next();
 				if((matchAnnotation(next) && remove) || (!matchAnnotation(next) && !remove)){
-					iter.remove();
-					OffsetIndexToken index = null;
-					try {
-						index = next.getIndexToken(OffsetIndexToken.class);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					for(Class<? extends IAnnotator<?,?>> key : annotations.keySet()){
-						if(!key.equals(annotator)){
-							annotations.get(key).remove(annoMap.get(key).get(index));
-						}
-					}
+					sentence.removeAnnotation(next.getOffsetIndex());
 				}
 			}
 		}
-		return annotations;
+		return sentence;
 	}
 	
 	public List<AT> getFilterAnnotations() {
