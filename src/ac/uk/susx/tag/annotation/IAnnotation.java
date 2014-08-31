@@ -17,6 +17,8 @@ public interface IAnnotation<A>{
 	
 	public OffsetIndexToken getOffsetIndex();
 	
+	public void setAnnotation(A annotation);
+	
 	public CharSequence formatForOutput();
 	
 }

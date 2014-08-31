@@ -5,7 +5,7 @@ import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.input.CommandLineOption;
 
 @AnnotatorFactory
-public class PoSTagAnnotatorFactory implements IAnnotatorFactory<String,String>{
+public class PoSTagAnnotatorFactory implements IAnnotatorFactory<String,String> {
 	
 	private static final String CMD = "-pos";
 	private static final String DESC = "A pos tag annotator, which annotates each token with its part of speech.";

@@ -14,16 +14,19 @@ import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentEntity;
 import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentFreqUnigramEntity;
 import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.UnigramEntity;
 import ac.uk.susx.tag.formatting.HTMLStripperDocumentFormatter;
+
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.EntityCursor;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 import ac.uk.susx.tag.annotator.FrequencyAnnotator;
 import ac.uk.susx.tag.annotator.FrequencyAnnotatorFactory;
+import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.database.DatabaseEnvironment;
 import ac.uk.susx.tag.database.indexing.TFDFIndexer;
+import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.BasicInputDocumentFormatter;
@@ -71,6 +74,8 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CD");
 		anns.add("NNP");
 		anns.add("JJ");
+		String repl = "POOOOOOOPOOOOOO";
+		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 		parser = new ConcurrentLineProcessor(config);
 //		indexer = new TFDFIndexer();
@@ -93,6 +98,9 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		}
 		
 		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+		parser.processFiles(files);
+		System.err.println("Finished all parsing.");
+		
 //        System.err.println("Started pre-processing");
 //		ExecutorService es = Executors.newSingleThreadExecutor();
 //        ProcessorCallable pc = new ProcessorCallable(preparser,files);
@@ -129,10 +137,6 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 //		} catch (InterruptedException e2) {
 //			e2.printStackTrace();
 //		}
-		parser.processFiles(files);
-		System.err.println("Finished all parsing.");
-		
-		
 //		try {
 //			System.err.println(preparser.getDocumentIndex().getIdIndex().get(3));
 //		} catch (DatabaseException e) {

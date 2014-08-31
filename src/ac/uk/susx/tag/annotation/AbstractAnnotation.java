@@ -14,7 +14,7 @@ import ac.uk.susx.tag.indexing.OffsetIndexToken;
  */
 public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	
-	private final AnnotationIndexToken<A> annotation;
+	private AnnotationIndexToken<A> annotation;
 	private final OffsetIndexToken offset;
 	private final HashMap<Class<? extends IIndexToken>, IIndexToken> index;
 	
@@ -32,6 +32,10 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	
 	public int getEnd(){
 		return offset.getEnd();
+	}
+	
+	public void setAnnotation(A annotation) {
+		this.annotation = (annotation == null)? null : new AnnotationIndexToken<A>(annotation);
 	}
 	
 	public A getAnnotation(){
