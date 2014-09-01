@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.formatting;
+package ac.uk.susx.tag.formatting.document.output;
 
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.writer.IOutputWriter;

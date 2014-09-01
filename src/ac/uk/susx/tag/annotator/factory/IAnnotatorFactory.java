@@ -26,4 +26,10 @@ public interface IAnnotatorFactory <AT,ACT>{
 	 */
 	public abstract CommandLineOption getCommandLineOption();
 	
+//	/**
+//	 * Use this to pass command line parameters to your annotator instance.
+//	 * @param params
+//	 */
+//	public abstract void parseInputParams(Object... params);
+	
 }

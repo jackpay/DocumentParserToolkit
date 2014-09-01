@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.formatting;
+package ac.uk.susx.tag.formatting.token;
 
 import java.util.Collection;
 import ac.uk.susx.tag.annotation.IAnnotation;

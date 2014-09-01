@@ -8,13 +8,13 @@ import ac.uk.susx.tag.writer.IOutputWriter;
 
 public abstract class AbstractStatistics implements IStatistics{
 	
-	private final HashMap<String, AbstractStatistic<Object>> stats;
+	private final HashMap<String, AbstractStatistic<?>> stats;
 	
 	public AbstractStatistics(){
-		this.stats = new HashMap<String, AbstractStatistic<Object>>();
+		this.stats = new HashMap<String, AbstractStatistic<?>>();
 	}
 	
-	public void addStatistic(String field, AbstractStatistic<Object> value){
+	public void addStatistic(String field, AbstractStatistic<?> value){
 		stats.put(field, value);
 	}
 	
@@ -26,7 +26,7 @@ public abstract class AbstractStatistics implements IStatistics{
 		return stats.keySet();
 	}
 	
-	public Collection<AbstractStatistic<Object>> getStatistics(){
+	public Collection<AbstractStatistic<?>> getStatistics(){
 		return stats.values();
 	}
 	

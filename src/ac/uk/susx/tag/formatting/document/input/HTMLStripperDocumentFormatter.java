@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.formatting;
+package ac.uk.susx.tag.formatting.document.input;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,14 +7,15 @@ import ac.uk.susx.tag.document.Document;
 import de.l3s.boilerpipe.BoilerpipeProcessingException;
 import de.l3s.boilerpipe.extractors.ArticleExtractor;
 import ac.uk.susx.tag.document.IDocument;
+
 import org.apache.commons.io.FileUtils;
 
 public class HTMLStripperDocumentFormatter implements IInputDocumentFormatter {
 	
 
 	@Override
-	public IDocument createDocument(String doc) {
-		return new Document(parseHTML(doc));
+	public IDocument createDocument(CharSequence doc) {
+		return new Document(parseHTML(doc.toString()));
 	}
 
 	@Override

@@ -196,7 +196,7 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		}
 		for(String s : reader.getAdditionalAnnotators()){
 			try {
-				System.err.println(s);
+				System.err.println("Additional annotator " + s +  "detected.");
 				gc.addAnnotator(AnnotatorRegistry.getAnnotator(s));
 			} catch (Exception e) {
 				e.printStackTrace();

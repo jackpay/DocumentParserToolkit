@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
-import ac.uk.susx.tag.formatting.IInputDocumentFormatter;
-import ac.uk.susx.tag.formatting.IOutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.document.input.IInputDocumentFormatter;
+import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 
 /**
  * The interace class for a global config file.

@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.formatting;
+package ac.uk.susx.tag.formatting.document.output;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import java.util.List;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
+import ac.uk.susx.tag.formatting.token.BasicTabSeperatedTokenFormatter;
 import ac.uk.susx.tag.writer.IOutputWriter;
 import ac.uk.susx.tag.writer.CharSequenceWriter;
 

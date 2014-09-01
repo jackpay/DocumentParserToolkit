@@ -1,4 +1,4 @@
-package ac.uk.susx.tag.formatting;
+package ac.uk.susx.tag.formatting.document.input;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import ac.uk.susx.tag.document.IDocument;
 
 public class BasicInputDocumentFormatter implements IInputDocumentFormatter{
 
-	public IDocument createDocument(String file) {
+	public IDocument createDocument(CharSequence file) {
 		return new Document(file);
 	}
 

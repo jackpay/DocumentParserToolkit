@@ -1,7 +1,7 @@
 package ac.uk.susx.tag.annotation;
 
-import ac.uk.susx.tag.formatting.IToken;
-import ac.uk.susx.tag.formatting.StringToken;
+import ac.uk.susx.tag.formatting.token.IToken;
+import ac.uk.susx.tag.formatting.token.StringToken;
 
 
 public final class StringAnnotation extends AbstractAnnotation<String> {

@@ -1,10 +1,8 @@
 package ac.uk.susx.tag.filter;
 
 import java.util.List;
-import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.document.Sentence;
 
 /**
