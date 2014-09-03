@@ -14,6 +14,7 @@ import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.CharSequenceConfiguration;
+import ac.uk.susx.tag.utils.IllegalInputParamsException;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {
 	
@@ -194,13 +195,18 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 				e.printStackTrace();
 			}
 		}
-		for(String s : reader.getAdditionalAnnotators()){
-			try {
-				System.err.println("Additional annotator " + s +  "detected.");
-				gc.addAnnotator(AnnotatorRegistry.getAnnotator(s));
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			for(String s : reader.getAnnotatorsandParams().keySet()){
+				try {
+					System.err.println("Additional annotator " + s +  "detected.");
+					gc.addAnnotator(AnnotatorRegistry.getAnnotator(s,reader.getAnnotatorsandParams().get(s)));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+		} catch (IllegalInputParamsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return gc;
 	}

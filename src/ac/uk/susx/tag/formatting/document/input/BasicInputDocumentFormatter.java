@@ -3,7 +3,7 @@ package ac.uk.susx.tag.formatting.document.input;
 import java.io.File;
 import java.io.IOException;
 
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.IDocument;
@@ -17,7 +17,7 @@ public class BasicInputDocumentFormatter implements IInputDocumentFormatter{
 	public IDocument createDocument(File file) {
 		String f = null;
 		try {
-			f = FileUtils.fileRead(file);
+			f = FileUtils.readFileToString(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -40,10 +40,17 @@ public final class AnnotatorRegistry {
 		}
 	}
 	
-	public static synchronized IAnnotator<?,?> getAnnotator(String cmd) throws Exception {
+	/**
+	 * Primary used to retrieve or create an annotator from command line prompts
+	 * @param cmd The command line parameter prompt
+	 * @param params Any additional params for that specific parser. 
+	 * @return The returned or newly instantiated Annotator
+	 * @throws Exception
+	 */
+	public static synchronized IAnnotator<?,?> getAnnotator(String cmd, String[] params) throws Exception {
 		if(cmdRegistry.get(cmd) != null) {
 			if(registry.get(cmdRegistry.get(cmd)) == null){
-				registry.put(cmdRegistry.get(cmd), facRegistry.get(cmdRegistry.get(cmd)).create());
+				registry.put(cmdRegistry.get(cmd), facRegistry.get(cmdRegistry.get(cmd)).create(params));
 			}
 			if(!registry.get(cmdRegistry.get(cmd)).modelStarted()){
 				registry.get(cmdRegistry.get(cmd)).startModel();

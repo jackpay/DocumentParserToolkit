@@ -17,6 +17,13 @@ public class SentenceAnnotatorFactory implements IAnnotatorFactory<Sentence,Stri
 
 	public CommandLineOption getCommandLineOption() {
 		return new CommandLineOption(CMD,DESC);
+	}	
+	
+	
+	@Override
+	public IAnnotator<Sentence, String> create(String[] params) {
+		// TODO Auto-generated method stub
+		return create();
 	}
 
 }

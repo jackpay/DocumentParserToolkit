@@ -29,6 +29,10 @@ public class BasicTabSeperatedTokenFormatter implements TokenFormatter<CharSeque
 			if(i < tokens.size()-1){
 				sb.append(ANN_DELIM);
 			}
+			// Used for debugging purposes!
+//			else{
+//				sb.append("_").append(token.getStart()).append("_").append(token.getEnd());
+//			}
 		}
 		return sb.toString();
 	}

@@ -1,11 +1,15 @@
 package ac.uk.susx.tag.utils;
 
+import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
+
 public class IllegalInputParamsException extends Exception {
 	
-	private static final String MESSAGE = "The format of the additional additional input parameters is wrong. Annotator command line options must begin with a '-', and their additional parameters (if any) should follow, and must not start '-'";
+	private static final long serialVersionUID = 6489111828869839521L;
+	private static final String MESSAGE_P1 = "The input parameters to instantiate class ";
+	private static final String MESSAGE_P2 = " was not able to parse the input parameters given";
 	
-	public IllegalInputParamsException(){
-		super(MESSAGE);
+	public IllegalInputParamsException(Class<? extends IAnnotatorFactory<?,?>> failedClass){
+		super(MESSAGE_P1 + failedClass + MESSAGE_P2);
 	}
 
 }

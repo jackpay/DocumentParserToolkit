@@ -34,7 +34,7 @@ public class CanonicaliseFilter<AT> implements IFilter<AT> {
 	@Override
 	public Sentence filterSentence(Sentence sentence) {
 		try {
-			sentence.addAnnotations(annotator, filterList(sentence.getSentenceAnnotations(annotator)));
+			filterList(sentence.getSentenceAnnotations(annotator));
 		} catch (IllegalAnnotationStorageException e) {
 			e.printStackTrace();
 		}

@@ -21,6 +21,12 @@ public class LocationAnnotatorFactory extends AbstractNERAnnotator implements IA
 	public CommandLineOption getCommandLineOption() {
 		return new CommandLineOption(CMD,DESC);
 	}
+
+	@Override
+	public IAnnotator<String, String> create(String[] params) {
+		// TODO Auto-generated method stub
+		return create();
+	}
 	
 	
 }

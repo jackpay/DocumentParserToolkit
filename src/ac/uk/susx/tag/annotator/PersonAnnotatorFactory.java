@@ -22,4 +22,10 @@ public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnn
 		return new CommandLineOption(CMD,DESC);
 	}
 
+	@Override
+	public IAnnotator<String, String> create(String[] params) {
+		// TODO Auto-generated method stub
+		return create();
+	}
+
 }

@@ -1,9 +1,11 @@
 package ac.uk.susx.tag.input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import net.didion.jwnl.util.factory.ParamList;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
@@ -55,7 +57,7 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 		(names = "-A", description = "Additional annotators")
 		private List<String> params = new ArrayList<String>();
 		
-		private HashMap<String,List<Object>> annparamMap = new HashMap<String,List<Object>>();
+		private HashMap<String,String[]> annparamMap = new HashMap<String,String[]>();
 		
 		public boolean help() {
 			return help;
@@ -85,29 +87,19 @@ public abstract class AbstractInputParameterParser implements IInputParameterPar
 			return params;
 		}
 		
-		public HashMap<String,List<Object>> getAnnotatorsandParams() throws IllegalInputParamsException {
+		public HashMap<String,String[]> getAnnotatorsandParams() throws IllegalInputParamsException {
 			if(params.size() <= 0){
 				return annparamMap;
 			}
-			if(!params.get(0).startsWith("-")){
-				throw new IllegalInputParamsException();
-			}
 			else{
-				try{
-					String currAnno = params.get(0);
-					annparamMap.put(currAnno, new ArrayList<Object>());
-					for(String p : params.subList(1, params.size())){
-						if(p.startsWith("-")){
-							currAnno = p;
-							annparamMap.put(currAnno, new ArrayList<Object>());
-						}
-						else{
-							annparamMap.get(currAnno).add(p);
-						}
+				for(String param : params){
+					String[] paramList = param.split("=");
+					if(paramList.length == 1){
+						annparamMap.put(paramList[0], null);
 					}
-				}
-				catch(Exception e) {
-					throw new IllegalInputParamsException();
+					else{
+						annparamMap.put(paramList[0], Arrays.copyOfRange(paramList, 1, paramList.length));
+					}
 				}
 				return annparamMap;
 			}

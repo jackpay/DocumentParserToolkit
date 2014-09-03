@@ -18,4 +18,10 @@ public class FrequencyAnnotatorFactory implements IAnnotatorFactory<String,Strin
 		return new CommandLineOption(CMD,DESC);
 	}
 
+	@Override
+	public IAnnotator<String, String> create(String[] params) {
+		// TODO Auto-generated method stub
+		return create();
+	}
+
 }
