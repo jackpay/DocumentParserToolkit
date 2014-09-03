@@ -52,7 +52,7 @@ public class FilterUtils {
 		while(iter.hasNext()){
 			IAnnotation<?> next = iter.next();
 			try {
-				annoMap.put(next.getIndexToken(index), next);
+				annoMap.put(next.getIndex(index), next);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -75,7 +75,7 @@ public class FilterUtils {
 	public static class AnnotationPositionComparator implements Comparator<IAnnotation<?>> {
 		public int compare(IAnnotation<?> ann1, IAnnotation<?> ann2) {
 			try {
-				return ann1.getIndexToken(PositionIndexToken.class).getPosition() < ann2.getIndexToken(PositionIndexToken.class).getPosition() ? -1 : ann1.getIndexToken(PositionIndexToken.class).getPosition() == ann2.getIndexToken(PositionIndexToken.class).getPosition() ? 0 : 1;
+				return ann1.getIndex(PositionIndexToken.class).getPosition() < ann2.getIndex(PositionIndexToken.class).getPosition() ? -1 : ann1.getIndex(PositionIndexToken.class).getPosition() == ann2.getIndex(PositionIndexToken.class).getPosition() ? 0 : 1;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

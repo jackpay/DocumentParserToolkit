@@ -40,7 +40,7 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 			int startOffset = sentPos[i].getStart() + offset;
 			int endOffset = sentPos[i].getEnd() + offset;
 			Sentence sentence = new Sentence(new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),startOffset,endOffset),startOffset,endOffset);
-			sentence.getSentence().addIndexToken(new PositionIndexToken(i));
+			sentence.getSentence().addIndex(new PositionIndexToken(i));
 			annotations.add(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd()));
 			offset = sentPos[i].getEnd();
 		}

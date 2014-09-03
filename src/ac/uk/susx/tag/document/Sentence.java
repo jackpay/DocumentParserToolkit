@@ -59,11 +59,11 @@ public final class Sentence {
 		
 		for(IAnnotation<AT> annotation : annos) {
 			try {
-				if(indexAnnotations.get(annotation.getOffsetIndex()) == null){
-					indexAnnotations.put(annotation.getOffsetIndex(), new ArrayList<IAnnotation<AT>>(Arrays.asList(annotation)));
+				if(indexAnnotations.get(annotation.getOffset()) == null){
+					indexAnnotations.put(annotation.getOffset(), new ArrayList<IAnnotation<AT>>(Arrays.asList(annotation)));
 				}
 				else {
-					List<IAnnotation<?>> list = (List<IAnnotation<?>>) indexAnnotations.get(annotation.getOffsetIndex());
+					List<IAnnotation<?>> list = (List<IAnnotation<?>>) indexAnnotations.get(annotation.getOffset());
 					list.add(annotation);
 				}
 			} catch (Exception e) {

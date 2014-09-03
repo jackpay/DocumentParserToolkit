@@ -11,11 +11,11 @@ public interface IAnnotation<A>{
 	
 	public int getEnd();
 	
-	public void addIndexToken(IIndexToken token);
+	public void addIndex(IIndexToken token);
 	
-	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception;
+	public <IT extends IIndexToken> IT getIndex(Class<IT> indexClass) throws Exception;
 	
-	public OffsetIndexToken getOffsetIndex();
+	public OffsetIndexToken getOffset();
 	
 	public void setAnnotation(A annotation);
 	

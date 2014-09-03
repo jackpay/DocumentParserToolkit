@@ -42,15 +42,15 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		return (annotation == null) ? null : annotation.getAnnotation();
 	}
 	
-	public OffsetIndexToken getOffsetIndex() {
+	public OffsetIndexToken getOffset() {
 		return offset;
 	}
 	
-	public void addIndexToken(IIndexToken token) {
+	public void addIndex(IIndexToken token) {
 		index.put(token.getClass(), token);
 	}
 	
-	public <IT extends IIndexToken> IT getIndexToken(Class<IT> indexClass) throws Exception {
+	public <IT extends IIndexToken> IT getIndex(Class<IT> indexClass) throws Exception {
 		if(index.get(indexClass) != null){
 			if(!index.get(indexClass).getClass().equals(indexClass)){
 				throw new Exception("The class of the stored index token does not match the required class. Check how IIndexToken objects are added.");
@@ -69,7 +69,7 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		}
 		AbstractAnnotation aa = (AbstractAnnotation) obj;
 		try {
-			if(aa.getIndexToken(AnnotationIndexToken.class).equals(getIndexToken(AnnotationIndexToken.class))) {
+			if(aa.getIndex(AnnotationIndexToken.class).equals(getIndex(AnnotationIndexToken.class))) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -83,7 +83,7 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	public final int hashCode() {
 		int hash = 0;
 		try {
-			hash = getIndexToken(AnnotationIndexToken.class).hashCode();
+			hash = getIndex(AnnotationIndexToken.class).hashCode();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

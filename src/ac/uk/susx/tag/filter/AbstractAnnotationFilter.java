@@ -4,14 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.document.Sentence;
-import ac.uk.susx.tag.indexing.IIndexToken;
-import ac.uk.susx.tag.indexing.OffsetIndexToken;
-import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
@@ -83,7 +79,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 			while(iter.hasNext()){
 				IAnnotation<AT> next = iter.next();
 				if((matchAnnotation(next) && remove) || (!matchAnnotation(next) && !remove)){
-					sentence.removeAnnotation(next.getOffsetIndex());
+					sentence.removeAnnotation(next.getOffset());
 				}
 			}
 		}

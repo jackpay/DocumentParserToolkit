@@ -39,11 +39,11 @@ public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
 			for(IAnnotation<AT> ann : sentAnn){
 				int currPos = 0;
 				try {
-					currPos = ann.getIndexToken(PositionIndexToken.class) == null ? 0 : ann.getIndexToken(PositionIndexToken.class).getPosition();
+					currPos = ann.getIndex(PositionIndexToken.class) == null ? 0 : ann.getIndex(PositionIndexToken.class).getPosition();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				ann.addIndexToken(new PositionIndexToken(currPos + index));
+				ann.addIndex(new PositionIndexToken(currPos + index));
 				index++;
 			}
 			annotationArr.addAll(sentAnn);
