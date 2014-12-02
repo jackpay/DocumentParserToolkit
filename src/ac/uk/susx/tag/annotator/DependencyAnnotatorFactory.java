@@ -26,6 +26,12 @@ public class DependencyAnnotatorFactory implements IAnnotatorFactory<Token,Strin
 	public CommandLineOption getCommandLineOption() {
 		return new CommandLineOption(CMD,DESC);
 	}
+
+	@Override
+	public String name() {
+		// TODO Auto-generated method stub
+		return "dependency-parser";
+	}
 	
 
 }

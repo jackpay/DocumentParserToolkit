@@ -17,6 +17,10 @@ import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.FilterUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
+/**
+ * The class used to represent a single sentence. Stores and maintains and index of all tokens and annotations.
+ * @author jp242
+ */
 public final class Sentence {
 	
 	private final IAnnotation<String> sentence;
@@ -25,6 +29,11 @@ public final class Sentence {
 	private final OffsetIndexToken offset;
 	private final CharSequence docId;
 
+	/**
+	 * @param sentence The raw sentence string.
+	 * @param start The index of the sentence start point in the document.
+	 * @param end  The index of the sentence end point in the document.
+	 */
 	public Sentence(IAnnotation<String> sentence, int start, int end) {
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
@@ -33,6 +42,12 @@ public final class Sentence {
 		docId = null;
 	}
 	
+	/**
+	 * @param sentence The raw sentence string.
+	 * @param start The index of the sentence start point in the document.
+	 * @param end  The index of the sentence end point in the document.
+	 * @param docId The id of the document the senetence comes from.
+	 */
 	public Sentence(IAnnotation<String> sentence, int start, int end, CharSequence docId) {
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
@@ -41,6 +56,10 @@ public final class Sentence {
 		this.docId = docId;
 	}
 	
+	/**
+	 * @param annotator The class of the annotator which produced the annotations.
+	 * @param annos The annotations to be indexed.
+	 */
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends IAnnotation<AT>> annos) {
 		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) annotations.get(annotator);
 		if(anns == null){
@@ -72,19 +91,34 @@ public final class Sentence {
 		}
 	}
 	
+	/**
+	 * @param index The index of the annotations required.
+	 * @return All annotations associated with the given index.
+	 */
 	public List<? extends IAnnotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
 		return indexAnnotations.get(index);
 	}
 	
+	/**
+	 * @return All index tokens contained in the Sentence.
+	 */
 	public Set<OffsetIndexToken> getAnnotationIndexes() {
 		return indexAnnotations.keySet();
 	} 
 	
+	/**
+	 * @return All indexed annotations contained in the Sentence.
+	 */
 	public Collection<List<? extends IAnnotation<?>>> getAllIndexedAnnotations() {
 		return indexAnnotations.values();
 	}
 	
-	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
+	/**
+	 * @param annotator The class of the annotator which produces the required annotations.
+	 * @return All sentence annotations produced by the given annotator class, or null.
+	 * @throws IllegalAnnotationStorageException
+	 */
+	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException {
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
 		} catch (ClassCastException ex) {
@@ -92,24 +126,40 @@ public final class Sentence {
 		}
 	}
 	
+	/**
+	 * @return The raw sentence annotation represented by the Sentence object.
+	 */
 	public IAnnotation<String> getSentence() {
 		return sentence;
 	}
 	
+	/**
+	 * @return All annotations contained in this Sentence.
+	 */
 	public Collection<List<? extends IAnnotation<?>>> getSentenceAllAnnotations() {
 		return annotations.values();
 	}
 	
+	/**
+	 * @return A set of all classes which have annotations contained in the Sentence.
+	 */
 	public Set<Class<? extends IAnnotator<?, ?>>> getSentenceAllAnnotators() {
 		return annotations.keySet();
 	}
 	
+	/**
+	 * @param cl Removes all annotations associated with the given class.
+	 */
 	public void removeAnnotation(Class<? extends IAnnotator<?,?>> cl) {
 		if(annotations.containsKey(cl)){
 			annotations.remove(cl);
 		}
 	}
 	
+	/**
+	 * @param index The index of the annotations needing to be removed.
+	 * @return returns true if the Sentence contained annotations at the given index.
+	 */
 	public boolean removeAnnotation(OffsetIndexToken index) {
 		if(indexAnnotations.containsKey(index)) {
 			indexAnnotations.remove(index);
@@ -118,16 +168,25 @@ public final class Sentence {
 		return false;
 	}
 
+	/**
+	 * @param annotators Removes all annotations associated with the given collection of annotators.
+	 */
 	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?>>> annotators) {
 		for(Class<? extends IAnnotator<?,?>> annotator : annotators){
 			removeAnnotation(annotator);
 		}
 	}
 
+	/**
+	 * @param includedAnnotators  Retains all annotations associated with the given collection of annotators and removes all others.
+	 */
 	public void retainAnnotations(Collection<Class<? extends IAnnotator<?,?>>> includedAnnotators) {
 		annotations.keySet().retainAll(includedAnnotators);
 	}
 	
+	/**
+	 * @param filters Applies the given filters to the annotations of the Sentence.
+	 */
 	public void filterAnnotations(Collection<IFilter<?>> filters){
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<?> filter : filters){
@@ -137,6 +196,11 @@ public final class Sentence {
 	}
 	
 	//TODO: type checking - although is enforced elsewhere 
+	/**
+	 * Apply the given set of filters to all annotations created by the given class.
+	 * @param filters 
+	 * @param annotator
+	 */
 	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
@@ -145,6 +209,12 @@ public final class Sentence {
 		}
 	}
 	
+	/**
+	 * Used to sort the annotations in ascending order of offset.
+	 * @param annotator
+	 * @return
+	 * @throws IllegalAnnotationStorageException
+	 */
 	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
 		Collections.sort(annotations.get(annotator), new FilterUtils.AnnotationOffsetComparator());
 		try{
@@ -154,10 +224,16 @@ public final class Sentence {
 		}
 	}
 	
+	/**
+	 * @return The offset of this sentence in relation to its document.
+	 */
 	public OffsetIndexToken getOffsetIndex() {
 		return offset;
 	}
 	
+	/**
+	 * @return The doc id this sentence comes from (if one exists).
+	 */
 	public CharSequence docReference() {
 		return docId;
 	}

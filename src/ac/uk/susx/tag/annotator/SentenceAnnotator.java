@@ -8,7 +8,7 @@ import java.util.List;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -21,13 +21,13 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 
 	private SentenceDetectorME sentencetagger;
 	
-	public IDocument annotate(IDocument doc) throws IncompatibleAnnotationException {
+	public Document annotate(Document doc) throws IncompatibleAnnotationException {
 		CharSequence docStr = doc.getDocument();
 		StringAnnotation ga = new StringAnnotation(docStr.toString(),0,docStr.length());
 		ArrayList<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
 		annotations.addAll(annotate(ga));
 		for(IAnnotation<Sentence> sentence : annotations) {
-			doc.addSentence(sentence.getAnnotation());
+			doc.add(sentence.getAnnotation());
 		}
 		return doc;
 	}

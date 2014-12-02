@@ -57,4 +57,9 @@ public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnn
 		return annos;
 	}
 
+	@Override
+	public String name() {
+		return "person";
+	}
+
 }

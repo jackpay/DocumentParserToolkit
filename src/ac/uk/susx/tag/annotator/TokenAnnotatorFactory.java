@@ -23,4 +23,9 @@ public class TokenAnnotatorFactory implements IAnnotatorFactory<String,String>{
 		return create();
 	}
 
+	@Override
+	public String name() {
+		return "tokeniser";
+	}
+
 }

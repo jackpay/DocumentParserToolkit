@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +18,7 @@ import org.apache.commons.io.FileUtils;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.writer.StandardOutputWriter;
 
@@ -137,10 +135,10 @@ public class ConcurrentLineProcessor implements IProcessor {
 	
 	private final class DocumentCallable implements Callable<Boolean> {
 			
-			private final IDocument document;
+			private final Document document;
 			private final StandardOutputWriter writer;
 			
-			public DocumentCallable(IDocument document, StandardOutputWriter writer){
+			public DocumentCallable(Document document, StandardOutputWriter writer){
 				this.document = document;
 				this.writer = writer;
 			}

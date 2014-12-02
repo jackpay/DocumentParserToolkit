@@ -57,4 +57,9 @@ public class OrganisationAnnotatorFactory extends AbstractNERAnnotator implement
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 	}
+
+	@Override
+	public String name() {
+		return "organisation";
+	}
 }

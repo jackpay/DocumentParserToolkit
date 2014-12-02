@@ -23,4 +23,11 @@ public class ChunkTagAnnotatorFactory implements IAnnotatorFactory<String,String
 		return create();
 	}
 
+	@Override
+	public String name() {
+		return "chunker";
+	}
+	
+	
+
 }

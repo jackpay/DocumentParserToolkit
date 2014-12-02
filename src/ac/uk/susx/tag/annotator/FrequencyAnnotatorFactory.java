@@ -24,4 +24,9 @@ public class FrequencyAnnotatorFactory implements IAnnotatorFactory<String,Strin
 		return create();
 	}
 
+	@Override
+	public String name() {
+		return "term-frequency";
+	}
+
 }

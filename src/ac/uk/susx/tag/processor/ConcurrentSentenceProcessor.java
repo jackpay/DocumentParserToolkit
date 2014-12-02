@@ -3,7 +3,6 @@ package ac.uk.susx.tag.processor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -11,14 +10,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
@@ -37,7 +35,7 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 		Iterator<File> iter = FileUtils.iterateFiles(new File(fileDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){
 			File next = iter.next();
-			IDocument document = config.getDocumentBuilder().createDocument(next.getAbsolutePath());
+			Document document = config.getDocumentBuilder().createDocument(next.getAbsolutePath());
 			final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 			try {
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
@@ -45,7 +43,7 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 				e1.printStackTrace();
 				break;
 			}
-			Iterator<Sentence> sentences = document.getSentenceIterator();
+			Iterator<Sentence> sentences = document.iterator();
 			while(sentences.hasNext()){
 				SentenceCallable sentCaller = new SentenceCallable(sentences.next());
 				Future<Boolean> future = executor.submit(sentCaller);

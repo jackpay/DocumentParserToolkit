@@ -8,7 +8,7 @@ import java.util.List;
 import uk.ac.susx.tag.dependencyparser.Parser;
 import uk.ac.susx.tag.dependencyparser.datastructures.Token;
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.annotation.TokenAnnotation;
+import ac.uk.susx.tag.annotation.DepRelTokenAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.Sentence;
@@ -28,12 +28,12 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 	}
 
 	@Override
-	public synchronized List<? extends TokenAnnotation> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public synchronized List<? extends DepRelTokenAnnotation> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		if(!modelStarted()) {
 			startModel();
 		}
 		uk.ac.susx.tag.dependencyparser.datastructures.Sentence parserSent = new uk.ac.susx.tag.dependencyparser.datastructures.Sentence();
-		ArrayList<TokenAnnotation> annotations = new ArrayList<TokenAnnotation>();
+		ArrayList<DepRelTokenAnnotation> annotations = new ArrayList<DepRelTokenAnnotation>();
 		try {
 			List<IAnnotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
 			List<IAnnotation<String>> pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
@@ -44,7 +44,7 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 			Iterator<Token> iter = parserSent.iterator();
 			int i = 0;
 			while(iter.hasNext()) {
-				annotations.add(new TokenAnnotation(iter.next(),tokens.get(i).getStart(),tokens.get(i).getEnd()));
+				annotations.add(new DepRelTokenAnnotation(iter.next(),tokens.get(i).getStart(),tokens.get(i).getEnd()));
 				i++;
 			}
 		} catch (IllegalAnnotationStorageException e) {
@@ -62,7 +62,7 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 	/**
 	 * Needs to be a sentence.
 	 */
-	public List<? extends TokenAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<? extends DepRelTokenAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

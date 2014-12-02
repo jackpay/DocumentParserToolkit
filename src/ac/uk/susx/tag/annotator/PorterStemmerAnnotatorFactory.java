@@ -20,8 +20,12 @@ public class PorterStemmerAnnotatorFactory implements IAnnotatorFactory<String,S
 
 	@Override
 	public IAnnotator<String, String> create(String[] params) {
-		// TODO Auto-generated method stub
 		return create();
+	}
+
+	@Override
+	public String name() {
+		return "porter-stemmer";
 	}
 
 }

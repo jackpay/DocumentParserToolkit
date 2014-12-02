@@ -24,4 +24,9 @@ public class LemmatiserAnnotatorFactory implements IAnnotatorFactory<String,Stri
 		return create();
 	}
 
+	@Override
+	public String name() {
+		return "lemmatiser";
+	}
+
 }

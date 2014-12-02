@@ -34,4 +34,9 @@ public class ContextWindowAnnotatorFactory implements IAnnotatorFactory<String,S
 		}
 	}
 
+	@Override
+	public String name() {
+		return "context-window";
+	}
+
 }

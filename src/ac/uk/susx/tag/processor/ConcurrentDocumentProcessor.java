@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class ConcurrentDocumentProcessor implements IProcessor {
@@ -29,7 +29,7 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){
-			IDocument doc = config.getDocumentBuilder().createDocument(iter.next().getAbsolutePath());
+			Document doc = config.getDocumentBuilder().createDocument(iter.next().getAbsolutePath());
 			Callable<Boolean> docCaller = new DocumentCallable(doc, iter.next().getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
@@ -43,10 +43,10 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 	
 	public class DocumentCallable implements Callable<Boolean> {
 		
-		private final IDocument document;
+		private final Document document;
 		private final String fileName;
 		
-		public DocumentCallable(IDocument document, String fileName){
+		public DocumentCallable(Document document, String fileName){
 			this.document = document;
 			this.fileName = fileName;
 		}

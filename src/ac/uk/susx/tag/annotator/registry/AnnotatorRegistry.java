@@ -20,10 +20,15 @@ public final class AnnotatorRegistry {
 	private static final HashMap<Class<? extends IAnnotatorFactory<?,?>>,IAnnotatorFactory<?,?>> facRegistry = Maps.newHashMap();
 	private static final HashMap<String,Class<IAnnotatorFactory<?,?>>> cmdRegistry = Maps.newHashMap();
 	private static final ArrayList<CommandLineOption> commands = new ArrayList<CommandLineOption>();
+	private static final HashMap<String,IAnnotatorFactory<?,?>> nameRegistry = Maps.newHashMap();
 	
 	private AnnotatorRegistry(){}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * @param cl
+	 * @return The annotator which is produced by this class of AnnotatorFactory.
+	 * @throws Exception
+	 */
 	public static synchronized <AT,ACT> IAnnotator<AT,ACT> getAnnotator(Class<? extends IAnnotatorFactory<AT,ACT>> cl) throws Exception {
 		if(facRegistry.get(cl) != null) {
 			if(registry.get(cl) == null){
@@ -37,6 +42,26 @@ public final class AnnotatorRegistry {
 		}
 		else {
 			throw new Exception("There is no registered AbstractAnnotatorFactory of that class.");
+		}
+	}
+	
+	/**
+	 * @param name Name of the annotator as defined by its AnnotatorFactory.
+	 * @return The annotator registered with the given name
+	 * @throws Exception
+	 */
+	public static synchronized IAnnotator<?,?> getAnnotator(String name) throws Exception {
+		if(nameRegistry.get(name) != null) {
+			if(registry.get(nameRegistry.get(name).getClass()) == null) {
+				registry.put((Class<? extends IAnnotatorFactory<?, ?>>) nameRegistry.get(name).getClass(), nameRegistry.get(name).create());
+			}
+			if(!registry.get(nameRegistry.get(name).getClass()).modelStarted()) {
+				registry.get(nameRegistry.get(name).getClass()).startModel();
+			}
+			return registry.get(nameRegistry.get(name).getClass());
+		}
+		else {
+			throw new Exception("There is no registered AbstractAnnotatorFactory with that command line option.");
 		}
 	}
 	
@@ -66,12 +91,26 @@ public final class AnnotatorRegistry {
 		return commands;
 	}
 
-	public static void registerAnnotator(IAnnotatorFactory<?,?> abstractAnnotatorFactory) {
+	/**
+	 * Add a new annotator to the registry via the factory which will produce when required.
+	 * @param abstractAnnotatorFactory
+	 * @throws Exception
+	 */
+	public  static void registerAnnotator(IAnnotatorFactory<?,?> abstractAnnotatorFactory) throws Exception {
 		facRegistry.put((Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass(), abstractAnnotatorFactory);
 		cmdRegistry.put(abstractAnnotatorFactory.getCommandLineOption().getCommand(), (Class<IAnnotatorFactory<?,?>>) abstractAnnotatorFactory.getClass());
 		commands.add(abstractAnnotatorFactory.getCommandLineOption());
+		if(nameRegistry.containsKey(abstractAnnotatorFactory.name())) {
+			throw new Exception("An AnnotatoFactory with that name already exists.");
+		}
+		else {
+			nameRegistry.put(abstractAnnotatorFactory.name(), abstractAnnotatorFactory);
+		}
 	}
 
+	/**
+	 * Searches the classpath and registers any AnnotatorFactory classes.
+	 */
 	public static void register() {
 		Reflections reflections = new Reflections("ac.uk.susx.tag.annotator");
 		Set<Class<?>> annotators = reflections.getTypesAnnotatedWith(AnnotatorFactory.class);
@@ -84,7 +123,11 @@ public final class AnnotatorRegistry {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-			registerAnnotator(anf);
+			try {
+				registerAnnotator(anf);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

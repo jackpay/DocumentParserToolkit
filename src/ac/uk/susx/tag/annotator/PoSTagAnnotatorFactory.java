@@ -20,8 +20,12 @@ public class PoSTagAnnotatorFactory implements IAnnotatorFactory<String,String> 
 
 	@Override
 	public IAnnotator<String, String> create(String[] params) {
-		// TODO Auto-generated method stub
 		return create();
+	}
+
+	@Override
+	public String name() {
+		return "postagger";
 	}
 
 }

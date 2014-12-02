@@ -34,4 +34,9 @@ public interface IAnnotatorFactory <AT,ACT>{
 	 */
 	public abstract CommandLineOption getCommandLineOption();
 	
+	/**
+	 * @return The string name reference used to refer to this annotator. Must be distinct from any previously existing annotators/factories.
+	 */
+	public abstract String name();
+	
 }

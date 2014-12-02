@@ -3,7 +3,7 @@ package ac.uk.susx.tag.annotator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
@@ -22,7 +22,7 @@ public interface IAnnotator <AT,ACT> {
 	 * @param doc The document to be annotated
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public IDocument annotate(IDocument doc) throws IncompatibleAnnotationException;
+	public Document annotate(Document doc) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a list of exisiting annotations.

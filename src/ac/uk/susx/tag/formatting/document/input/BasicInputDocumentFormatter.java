@@ -6,15 +6,14 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 
 import ac.uk.susx.tag.document.Document;
-import ac.uk.susx.tag.document.IDocument;
 
 public class BasicInputDocumentFormatter implements IInputDocumentFormatter{
 
-	public IDocument createDocument(CharSequence file) {
+	public Document createDocument(CharSequence file) {
 		return new Document(file);
 	}
 
-	public IDocument createDocument(File file) {
+	public Document createDocument(File file) {
 		String f = null;
 		try {
 			f = FileUtils.readFileToString(file);

@@ -7,7 +7,7 @@ import java.util.List;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -16,15 +16,15 @@ public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
 	
 	private Class<? extends IAnnotatorFactory<Sentence,String>> sentence = SentenceAnnotatorFactory.class;
 
-	public IDocument annotate(IDocument document) throws IncompatibleAnnotationException {
-		if(document.sentencesEmpty()){
+	public Document annotate(Document document) throws IncompatibleAnnotationException {
+		if(document.isEmpty()){
 			try {
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		Iterator<Sentence> sentences = document.getSentenceIterator();
+		Iterator<Sentence> sentences = document.iterator();
 		while(sentences.hasNext()){
 			annotate(sentences.next());
 		}

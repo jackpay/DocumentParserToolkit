@@ -57,4 +57,9 @@ public class LocationAnnotatorFactory extends AbstractNERAnnotator implements IA
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 	}
+
+	@Override
+	public String name() {
+		return "location";
+	}
 }

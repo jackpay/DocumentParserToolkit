@@ -26,4 +26,9 @@ public class SentenceAnnotatorFactory implements IAnnotatorFactory<Sentence,Stri
 		return create();
 	}
 
+	@Override
+	public String name() {
+		return "sentence";
+	}
+
 }

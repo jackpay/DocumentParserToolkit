@@ -2,7 +2,7 @@ package ac.uk.susx.tag.formatting.document.input;
 
 import java.io.File;
 
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 
 public interface IInputDocumentFormatter { 
 	
@@ -11,13 +11,13 @@ public interface IInputDocumentFormatter {
 	 * @param rawDoc The raw document represented as a CharSequence
 	 * @return The document formatted and output as a Document.
 	 */
-	public IDocument createDocument(CharSequence rawDoc);
+	public Document createDocument(CharSequence rawDoc);
 	
 	/**
 	 * Takes a File object and outputs the file at that location as a Document object.
 	 * @param file The File representing the input document.
 	 * @return The file formatted as a Document object.
 	 */
-	public IDocument createDocument(File file);
+	public Document createDocument(File file);
 	
 }

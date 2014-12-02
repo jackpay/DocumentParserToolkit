@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.document.IDocument;
+import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.formatting.token.BasicTabSeperatedTokenFormatter;
 import ac.uk.susx.tag.writer.IOutputWriter;
@@ -24,12 +24,12 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		TOKEN_DELIM = delimiter;
 	}
 
-	public void processDocument(String outputFileName, IDocument document) {
+	public void processDocument(String outputFileName, Document document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
 		StandardOutputWriter docWriter = null;
 		docWriter = new StandardOutputWriter(outputFileName);
 		
-		Iterator<Sentence> iter = document.getSentenceIterator();
+		Iterator<Sentence> iter = document.iterator();
 		while(iter.hasNext()) {
 			Collection<List<? extends IAnnotation<?>>> groupedAnnotations = iter.next().getAllIndexedAnnotations();
 			for(List<? extends IAnnotation<?>> annotations : groupedAnnotations){
@@ -44,9 +44,9 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		}
 	}
 
-	public void processSubDocument(IOutputWriter writer, IDocument document) {
+	public void processSubDocument(IOutputWriter writer, Document document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
-		Iterator<Sentence> iter = document.getSentenceIterator();
+		Iterator<Sentence> iter = document.iterator();
 		while(iter.hasNext()) {
 			Collection<List<? extends IAnnotation<?>>> groupedAnnotations = iter.next().getAllIndexedAnnotations();
 			for(List<? extends IAnnotation<?>> annotations : groupedAnnotations){
