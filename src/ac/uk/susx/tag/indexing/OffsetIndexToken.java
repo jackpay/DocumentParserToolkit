@@ -25,9 +25,9 @@ public class OffsetIndexToken implements IIndexToken{
 	}
 	
 	public int hashCode(){
-		int prime = 5;
+		int prime = 3;
 		int hash = prime * startOffset;
-		hash = 3 * endOffset;
+		//hash = 3 * endOffset;
 		return hash;
 	}
 

@@ -9,7 +9,7 @@ import ac.uk.susx.tag.annotation.IAnnotation;
  *
  * @param <A>
  */
-public interface TokenFormatter<A> {
+public interface ITokenFormatter<A> {
 
 	public A createToken(Collection<? extends IAnnotation<?>> tokens);
 	

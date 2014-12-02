@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import ac.uk.susx.tag.annotation.IAnnotation;
 
-public class BasicTabSeperatedTokenFormatter implements TokenFormatter<CharSequence>{
+public class BasicTabSeperatedTokenFormatter implements ITokenFormatter<CharSequence>{
 	
 	private final CharSequence ANN_DELIM;
 	
