@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import uk.ac.susx.tag.dependencyparser.Parser;
 import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentEntity;
 import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentFreqUnigramEntity;
@@ -46,7 +47,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	
 	private ConcurrentLineProcessor parser;
 	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
-	private IConfiguration<CharSequence> config;
+	private IConfiguration config;
 	private TFDFIndexer indexer;
 
 	/**
@@ -65,9 +66,9 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-		IOutputDocumentFormatter<CharSequence> outputWriter = new BagOfWordsOutputDocumentFormatter();
+		IOutputDocumentFormatter outputWriter = new BagOfWordsOutputDocumentFormatter();
 		config.setOutputWriter(outputWriter);
-		config.setDocumentBuilder(new HTMLStripperDocumentFormatter());
+		config.setDocumentBuilder(new BasicInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
 		anns.add("DT");
 		anns.add("CC");
@@ -97,8 +98,8 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 			throw new IOException("Parser not initialised.");
 		}
 		
-		ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
-		parser.processFiles(files);
+		//ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+		parser.processFiles(config.getInputLocation());
 		System.err.println("Finished all parsing.");
 		
 //        System.err.println("Started pre-processing");
@@ -180,16 +181,16 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	private class ProcessorCallable implements Callable<Void> {
 		
 		private final IProcessor processor;
-		private final List<File> files;
+		private final String filesDir;
 		
-		public ProcessorCallable(IProcessor processor, List<File> files) {
+		public ProcessorCallable(IProcessor processor, String filesDir) {
 			this.processor = processor;
-			this.files = files;
+			this.filesDir = filesDir;
 		}
 
 		@Override
 		public Void call() throws Exception {
-			processor.processFiles(files);
+			processor.processFiles(filesDir);
 			return null;
 		}
 		

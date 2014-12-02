@@ -15,6 +15,7 @@ import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.AnnotationUtils;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 /**
@@ -75,7 +76,24 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 	}
 
 	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<IAnnotation<String>> postagged = annotate(sentence.getSentence());
+		List<IAnnotation<String>> postagged = new ArrayList<IAnnotation<String>>();
+		try {
+			List<? extends IAnnotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
+			if(tokens == null) {
+				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence.getSentence());
+			}
+			String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+			String[] strTags = postagger.tag(strToks);
+			for(int i = 0; i < strTags.length; i++) {
+				StringAnnotation annotation = new StringAnnotation(strTags[i], tokens.get(i).getStart(),tokens.get(i).getEnd());
+				postagged.add(annotation);
+			}
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		sentence.addAnnotations(this.getClass(), postagged);
 		return postagged;
 	}

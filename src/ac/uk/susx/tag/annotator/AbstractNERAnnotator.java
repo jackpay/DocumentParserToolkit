@@ -13,7 +13,6 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -30,8 +29,7 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	}
 
 	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
-		startModel(); // Ensure model is live.
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+
 		List<? extends IAnnotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
@@ -40,19 +38,22 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 		}
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 
-		Span[] peopleSpans = nameFinder.find(strToks);
+		return findNames(strToks,sentence);
+	}
+	
+	protected Class<? extends IAnnotatorFactory<String,String>> getTokeniser() {
+		return tokeniser;
+	}
+	
+	protected List<IAnnotation<String>> findNames(String[] tokens,IAnnotation<String> sentence) {
+		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		Span[] peopleSpans = nameFinder.find(tokens);
 		
 		for(Span span : peopleSpans){
-			StringAnnotation annotation = new StringAnnotation(buildAnnotation(Arrays.copyOfRange(strToks, span.getStart(), span.getEnd()),span.getType()), sentence.getStart() + span.getStart(), sentence.getStart() + span.getEnd());
+			StringAnnotation annotation = new StringAnnotation(buildAnnotation(Arrays.copyOfRange(tokens, span.getStart(), span.getEnd()),span.getType()), sentence.getStart() + span.getStart(), sentence.getStart() + span.getEnd());
 			annotations.add(annotation);
 		}
 		return annotations;
-	}
-	
-	public List<? extends IAnnotation<String>> annotate(
-			Sentence sentence) throws IncompatibleAnnotationException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	private String buildAnnotation(String[] tokens, String annotationType){

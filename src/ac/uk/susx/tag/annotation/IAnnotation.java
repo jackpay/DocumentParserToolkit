@@ -19,6 +19,6 @@ public interface IAnnotation<A>{
 	
 	public void setAnnotation(A annotation);
 	
-	public CharSequence formatForOutput();
+	public String formatForOutput(); 
 	
 }

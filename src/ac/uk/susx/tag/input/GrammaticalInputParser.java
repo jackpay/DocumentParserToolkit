@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import ac.uk.susx.tag.annotator.ChunkTagAnnotatorFactory;
+import ac.uk.susx.tag.annotator.DependencyAnnotatorFactory;
 import ac.uk.susx.tag.annotator.LemmatiserAnnotatorFactory;
 import ac.uk.susx.tag.annotator.LocationAnnotatorFactory;
 import ac.uk.susx.tag.annotator.OrganisationAnnotatorFactory;
@@ -13,7 +14,7 @@ import ac.uk.susx.tag.annotator.PorterStemmerAnnotatorFactory;
 import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.configuration.CharSequenceConfiguration;
+import ac.uk.susx.tag.configuration.StandardConfiguration;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
 
 public class GrammaticalInputParser extends AbstractInputParameterParser {
@@ -53,6 +54,10 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		private boolean organisation = false;
 		
 		@Parameter
+		(names = {"-dep", "--dependencies"}, description="Get dependencies")
+		private boolean dependencies = false;
+		
+		@Parameter
 		(names = {"-loc", "--location"}, description="Location Annotations")
 		private boolean location = false;
 		
@@ -74,6 +79,10 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 		
 		public boolean person(){
 			return person;
+		}
+		
+		public boolean dependencies() {
+			return dependencies;
 		}
 		
 		public boolean organisation(){
@@ -103,17 +112,18 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			if(organisation) { sb.append("org-"); }
 			if(lemmatise) { sb.append("l-"); }
 			if(stem){ sb.append("stem-"); }
+			if(dependencies) { sb.append("dep-"); }
 			return sb.toString().length() > 0 ? sb.toString().substring(0, sb.toString().length()-1) : "output";
 		}
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	public CharSequenceConfiguration parseInputParameters(String[] args) {
+	public StandardConfiguration parseInputParameters(String[] args) {
 		GrammaticalInputReader reader = new GrammaticalInputReader();
 		JCommander jcomm = new JCommander(reader, args);
 		String output = reader.singleFileOutput() ? reader.output() : reader.output() + "/" + reader.buildOutputName();
-		CharSequenceConfiguration gc = new CharSequenceConfiguration(reader.input(), output);
+		StandardConfiguration gc = new StandardConfiguration(reader.input(), output);
 
 		gc.setInputSuff(reader.suffix());
 		gc.setOutSuff(reader.outSuffix());
@@ -187,6 +197,14 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		if(reader.dependencies()) {
+			try {
+				gc.addAnnotator(AnnotatorRegistry.getAnnotator(DependencyAnnotatorFactory.class),true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		if(reader.organisation()){
 			try {

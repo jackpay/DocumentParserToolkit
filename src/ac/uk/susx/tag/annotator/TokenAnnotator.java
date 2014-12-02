@@ -56,8 +56,7 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 		}
 	}
 
-	public List<IAnnotation<String>> annotate(Sentence sentence)
-			throws IncompatibleAnnotationException {
+	public List<IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<IAnnotation<String>> tokens = annotate(sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), tokens);
 		return tokens;

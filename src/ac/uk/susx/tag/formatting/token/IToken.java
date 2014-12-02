@@ -4,6 +4,6 @@ import ac.uk.susx.tag.annotation.IAnnotation;
 
 public interface IToken<A> {
 	
-	public CharSequence formatForOutput(IAnnotation<A> token);
+	public String formatForOutput(IAnnotation<A> token);
 	
 }

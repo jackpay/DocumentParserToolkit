@@ -32,6 +32,6 @@ public abstract class AbstractStatistics implements IStatistics{
 	
 	public abstract void combineStatistics();
 	
-	public abstract <A> void writeStatistics(IOutputWriter<A> writer);
+	public abstract void writeStatistics(IOutputWriter writer);
 
 }

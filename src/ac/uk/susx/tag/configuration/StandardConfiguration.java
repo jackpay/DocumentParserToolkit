@@ -10,10 +10,10 @@ import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 import ac.uk.susx.tag.utils.FileUtils;
 
 /**
- * An abstract class for a global config file.
+ * An default class for a global config file.
  * @author jackpay
  */
-public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
+public class StandardConfiguration implements IConfiguration {
 	
 	private ArrayList<IAnnotator<?,?>> annotators; // Specify the annotator's to use when parsing.
 	private ArrayList<Class<? extends IAnnotator<?,?>>> includedAnnotators; // Specify which annotator's should be included in the output.
@@ -22,11 +22,11 @@ public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
-	private IOutputDocumentFormatter<AT> outputWriter;
+	private IOutputDocumentFormatter outputWriter;
 	private IInputDocumentFormatter docBuilder;
 	private ArrayList<IFilter<?>> filters;
 	
-	public AbstractConfiguration(String inputLoc, String outputLoc) {
+	public StandardConfiguration(String inputLoc, String outputLoc) {
 		this.inputLoc = inputLoc;
 		this.outputLoc = FileUtils.createOutputDirectory(outputLoc);
 		annotators = new ArrayList<IAnnotator<?,?>>();
@@ -88,14 +88,14 @@ public abstract class AbstractConfiguration<AT> implements IConfiguration<AT> {
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(IOutputDocumentFormatter<AT> outputWriter){
+	public void setOutputWriter(IOutputDocumentFormatter outputWriter){
 		this.outputWriter = outputWriter;
 	}
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public IOutputDocumentFormatter<AT> getOutputWriter(){
+	public IOutputDocumentFormatter getOutputWriter(){
 		return outputWriter;
 	}
 	

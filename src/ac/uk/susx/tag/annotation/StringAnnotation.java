@@ -12,7 +12,7 @@ public final class StringAnnotation extends AbstractAnnotation<String> {
 		super(annotation, start, end);
 	}
 	
-	public CharSequence formatForOutput() {
+	public String formatForOutput() {
 		return formatter.formatForOutput(this);
 	}
 	

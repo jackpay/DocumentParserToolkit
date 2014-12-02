@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -15,28 +16,30 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.io.FileUtils;
+
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
-import ac.uk.susx.tag.writer.CharSequenceWriter;
+import ac.uk.susx.tag.writer.StandardOutputWriter;
 
 public class ConcurrentLineProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
-	private final IConfiguration<CharSequence> config;
+	private final IConfiguration config;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private boolean complete;
 	
-	public ConcurrentLineProcessor(IConfiguration<CharSequence> config) {
+	public ConcurrentLineProcessor(IConfiguration config) {
 		this.config = config;
 		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
 	}
 
-	public void processFiles(List<File> files) {
+	public void processFiles(String filesDir) {
 		ExecutorService producerPool = Executors.newSingleThreadExecutor();
 		ExecutorService consumerPool = Executors.newSingleThreadExecutor();
-		producerPool.submit(new Producer(queue,files));
+		producerPool.submit(new Producer(queue,filesDir));
 		consumerPool.submit(new Consumer(queue));
 		producerPool.shutdown();
 		try {
@@ -51,29 +54,29 @@ public class ConcurrentLineProcessor implements IProcessor {
 	
 
 	public void processFile(File file) {
-		ArrayList<File> fileList = new ArrayList<File>();
-		fileList.add(file);
-		processFiles(fileList);
+		processFiles(file.getParentFile().getAbsolutePath());
 	}
 	
 	private final class Producer implements Runnable {
 		
 		private final ArrayBlockingQueue<Future<Boolean>> queue;
-		private final List<File> files;
+		private final String filesDir;
 
-		private Producer(ArrayBlockingQueue<Future<Boolean>> queue, List<File> files){
+		private Producer(ArrayBlockingQueue<Future<Boolean>> queue, String filesDir){
 			this.queue = queue;
-			this.files = files;
+			this.filesDir = filesDir;
 		}
 		
 		public void run() {
 			ExecutorService executor;
-			for(File file : files){
+			Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
+			while(iter.hasNext()){
 				try {
+					File next = iter.next();
 					executor = Executors.newFixedThreadPool(NTHREADS);
-					BufferedReader br = new BufferedReader(new FileReader(file));
+					BufferedReader br = new BufferedReader(new FileReader(next));
 					String currLine = br.readLine();
-					CharSequenceWriter writer = new CharSequenceWriter(config.getOutputLocation() + "/" + file.getName());
+					StandardOutputWriter writer = new StandardOutputWriter(config.getOutputLocation() + "/" + next.getName());
 					int lineCount = 0;
 					while(currLine != null){
 						String line = new String(currLine).trim();
@@ -84,12 +87,12 @@ public class ConcurrentLineProcessor implements IProcessor {
 						currLine = br.readLine();
 						lineCount++;
 						if(lineCount%1000 == 0){
-							System.err.println("Processing line: " + lineCount + " of File: " + file.getName());
+							System.err.println("Processing line: " + lineCount + " of File: " + next.getName());
 						}
 					}
 					executor.shutdown();
 					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-					System.err.println("Finished processing file: " + file.getName());
+					System.err.println("Finished processing file: " + next.getName());
 					writer.closeDocument();
 					br.close();
 				} catch (IOException e) {
@@ -135,9 +138,9 @@ public class ConcurrentLineProcessor implements IProcessor {
 	private final class DocumentCallable implements Callable<Boolean> {
 			
 			private final IDocument document;
-			private final CharSequenceWriter writer;
+			private final StandardOutputWriter writer;
 			
-			public DocumentCallable(IDocument document, CharSequenceWriter writer){
+			public DocumentCallable(IDocument document, StandardOutputWriter writer){
 				this.document = document;
 				this.writer = writer;
 			}

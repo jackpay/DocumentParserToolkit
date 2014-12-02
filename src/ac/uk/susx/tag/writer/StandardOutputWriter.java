@@ -6,10 +6,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public abstract class AbstractOutputWriter <A> implements IOutputWriter<A>{
+public class StandardOutputWriter implements IOutputWriter {
 	
 	private File file;
 	private PrintWriter writer;
+	
+	public StandardOutputWriter(String fileName) {
+		try {
+			init(fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void init(String fileName) throws IOException {
 		file = new File(fileName);
@@ -20,11 +28,9 @@ public abstract class AbstractOutputWriter <A> implements IOutputWriter<A>{
 				try {
 					writer = new PrintWriter(new BufferedWriter(new FileWriter(file.getAbsoluteFile())));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -43,6 +49,10 @@ public abstract class AbstractOutputWriter <A> implements IOutputWriter<A>{
 	
 	protected PrintWriter getWriter(){
 		return writer;
+	}
+	
+	public synchronized void writeToken(CharSequence seq) {
+		getWriter().print(seq);
 	}
 
 }

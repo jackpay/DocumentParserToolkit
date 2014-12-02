@@ -5,9 +5,8 @@ import ac.uk.susx.tag.formatting.token.IToken;
 import ac.uk.susx.tag.formatting.token.SentenceToken;
 
 /**
- * Mainly used as a wrapper for the Sentence object.
+ * Mainly used as a IAnnotation wrapper for the Sentence object.
  * @author jp242
- *
  */
 public class SentenceAnnotation extends AbstractAnnotation<Sentence>{
 	
@@ -17,7 +16,7 @@ public class SentenceAnnotation extends AbstractAnnotation<Sentence>{
 		super(annotation, start, end);
 	}
 	
-	public CharSequence formatForOutput() {
+	public String formatForOutput() {
 		return formatter.formatForOutput(this);
 	}
 

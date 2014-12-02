@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -16,6 +17,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.io.FileUtils;
+
+import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.database.indexing.DocumentIndexer;
 import ac.uk.susx.tag.database.indexing.IDatabaseIndexer;
 import ac.uk.susx.tag.database.IEntity;
@@ -36,19 +40,21 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	private final IJobFactory<PE> jobFactory;
 	private final ArrayBlockingQueue<Future<Boolean>> queue;
 	private final DocumentIndexer docIndex;
+	private final IConfiguration config;
 	private boolean complete;
 
-	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<PE> jobFactory) {
+	public ConcurrentLinePreProcessor(IDatabaseIndexer<PE,ET> indexer, IJobFactory<PE> jobFactory, IConfiguration config) {
 		this.indexer = indexer;
 		this.jobFactory = jobFactory;
 		this.docIndex = new DocumentIndexer();
 		this.queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS);
+		this.config = config;
 	}
 	
-	public void processFiles(List<File> files) {
+	public void processFiles(String filesDir) {
 		ExecutorService producerPool = Executors.newSingleThreadExecutor();
 		ExecutorService consumerPool = Executors.newSingleThreadExecutor();
-		producerPool.submit(new Producer(queue,files));
+		producerPool.submit(new Producer(queue,filesDir));
 		consumerPool.submit(new Consumer(queue));
 		producerPool.shutdown();
 		try {
@@ -64,17 +70,19 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	private final class Producer implements Runnable {
 		
 		private final ArrayBlockingQueue<Future<Boolean>> queue;
-		private final List<File> files;
+		private final String filesDir;
 
-		private Producer(ArrayBlockingQueue<Future<Boolean>> queue, List<File> files){
+		private Producer(ArrayBlockingQueue<Future<Boolean>> queue, String filesDir){
 			this.queue = queue;
-			this.files = files;
+			this.filesDir = filesDir;
 		}
 
 		public void run() {
 			int id = 0;
 			ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-			for(File file : files){
+			Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
+			while(iter.hasNext()){
+				File file = iter.next();
 				docIndex.index(id,file.getName());
 				try {
 					BufferedReader br = new BufferedReader(new FileReader(file));
@@ -147,7 +155,7 @@ public class ConcurrentLinePreProcessor<PE,ET extends IEntity> implements IProce
 	}
 
 	public void processFile(File file) {
-		processFiles(new ArrayList<File>(Arrays.asList(file)));
+		processFiles(file.getParentFile().getAbsolutePath());
 	}
 	
 	private final class JobCallable implements Callable<Boolean> {

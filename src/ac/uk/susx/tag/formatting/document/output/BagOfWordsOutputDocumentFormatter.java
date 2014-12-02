@@ -10,9 +10,9 @@ import ac.uk.susx.tag.document.IDocument;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.formatting.token.BasicTabSeperatedTokenFormatter;
 import ac.uk.susx.tag.writer.IOutputWriter;
-import ac.uk.susx.tag.writer.CharSequenceWriter;
+import ac.uk.susx.tag.writer.StandardOutputWriter;
 
-public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatter<CharSequence>{
+public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatter {
 	
 	private final CharSequence TOKEN_DELIM;
 
@@ -26,12 +26,8 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 
 	public void processDocument(String outputFileName, IDocument document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
-		CharSequenceWriter docWriter = null;
-		try {
-			docWriter = new CharSequenceWriter(outputFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		StandardOutputWriter docWriter = null;
+		docWriter = new StandardOutputWriter(outputFileName);
 		
 		Iterator<Sentence> iter = document.getSentenceIterator();
 		while(iter.hasNext()) {
@@ -48,7 +44,7 @@ public class BagOfWordsOutputDocumentFormatter implements IOutputDocumentFormatt
 		}
 	}
 
-	public void processSubDocument(IOutputWriter<CharSequence> writer, IDocument document) {
+	public void processSubDocument(IOutputWriter writer, IDocument document) {
 		BasicTabSeperatedTokenFormatter tokenMaker = new BasicTabSeperatedTokenFormatter();
 		Iterator<Sentence> iter = document.getSentenceIterator();
 		while(iter.hasNext()) {

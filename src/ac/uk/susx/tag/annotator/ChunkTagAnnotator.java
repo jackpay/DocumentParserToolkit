@@ -14,6 +14,7 @@ import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.Sentence;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -47,20 +48,8 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		}
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);
-		String[] chunkTags = chunker.chunk(strToks, strTags);
-		
-		int begin = 0;
-		for(int i = 0; i < chunkTags.length; i++){
-			Pattern pattern = Pattern.compile(Pattern.quote(strToks[i]));
-			Matcher matcher = pattern.matcher(sentence.getAnnotation());
-			matcher.find(begin);
-			String chunk = chunkTags[i].replace(INCHUNK, "");
-			chunk = chunk.replace(CHUNKSTART, "");
-			StringAnnotation annotation = new StringAnnotation(chunk, sentence.getStart() + matcher.start(), sentence.getStart() + matcher.end());
-			annotations.add(annotation);
-			begin = matcher.end();
-		}
-		return annotations;
+
+		return chunk(strToks,strTags,sentence);
 	}
 	
 	public void startModel() {
@@ -78,9 +67,59 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 	public boolean modelStarted() {
 		return chunker != null;
 	}
+	
+	private List<IAnnotation<String>> chunk(String[] toks, String[] pos, IAnnotation<String> sentence){
+		
+		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		String[] chunkTags = chunker.chunk(toks, pos);
+		
+		int begin = 0;
+		for(int i = 0; i < chunkTags.length; i++){
+			Pattern pattern = Pattern.compile(Pattern.quote(toks[i]));
+			Matcher matcher = pattern.matcher(sentence.getAnnotation());
+			matcher.find(begin);
+			String chunk = chunkTags[i].replace(INCHUNK, "");
+			chunk = chunk.replace(CHUNKSTART, "");
+			StringAnnotation annotation = new StringAnnotation(chunk, sentence.getStart() + matcher.start(), sentence.getStart() + matcher.end());
+			annotations.add(annotation);
+			begin = matcher.end();
+		}
+		return annotations;
+	}
 
-	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<IAnnotation<String>> annos = annotate(sentence.getSentence());
+	public List<IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		
+		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		
+		List<? extends IAnnotation<String>> tokens = null;
+		List<? extends IAnnotation<String>> postags = null;
+		
+		try {
+			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) tokeniser);
+			postags = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) postagger);
+		} catch (IllegalAnnotationStorageException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		if(tokens == null){
+			try {
+				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(postags == null){
+			try {
+				postags = AnnotatorRegistry.getAnnotator(postagger).annotate(sentence);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);	
+		List<IAnnotation<String>> annos = chunk(strToks,strTags,sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 		

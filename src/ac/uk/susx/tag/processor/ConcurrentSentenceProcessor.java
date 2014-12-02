@@ -10,6 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
@@ -23,16 +26,18 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private static final Class<? extends IAnnotatorFactory<Sentence,String>> sentence = SentenceAnnotatorFactory.class;
-	private final IConfiguration<CharSequence> config;
+	private final IConfiguration config;
 	
-	public ConcurrentSentenceProcessor(IConfiguration<CharSequence> config){
+	public ConcurrentSentenceProcessor(IConfiguration config){
 		this.config = config;
 	}
 
-	public void processFiles(List<File> files) {
+	public void processFiles(String fileDir) {
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-		for(File file : files){
-			IDocument document = config.getDocumentBuilder().createDocument(file.getAbsolutePath());
+		Iterator<File> iter = FileUtils.iterateFiles(new File(fileDir), new String[] {config.getInputSuff()}, true);
+		while(iter.hasNext()){
+			File next = iter.next();
+			IDocument document = config.getDocumentBuilder().createDocument(next.getAbsolutePath());
 			final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 			try {
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
@@ -61,37 +66,35 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 			}
 			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + file.getName(), document);
+			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + next.getName(), document);
 		}
 		executor.shutdown();
 	}
 
 	public void processFile(File file) {
-		ArrayList<File> fileList = new ArrayList<File>();
-		fileList.add(file);
-		processFiles(fileList);
+		processFiles(file.getParentFile().getAbsolutePath());
 	}
 	
-public class SentenceCallable implements Callable<Boolean> {
-		
-		private final Sentence sentenceAnn;
-		
-		public SentenceCallable(Sentence sentence){
-			this.sentenceAnn = sentence;
-		}
-
-		public Boolean call() throws Exception {
-			for(IAnnotator<?,?> annotator : config.getAnnotators()){
-				try {
-					annotator.annotate(sentenceAnn);
-				} catch (IncompatibleAnnotationException e) {
-					e.printStackTrace();
-					return false;
-				}
+	public class SentenceCallable implements Callable<Boolean> {
+			
+			private final Sentence sentenceAnn;
+			
+			public SentenceCallable(Sentence sentence){
+				this.sentenceAnn = sentence;
 			}
-			return true;
+	
+			public Boolean call() throws Exception {
+				for(IAnnotator<?,?> annotator : config.getAnnotators()){
+					try {
+						annotator.annotate(sentenceAnn);
+					} catch (IncompatibleAnnotationException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+				return true;
+			}
+			
 		}
 		
 	}
-	
-}

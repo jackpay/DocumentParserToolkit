@@ -10,7 +10,6 @@ import ac.uk.susx.tag.indexing.OffsetIndexToken;
 /**
  * Abstract class for defining an annotation at a specific position within a document.
  * @author jackpay
- *
  */
 public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 	
@@ -90,6 +89,10 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		return hash;
 	}
 	
-	public abstract CharSequence formatForOutput();
+	public String toString() {
+		return formatForOutput();
+	}
+	
+	public abstract String formatForOutput();
 
 }

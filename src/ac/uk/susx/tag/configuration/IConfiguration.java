@@ -13,7 +13,7 @@ import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
  * @author jackpay
  *
  */
-public interface IConfiguration <AT>{	
+public interface IConfiguration {	
 	
 	/**
 	 * Add an annotator to the collection of annotators to use.
@@ -63,12 +63,12 @@ public interface IConfiguration <AT>{
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(IOutputDocumentFormatter<AT> outputWriter);
+	public void setOutputWriter(IOutputDocumentFormatter outputWriter);
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public IOutputDocumentFormatter<AT> getOutputWriter();
+	public IOutputDocumentFormatter getOutputWriter();
 	
 	/**
 	 * Set the Document object builder.
