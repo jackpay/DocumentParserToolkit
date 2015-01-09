@@ -63,10 +63,13 @@ public abstract class AbstractAnnotation<A> implements IAnnotation<A>{
 		if(obj == null) {
 			return false;
 		}
-		if(getClass() != obj.getClass()) {
+		AbstractAnnotation aa;
+		if(obj instanceof AbstractAnnotation) {
+			aa = (AbstractAnnotation) obj;
+		}
+		else{
 			return false;
 		}
-		AbstractAnnotation aa = (AbstractAnnotation) obj;
 		try {
 			if(aa.getIndex(AnnotationIndexToken.class).equals(getIndex(AnnotationIndexToken.class))) {
 				return true;

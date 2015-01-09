@@ -114,15 +114,15 @@ public final class Sentence {
 	}
 	
 	/**
-	 * @param annotator The class of the annotator which produces the required annotations.
+	 * @param class1 The class of the annotator which produces the required annotations.
 	 * @return All sentence annotations produced by the given annotator class, or null.
 	 * @throws IllegalAnnotationStorageException
 	 */
-	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException {
+	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> class1) throws IllegalAnnotationStorageException {
 		try{
-			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
+			return annotations.get(class1).getClass().cast(annotations.get(class1));
 		} catch (ClassCastException ex) {
-			throw new IllegalAnnotationStorageException(annotator.getClass());
+			throw new IllegalAnnotationStorageException(class1.getClass());
 		}
 	}
 	
@@ -150,7 +150,7 @@ public final class Sentence {
 	/**
 	 * @param cl Removes all annotations associated with the given class.
 	 */
-	public void removeAnnotation(Class<? extends IAnnotator<?,?>> cl) {
+	public void removeAnnotation(Class<? extends IAnnotator> cl) {
 		if(annotations.containsKey(cl)){
 			annotations.remove(cl);
 		}
@@ -172,7 +172,7 @@ public final class Sentence {
 	 * @param annotators Removes all annotations associated with the given collection of annotators.
 	 */
 	public void removeAnnotations(Collection<Class<? extends IAnnotator<?,?>>> annotators) {
-		for(Class<? extends IAnnotator<?,?>> annotator : annotators){
+		for(Class<? extends IAnnotator> annotator : annotators){
 			removeAnnotation(annotator);
 		}
 	}

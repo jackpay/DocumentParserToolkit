@@ -1,43 +1,34 @@
 package ac.uk.susx.tag.parser;
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+//import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.TimeUnit;
 
-import uk.ac.susx.tag.dependencyparser.Parser;
-import ac.uk.susx.tag.annotation.IAnnotation;
-import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentEntity;
-import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.DocumentFreqUnigramEntity;
-import ac.uk.susx.tag.database.ac.uk.susx.tag.database.entity.UnigramEntity;
-
-import com.sleepycat.je.DatabaseException;
-import com.sleepycat.persist.EntityCursor;
+//import uk.ac.susx.tag.dependencyparser.Parser;
+//import ac.uk.susx.tag.annotation.IAnnotation;
+//
+//import com.sleepycat.je.DatabaseException;
+//import com.sleepycat.persist.EntityCursor;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
-import ac.uk.susx.tag.annotator.FrequencyAnnotator;
-import ac.uk.susx.tag.annotator.FrequencyAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
-import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
+//import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.database.DatabaseEnvironment;
-import ac.uk.susx.tag.database.indexing.TFDFIndexer;
 import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.document.input.BasicInputDocumentFormatter;
-import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
+//import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.output.BagOfWordsOutputDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
-import ac.uk.susx.tag.database.job.DocFreqUnigramJobFactory;
-import ac.uk.susx.tag.processor.ConcurrentLinePreProcessor;
 import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
 import ac.uk.susx.tag.processor.IProcessor;
-import ac.uk.susx.tag.utils.FileUtils;
+//import ac.uk.susx.tag.utils.FileUtils;
 
 /**
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
@@ -46,9 +37,9 @@ import ac.uk.susx.tag.utils.FileUtils;
 public class StringDocumentParser extends AbstractParser<String,String> {
 	
 	private ConcurrentLineProcessor parser;
-	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
+//	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
 	private IConfiguration config;
-	private TFDFIndexer indexer;
+//	private TFDFIndexer indexer;
 
 	/**
 	 * @param args

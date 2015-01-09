@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 
@@ -42,7 +41,8 @@ public class ConcurrentLineProcessor implements IProcessor {
 		producerPool.shutdown();
 		try {
 			producerPool.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-			queue.add(new ConsumerShutdownFuture());
+//			queue.add(new ConsumerShutdownFuture());
+			complete = true;
 			consumerPool.shutdown();
 			consumerPool.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 		} catch (InterruptedException e) {
@@ -114,13 +114,15 @@ public class ConcurrentLineProcessor implements IProcessor {
 
 		public void run() {
 			try {
-				while(!complete){
+				while(complete == false || !queue.isEmpty()){
+					if(queue.isEmpty()) {
+						continue;
+					}
 					Future<Boolean> out = queue.take();
 					if(out.get() == false){
 						complete = true;
 						return;
 					}
-					complete = out instanceof ConsumerShutdownFuture;
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -159,35 +161,35 @@ public class ConcurrentLineProcessor implements IProcessor {
 			}
 	}
 	
-	// Used as a poison pill to shut down the consumer object.
-	private final class ConsumerShutdownFuture implements Future<Boolean> {
-
-		public boolean cancel(boolean arg0) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public Boolean get() throws InterruptedException, ExecutionException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public Boolean get(long arg0, TimeUnit arg1) throws InterruptedException,
-				ExecutionException, TimeoutException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public boolean isCancelled() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public boolean isDone() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-	}
+//	// Used as a poison pill to shut down the consumer object.
+//	private final class ConsumerShutdownFuture implements Future<Boolean> {
+//
+//		public boolean cancel(boolean arg0) {
+//			// TODO Auto-generated method stub
+//			return false;
+//		}
+//
+//		public Boolean get() throws InterruptedException, ExecutionException {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		public Boolean get(long arg0, TimeUnit arg1) throws InterruptedException,
+//				ExecutionException, TimeoutException {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		public boolean isCancelled() {
+//			// TODO Auto-generated method stub
+//			return false;
+//		}
+//
+//		public boolean isDone() {
+//			// TODO Auto-generated method stub
+//			return false;
+//		}
+//		
+//	}
 
 }

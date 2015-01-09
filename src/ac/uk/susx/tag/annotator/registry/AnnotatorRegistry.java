@@ -61,7 +61,7 @@ public final class AnnotatorRegistry {
 			return registry.get(nameRegistry.get(name).getClass());
 		}
 		else {
-			throw new Exception("There is no registered AbstractAnnotatorFactory with that command line option.");
+			throw new Exception("There is no registered annotator with that name.");
 		}
 	}
 	
