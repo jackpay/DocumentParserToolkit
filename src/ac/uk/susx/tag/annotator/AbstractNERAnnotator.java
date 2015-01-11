@@ -9,7 +9,7 @@ import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -28,9 +28,9 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 		this.tokeniser = tokeniser;
 	}
 
-	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
+	public synchronized List<Annotation<String>> annotate(Annotation<String> sentence) throws IncompatibleAnnotationException {
 
-		List<? extends IAnnotation<String>> tokens = null;
+		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
@@ -45,8 +45,8 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 		return tokeniser;
 	}
 	
-	protected List<IAnnotation<String>> findNames(String[] tokens,IAnnotation<String> sentence) {
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+	protected List<Annotation<String>> findNames(String[] tokens,Annotation<String> sentence) {
+		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		Span[] peopleSpans = nameFinder.find(tokens);
 		
 		for(Span span : peopleSpans){

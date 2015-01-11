@@ -13,14 +13,14 @@ public class HTMLStripperDocumentFormatter implements IInputDocumentFormatter {
 	
 
 	@Override
-	public Document createDocument(CharSequence doc) {
-		return new Document(parseHTML(doc.toString()));
+	public Document createDocument(CharSequence doc, CharSequence name) {
+		return new Document(parseHTML(doc.toString()), name);
 	}
 
 	@Override
 	public Document createDocument(File file) {
         try {
-            return new Document(parseHTML(FileUtils.readFileToString(file)));
+            return new Document(parseHTML(FileUtils.readFileToString(file)), file.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,6 @@ public class HTMLStripperDocumentFormatter implements IInputDocumentFormatter {
 		try {
 			doc = ArticleExtractor.INSTANCE.getText(html);
 		} catch (BoilerpipeProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return doc.replace("\\n", " ").replace("\\t", " ");

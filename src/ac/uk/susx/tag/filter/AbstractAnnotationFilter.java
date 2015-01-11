@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
@@ -25,27 +25,27 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		this.remove = remove;
 	}
 	
-	public AbstractAnnotationFilter(AT annotation, Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok, boolean remove) {
-		this(new ArrayList<AT>(), annotator, remAllTok, remove);
-		filterAnnotations.add(annotation);
-	}
-	
-	public List<? extends IAnnotation<AT>> filterList(List<? extends IAnnotation<AT>> annotations) {
-		Iterator<? extends IAnnotation<AT>> iter = annotations.iterator();
-		while(iter.hasNext()){
-			IAnnotation<AT> anno = iter.next();
-			if((matchAnnotation(anno) && remove) || (!matchAnnotation(anno) && !remove)) {
-				iter.remove();
-			}
-		}
-		return annotations;
-	}
-	
 	public AbstractAnnotationFilter(Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok, boolean remove) {
 		filterAnnotations = null;
 		this.annotator = annotator;
 		this.remAllTok = remAllTok;
 		this.remove = remove;
+	}
+	
+	public AbstractAnnotationFilter(AT annotation, Class<? extends IAnnotator<AT,?>> annotator, boolean remAllTok, boolean remove) {
+		this(new ArrayList<AT>(), annotator, remAllTok, remove);
+		filterAnnotations.add(annotation);
+	}
+	
+	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> annotations) {
+		Iterator<? extends Annotation<AT>> iter = annotations.iterator();
+		while(iter.hasNext()){
+			Annotation<AT> anno = iter.next();
+			if((matchAnnotation(anno) && remove) || (!matchAnnotation(anno) && !remove)) {
+				iter.remove();
+			}
+		}
+		return annotations;
 	}
 	
 	public Sentence filterSentence(Sentence sentence) {
@@ -55,29 +55,25 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 				return sentence;
 			}
 		} catch (IllegalAnnotationStorageException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		if(!remAllTok){
 			try {
-				sentence.addAnnotations(annotator, filterList((List<IAnnotation<AT>>) sentence.getSentenceAnnotations(annotator)));
+				sentence.addAnnotations(annotator, filterList((List<Annotation<AT>>) sentence.getSentenceAnnotations(annotator)));
 			} catch (IllegalAnnotationStorageException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		else{
-			// Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, IAnnotation<?>>> annoMap = FilterUtils.annotationsToMap(annotations, OffsetIndexToken.class);
-			Collection<IAnnotation<AT>> filtAnno = null;
+			Collection<Annotation<AT>> filtAnno = null;
 			try {
-				filtAnno = (List<IAnnotation<AT>>) sentence.getSentenceAnnotations(annotator);
+				filtAnno = (List<Annotation<AT>>) sentence.getSentenceAnnotations(annotator);
 			} catch (IllegalAnnotationStorageException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Iterator<IAnnotation<AT>> iter = filtAnno.iterator();
+			Iterator<Annotation<AT>> iter = filtAnno.iterator();
 			while(iter.hasNext()){
-				IAnnotation<AT> next = iter.next();
+				Annotation<AT> next = iter.next();
 				if((matchAnnotation(next) && remove) || (!matchAnnotation(next) && !remove)){
 					sentence.removeAnnotation(next.getOffset());
 				}
@@ -90,6 +86,6 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		return filterAnnotations;
 	}
 	
-	public abstract boolean matchAnnotation(IAnnotation<AT> annotation);
+	public abstract boolean matchAnnotation(Annotation<AT> annotation);
 
 }

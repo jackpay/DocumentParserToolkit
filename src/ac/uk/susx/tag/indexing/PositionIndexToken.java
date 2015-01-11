@@ -31,10 +31,10 @@ public class PositionIndexToken implements IIndexToken {
 		if(obj == null){
 			return false;
 		}
-		if(obj.getClass() != this.getClass()){
+		if(!(obj instanceof PositionIndexToken)){
 			return false;
 		}
-		if(obj.getClass() == this.getClass()){
+		else {
 			PositionIndexToken pos = (PositionIndexToken) obj;
 			if(this.docPosition == pos.docPosition){
 				return true;

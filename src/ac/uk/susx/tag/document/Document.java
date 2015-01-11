@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
@@ -13,15 +13,12 @@ public final class Document extends ArrayList<Sentence> {
 	
 	private static final long serialVersionUID = -8795126134577485984L;
 	private CharSequence document; // The raw text of the document.
-	private CharSequence id; // Allows a document to have an identifier. Different Document objects are able to have the same id, for purposes of document consolidation.
+	private CharSequence name; // The name of the document.
+	private int id; // Allows a document to have an identifier. Different Document objects are able to have the same id, for purposes of document consolidation
 	
-	public Document(CharSequence document){
+	public Document(CharSequence document, CharSequence name){
 		this.document = document;
-	}
-	
-	public Document(CharSequence document, CharSequence id){
-		this(document);
-		this.id = id;
+		this.name = name;
 	}
 	
 	/**
@@ -30,12 +27,37 @@ public final class Document extends ArrayList<Sentence> {
 	public CharSequence getDocument(){
 		return document;
 	}
+	
+	/**
+	 * Sets the id for the document.
+	 */
+	public void setDocumentId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Returns the id for the document.
+	 */
+	public int getDocumentId() {
+		return id;
+	}
+	
+	/**
+	 * Returns the name of the document.
+	 */
+	public CharSequence getName() {
+		return name;
+	}
+	
+	public String toString() {
+		return document.toString();
+	}
 
 	/**
 	 * Returns all Annotations of a given class contained the Document objects Sentence list.
 	 */
-	public <AT> List<IAnnotation<AT>> getDocumentAnnotations(Class<? extends IAnnotator<AT, ?>> cl) throws IllegalAnnotationStorageException {
-		List<IAnnotation<AT>> anns = new ArrayList<IAnnotation<AT>>();
+	public <AT> List<Annotation<AT>> getDocumentAnnotations(Class<? extends IAnnotator<AT, ?>> cl) throws IllegalAnnotationStorageException {
+		List<Annotation<AT>> anns = new ArrayList<Annotation<AT>>();
 		for(Sentence sentence : this){
 			anns.addAll(sentence.getSentenceAnnotations(cl));
 		}
@@ -66,24 +88,6 @@ public final class Document extends ArrayList<Sentence> {
 		for(Sentence sentence : this) {
 			sentence.filterAnnotations(filters);
 		}
-	}
-
-	/**
-	 * Sets the id for the document.
-	 */
-	public void setDocumentId(CharSequence id) {
-		this.id = id;
-	}
-
-	/**
-	 * Returns the id for the document.
-	 */
-	public CharSequence getDocumentId() {
-		return id;
-	}
-	
-	public String toString() {
-		return document.toString();
 	}
 
 }

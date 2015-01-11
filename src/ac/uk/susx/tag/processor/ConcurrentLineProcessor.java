@@ -19,29 +19,28 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
-import ac.uk.susx.tag.writer.StandardOutputWriter;
+import ac.uk.susx.tag.writer.OutputWriter;
 
 public class ConcurrentLineProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
 	private final IConfiguration config;
-	private final ArrayBlockingQueue<Future<Boolean>> queue;
+	private final ArrayBlockingQueue<Future<Document>> queue;
 	private boolean complete;
 	
 	public ConcurrentLineProcessor(IConfiguration config) {
 		this.config = config;
-		queue = new ArrayBlockingQueue<Future<Boolean>>(NTHREADS*2);
+		queue = new ArrayBlockingQueue<Future<Document>>(NTHREADS*2);
 	}
 
 	public void processFiles(String filesDir) {
 		ExecutorService producerPool = Executors.newSingleThreadExecutor();
 		ExecutorService consumerPool = Executors.newSingleThreadExecutor();
-		producerPool.submit(new Producer(queue,filesDir));
+		producerPool.submit(new Producer(filesDir));
 		consumerPool.submit(new Consumer(queue));
 		producerPool.shutdown();
 		try {
 			producerPool.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-//			queue.add(new ConsumerShutdownFuture());
 			complete = true;
 			consumerPool.shutdown();
 			consumerPool.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
@@ -57,41 +56,37 @@ public class ConcurrentLineProcessor implements IProcessor {
 	
 	private final class Producer implements Runnable {
 		
-		private final ArrayBlockingQueue<Future<Boolean>> queue;
 		private final String filesDir;
+		private final ExecutorService executor;
 
-		private Producer(ArrayBlockingQueue<Future<Boolean>> queue, String filesDir){
-			this.queue = queue;
+		private Producer(String filesDir){
 			this.filesDir = filesDir;
+			executor = Executors.newFixedThreadPool(NTHREADS);
 		}
 		
 		public void run() {
-			ExecutorService executor;
+
 			Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
 			while(iter.hasNext()){
 				try {
 					File next = iter.next();
-					executor = Executors.newFixedThreadPool(NTHREADS);
 					BufferedReader br = new BufferedReader(new FileReader(next));
 					String currLine = br.readLine();
-					StandardOutputWriter writer = new StandardOutputWriter(config.getOutputLocation() + "/" + next.getName());
 					int lineCount = 0;
 					while(currLine != null){
 						String line = new String(currLine).trim();
 						if(line.length() > 0) {
-							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line),writer);
+							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line));
 							queue.put(executor.submit(docCaller));
 						}
 						currLine = br.readLine();
 						lineCount++;
-						if(lineCount%1000 == 0){
+						if(lineCount % 1000 == 0){
 							System.err.println("Processing line: " + lineCount + " of File: " + next.getName());
 						}
 					}
 					executor.shutdown();
 					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-					System.err.println("Finished processing file: " + next.getName());
-					writer.closeDocument();
 					br.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -106,9 +101,9 @@ public class ConcurrentLineProcessor implements IProcessor {
 	
 	private final class Consumer implements Runnable {
 		
-		private final ArrayBlockingQueue<Future<Boolean>> queue;
+		private final ArrayBlockingQueue<Future<Document>> queue;
 		
-		private Consumer(ArrayBlockingQueue<Future<Boolean>> queue){
+		private Consumer(ArrayBlockingQueue<Future<Document>> queue){
 			this.queue = queue;
 		}
 
@@ -118,10 +113,19 @@ public class ConcurrentLineProcessor implements IProcessor {
 					if(queue.isEmpty()) {
 						continue;
 					}
-					Future<Boolean> out = queue.take();
-					if(out.get() == false){
-						complete = true;
-						return;
+					Future<Document> out = queue.take();
+					Document doc = out.get();
+					OutputWriter writer = null;
+					try {
+						writer = new OutputWriter(config.getOutputLocation() + "/" + doc.getName());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					config.getOutputFormatter().processDocument(writer, doc);
+					try {
+						writer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				}
 			} catch (InterruptedException e) {
@@ -135,61 +139,26 @@ public class ConcurrentLineProcessor implements IProcessor {
 		
 	}
 	
-	private final class DocumentCallable implements Callable<Boolean> {
+	private final class DocumentCallable implements Callable<Document> {
 			
 			private final Document document;
-			private final StandardOutputWriter writer;
 			
-			public DocumentCallable(Document document, StandardOutputWriter writer){
+			public DocumentCallable(Document document){
 				this.document = document;
-				this.writer = writer;
 			}
 	
-			public Boolean call() throws Exception {
+			public Document call() throws Exception {
 				for(IAnnotator<?,?> annotator : config.getAnnotators()){
 					try {
 						annotator.annotate(document);
 					} catch (IncompatibleAnnotationException e) {
 						e.printStackTrace();
-						return false;
 					}
 				}
 				document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 				document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-				config.getOutputWriter().processSubDocument(writer, document);
-				return true;
+				return document;
 			}
 	}
-	
-//	// Used as a poison pill to shut down the consumer object.
-//	private final class ConsumerShutdownFuture implements Future<Boolean> {
-//
-//		public boolean cancel(boolean arg0) {
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
-//
-//		public Boolean get() throws InterruptedException, ExecutionException {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		public Boolean get(long arg0, TimeUnit arg1) throws InterruptedException,
-//				ExecutionException, TimeoutException {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		public boolean isCancelled() {
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
-//
-//		public boolean isDone() {
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
-//		
-//	}
 
 }

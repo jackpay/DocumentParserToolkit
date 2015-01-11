@@ -11,7 +11,7 @@ public interface IInputDocumentFormatter {
 	 * @param rawDoc The raw document represented as a CharSequence
 	 * @return The document formatted and output as a Document.
 	 */
-	public Document createDocument(CharSequence rawDoc);
+	public Document createDocument(CharSequence rawDoc, CharSequence docName);
 	
 	/**
 	 * Takes a File object and outputs the file at that location as a Document object.

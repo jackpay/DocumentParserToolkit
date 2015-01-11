@@ -10,11 +10,11 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.indexing.OffsetIndexToken;
-import ac.uk.susx.tag.utils.FilterUtils;
+import ac.uk.susx.tag.utils.AnnotationUtils;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 /**
@@ -23,9 +23,9 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
  */
 public final class Sentence {
 	
-	private final IAnnotation<String> sentence;
-	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends IAnnotation<?>>> annotations;
-	private final HashMap<OffsetIndexToken, List<? extends IAnnotation<?>>> indexAnnotations;
+	private final Annotation<String> sentence;
+	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations;
+	private final HashMap<OffsetIndexToken, List<? extends Annotation<?>>> indexAnnotations;
 	private final OffsetIndexToken offset;
 	private final CharSequence docId;
 
@@ -34,7 +34,7 @@ public final class Sentence {
 	 * @param start The index of the sentence start point in the document.
 	 * @param end  The index of the sentence end point in the document.
 	 */
-	public Sentence(IAnnotation<String> sentence, int start, int end) {
+	public Sentence(Annotation<String> sentence, int start, int end) {
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
@@ -48,7 +48,7 @@ public final class Sentence {
 	 * @param end  The index of the sentence end point in the document.
 	 * @param docId The id of the document the senetence comes from.
 	 */
-	public Sentence(IAnnotation<String> sentence, int start, int end, CharSequence docId) {
+	public Sentence(Annotation<String> sentence, int start, int end, CharSequence docId) {
 		annotations = Maps.newHashMap();
 		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
@@ -60,11 +60,11 @@ public final class Sentence {
 	 * @param annotator The class of the annotator which produced the annotations.
 	 * @param annos The annotations to be indexed.
 	 */
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends IAnnotation<AT>> annos) {
-		List<IAnnotation<AT>> anns = (List<IAnnotation<AT>>) annotations.get(annotator);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends Annotation<AT>> annos) {
+		List<Annotation<AT>> anns = (List<Annotation<AT>>) annotations.get(annotator);
 		if(anns == null){
-			annotations.put(annotator, new ArrayList<IAnnotation<AT>>());
-			anns = (List<IAnnotation<AT>>) annotations.get(annotator);
+			annotations.put(annotator, new ArrayList<Annotation<AT>>());
+			anns = (List<Annotation<AT>>) annotations.get(annotator);
 			anns.addAll(annos);
 		}
 		else{
@@ -76,13 +76,13 @@ public final class Sentence {
 			e.printStackTrace();
 		}
 		
-		for(IAnnotation<AT> annotation : annos) {
+		for(Annotation<AT> annotation : annos) {
 			try {
 				if(indexAnnotations.get(annotation.getOffset()) == null){
-					indexAnnotations.put(annotation.getOffset(), new ArrayList<IAnnotation<AT>>(Arrays.asList(annotation)));
+					indexAnnotations.put(annotation.getOffset(), new ArrayList<Annotation<AT>>(Arrays.asList(annotation)));
 				}
 				else {
-					List<IAnnotation<?>> list = (List<IAnnotation<?>>) indexAnnotations.get(annotation.getOffset());
+					List<Annotation<?>> list = (List<Annotation<?>>) indexAnnotations.get(annotation.getOffset());
 					list.add(annotation);
 				}
 			} catch (Exception e) {
@@ -95,7 +95,7 @@ public final class Sentence {
 	 * @param index The index of the annotations required.
 	 * @return All annotations associated with the given index.
 	 */
-	public List<? extends IAnnotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
+	public List<? extends Annotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
 		return indexAnnotations.get(index);
 	}
 	
@@ -109,7 +109,7 @@ public final class Sentence {
 	/**
 	 * @return All indexed annotations contained in the Sentence.
 	 */
-	public Collection<List<? extends IAnnotation<?>>> getAllIndexedAnnotations() {
+	public Collection<List<? extends Annotation<?>>> getAllIndexedAnnotations() {
 		return indexAnnotations.values();
 	}
 	
@@ -118,7 +118,7 @@ public final class Sentence {
 	 * @return All sentence annotations produced by the given annotator class, or null.
 	 * @throws IllegalAnnotationStorageException
 	 */
-	public <AT> List<IAnnotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> class1) throws IllegalAnnotationStorageException {
+	public <AT> List<Annotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> class1) throws IllegalAnnotationStorageException {
 		try{
 			return annotations.get(class1).getClass().cast(annotations.get(class1));
 		} catch (ClassCastException ex) {
@@ -129,14 +129,14 @@ public final class Sentence {
 	/**
 	 * @return The raw sentence annotation represented by the Sentence object.
 	 */
-	public IAnnotation<String> getSentence() {
+	public Annotation<String> getSentence() {
 		return sentence;
 	}
 	
 	/**
 	 * @return All annotations contained in this Sentence.
 	 */
-	public Collection<List<? extends IAnnotation<?>>> getSentenceAllAnnotations() {
+	public Collection<List<? extends Annotation<?>>> getSentenceAllAnnotations() {
 		return annotations.values();
 	}
 	
@@ -195,7 +195,6 @@ public final class Sentence {
 		}
 	}
 	
-	//TODO: type checking - although is enforced elsewhere 
 	/**
 	 * Apply the given set of filters to all annotations created by the given class.
 	 * @param filters 
@@ -204,7 +203,7 @@ public final class Sentence {
 	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
-				filter.filterList((List<? extends IAnnotation<AT>>) annotations.get(annotator));
+				filter.filterList((List<? extends Annotation<AT>>) annotations.get(annotator));
 			}
 		}
 	}
@@ -215,8 +214,8 @@ public final class Sentence {
 	 * @return
 	 * @throws IllegalAnnotationStorageException
 	 */
-	private <AT> List<IAnnotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
-		Collections.sort(annotations.get(annotator), new FilterUtils.AnnotationOffsetComparator());
+	private <AT> List<Annotation<AT>> sortAnnotations(Class<? extends IAnnotator<AT,?>> annotator) throws IllegalAnnotationStorageException{
+		Collections.sort(annotations.get(annotator), new AnnotationUtils.AnnotationOffsetComparator());
 		try{
 			return annotations.get(annotator).getClass().cast(annotations.get(annotator));
 		} catch (ClassCastException ex) {

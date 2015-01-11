@@ -1,5 +1,7 @@
 package ac.uk.susx.tag.configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -8,6 +10,7 @@ import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.document.input.IInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 import ac.uk.susx.tag.utils.FileUtils;
+import ac.uk.susx.tag.writer.OutputWriter;
 
 /**
  * An default class for a global config file.
@@ -25,6 +28,7 @@ public class StandardConfiguration implements IConfiguration {
 	private IOutputDocumentFormatter outputWriter;
 	private IInputDocumentFormatter docBuilder;
 	private ArrayList<IFilter<?>> filters;
+	private final DocumentWriterFactory writerFactory;
 	
 	public StandardConfiguration(String inputLoc, String outputLoc) {
 		this.inputLoc = inputLoc;
@@ -32,6 +36,7 @@ public class StandardConfiguration implements IConfiguration {
 		annotators = new ArrayList<IAnnotator<?,?>>();
 		includedAnnotators = new ArrayList<Class<? extends IAnnotator<?,?>>>();
 		filters = new ArrayList<IFilter<?>>();
+		writerFactory = new DocumentWriterFactory();
 	}
 	
 	public String getInputLocation() {
@@ -125,6 +130,36 @@ public class StandardConfiguration implements IConfiguration {
 		return docBuilder;
 	}
 	
-	
+	private class DocumentWriterFactory {
+		
+		private OutputWriter getWriter(String outputLoc) throws IOException {
+			return new OutputWriter(outputLoc);
+		}
+		
+		private OutputWriter getWriter(File outFile) throws IOException {
+			return new OutputWriter(outputLoc);
+		}
+	}
+
+
+	@Override
+	public OutputWriter getWriter(String outputLoc) {
+		try {
+			return writerFactory.getWriter(outputLoc);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public OutputWriter getWriter(File outFile) {
+		try {
+			return writerFactory.getWriter(outFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 }

@@ -2,7 +2,7 @@ package ac.uk.susx.tag.filter;
 
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.document.Sentence;
 
 /**
@@ -18,7 +18,7 @@ public interface IFilter<AT> {
 	 * @param list
 	 * @return
 	 */
-	public List<? extends IAnnotation<AT>> filterList(List<? extends IAnnotation<AT>> list);
+	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> list);
 	
 	/**
 	 * Filter an entire collection of annotations.

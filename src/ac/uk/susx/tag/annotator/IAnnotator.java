@@ -2,7 +2,7 @@ package ac.uk.susx.tag.annotator;
 
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
@@ -30,7 +30,7 @@ public interface IAnnotator <AT,ACT> {
 	 * @return A list of newly created annotations corresponding to the annotated input list.
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException;
+	public List<? extends Annotation<AT>> annotate(List<? extends Annotation<ACT>> annotations) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single SentenceAnnotation object
@@ -38,7 +38,7 @@ public interface IAnnotator <AT,ACT> {
 	 * @return The list of newly created annotations
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<AT>> annotate(Sentence sentence) throws IncompatibleAnnotationException;
+	public List<? extends Annotation<AT>> annotate(Sentence sentence) throws IncompatibleAnnotationException;
 	
 	/**
 	 * Annotate a single annotation
@@ -46,7 +46,7 @@ public interface IAnnotator <AT,ACT> {
 	 * @return A list of Annotations born
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<AT>> annotate(IAnnotation<ACT> annotation) throws IncompatibleAnnotationException;
+	public List<? extends Annotation<AT>> annotate(Annotation<ACT> annotation) throws IncompatibleAnnotationException;
 	
 
 	/**

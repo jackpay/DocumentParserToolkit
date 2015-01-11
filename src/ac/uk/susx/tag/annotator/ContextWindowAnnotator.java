@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
@@ -26,11 +26,11 @@ public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
 	}
 
 	@Override
-	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Class<IAnnotator<String,String>>> contextAnnos = (List<Class<IAnnotator<String, String>>>) ((annotators == null) ? Arrays.asList(DEFAULT_ANNOTATOR) : annotators);
 		for(Class<IAnnotator<String,String>> annotator : contextAnnos) {
 			try {
-				List<IAnnotation<String>> annos = sentence.getSentenceAnnotations(DEFAULT_ANNOTATOR);
+				List<Annotation<String>> annos = sentence.getSentenceAnnotations(DEFAULT_ANNOTATOR);
 				for(int i = 0; i < annos.size(); i++){
 					sentence.addAnnotations(this.getClass(), getContextWindow(annos,i));
 				}
@@ -41,17 +41,17 @@ public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
 		return null;
 	}
 	
-	private List<IAnnotation<String>> getContextWindow(List<IAnnotation<String>> annotations, int index) {
+	private List<Annotation<String>> getContextWindow(List<Annotation<String>> annotations, int index) {
 		int start = index-windowSize;
 		int end = index+(windowSize+1);
 
 		end = end > annotations.size() ?  annotations.size() : end;
 		start = start < 0 ? 0 : start;
 		
-		List<IAnnotation<String>> subList = annotations.subList(start, end);
-		IAnnotation<String> current = subList.remove((subList.size()/2));
-		List<IAnnotation<String>> window = new ArrayList<IAnnotation<String>>();
-		for(IAnnotation<String> anno : subList) {
+		List<Annotation<String>> subList = annotations.subList(start, end);
+		Annotation<String> current = subList.remove((subList.size()/2));
+		List<Annotation<String>> window = new ArrayList<Annotation<String>>();
+		for(Annotation<String> anno : subList) {
 			StringAnnotation sa = new StringAnnotation(anno.getAnnotation(),current.getStart(),current.getEnd());
 			window.add(sa);
 		}
@@ -65,7 +65,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
 	 * @return
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends IAnnotation<String>> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<? extends Annotation<String>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

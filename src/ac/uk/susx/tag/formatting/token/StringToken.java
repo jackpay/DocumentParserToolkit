@@ -1,11 +1,17 @@
 package ac.uk.susx.tag.formatting.token;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+public class StringToken extends Token<String>{
+	
+	private final String token;
 
-public class StringToken implements IToken<String>{
+	public StringToken(String token) {
+		super(token);
+		this.token = token;
+	}
 
-	public String formatForOutput(IAnnotation<String> token) {
-		return token.getAnnotation();
+	@Override
+	public String toString() {
+		return token;
 	}
 
 }

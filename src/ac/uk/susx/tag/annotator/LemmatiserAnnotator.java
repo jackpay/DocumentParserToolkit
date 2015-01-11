@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -26,18 +26,18 @@ public class LemmatiserAnnotator extends AbstractAnnotator<String,String> {
 		this.tokeniser = tokeniser;
 	}
 
-	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
+	public synchronized List<Annotation<String>> annotate(Annotation<String> sentence) throws IncompatibleAnnotationException {
 		SentenceData09 sent = new SentenceData09();
-		ArrayList<IAnnotation<String>> annotations =  new ArrayList<IAnnotation<String>>();
+		ArrayList<Annotation<String>> annotations =  new ArrayList<Annotation<String>>();
 		ArrayList<String> forms = new ArrayList<String>();
 		forms.add("<root>");
-		List<? extends IAnnotation<String>> tokens = null;
+		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for(IAnnotation<String> token : tokens) {
+		for(Annotation<String> token : tokens) {
 			forms.add(token.getAnnotation());
 		}
 		sent.init(forms.toArray(new String[forms.size()]));
@@ -65,8 +65,8 @@ public class LemmatiserAnnotator extends AbstractAnnotator<String,String> {
 		return lemmatizer != null;
 	}
 
-	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<IAnnotation<String>> annos = annotate(sentence.getSentence());
+	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		List<Annotation<String>> annos = annotate(sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 	}

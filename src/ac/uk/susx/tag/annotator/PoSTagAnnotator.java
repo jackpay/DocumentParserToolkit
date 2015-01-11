@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.util.InvalidFormatException;
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -37,9 +37,9 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 	 * Annotates a single un-tokenised sentence.
 	 * @throws IncompatibleAnnotationException 
 	 */
-	public synchronized List<IAnnotation<String>> annotate (IAnnotation<String> sentence) throws IncompatibleAnnotationException {
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		List<? extends IAnnotation<String>> tokens = null;
+	public synchronized List<Annotation<String>> annotate (Annotation<String> sentence) throws IncompatibleAnnotationException {
+		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
@@ -75,10 +75,10 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 		return postagger != null;
 	}
 
-	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<IAnnotation<String>> postagged = new ArrayList<IAnnotation<String>>();
+	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		List<Annotation<String>> postagged = new ArrayList<Annotation<String>>();
 		try {
-			List<? extends IAnnotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
+			List<? extends Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
 			if(tokens == null) {
 				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence.getSentence());
 			}

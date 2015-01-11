@@ -3,7 +3,7 @@ package ac.uk.susx.tag.filter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
@@ -18,13 +18,12 @@ public class CanonicaliseFilter<AT> implements IFilter<AT> {
 		this.swapToken = swapToken;
 		this.annotator = annotator;
 		this.pattern = pattern;
-		
 	}
 
 	@Override
-	public List<? extends IAnnotation<AT>> filterList(List<? extends IAnnotation<AT>> list) {
-		for(IAnnotation<AT> anno : list) {
-			if(Pattern.matches(pattern, anno.formatForOutput())){
+	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> list) {
+		for(Annotation<AT> anno : list) {
+			if(Pattern.matches(pattern, anno.toString())){
 				anno.setAnnotation(swapToken);
 			}
 		}

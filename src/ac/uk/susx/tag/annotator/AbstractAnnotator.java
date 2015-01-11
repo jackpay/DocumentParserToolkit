@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.document.Document;
@@ -31,12 +31,12 @@ public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
 		return document;
 	}
 
-	public List<IAnnotation<AT>> annotate(List<? extends IAnnotation<ACT>> annotations) throws IncompatibleAnnotationException {
-		ArrayList<IAnnotation<AT>> annotationArr = new ArrayList<IAnnotation<AT>>();
+	public List<Annotation<AT>> annotate(List<? extends Annotation<ACT>> annotations) throws IncompatibleAnnotationException {
+		ArrayList<Annotation<AT>> annotationArr = new ArrayList<Annotation<AT>>();
 		int index = 0;
-		for(IAnnotation<ACT> annotation : annotations){
-			List<? extends IAnnotation<AT>> sentAnn = annotate(annotation);
-			for(IAnnotation<AT> ann : sentAnn){
+		for(Annotation<ACT> annotation : annotations){
+			List<? extends Annotation<AT>> sentAnn = annotate(annotation);
+			for(Annotation<AT> ann : sentAnn){
 				int currPos = 0;
 				try {
 					currPos = ann.getIndex(PositionIndexToken.class) == null ? 0 : ann.getIndex(PositionIndexToken.class).getPosition();

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.SentenceAnnotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Document;
@@ -24,16 +24,16 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 	public Document annotate(Document doc) throws IncompatibleAnnotationException {
 		CharSequence docStr = doc.getDocument();
 		StringAnnotation ga = new StringAnnotation(docStr.toString(),0,docStr.length());
-		ArrayList<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
+		ArrayList<Annotation<Sentence>> annotations = new ArrayList<Annotation<Sentence>>();
 		annotations.addAll(annotate(ga));
-		for(IAnnotation<Sentence> sentence : annotations) {
+		for(Annotation<Sentence> sentence : annotations) {
 			doc.add(sentence.getAnnotation());
 		}
 		return doc;
 	}
 	
-	public synchronized List<? extends IAnnotation<Sentence>> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
-		List<IAnnotation<Sentence>> annotations = new ArrayList<IAnnotation<Sentence>>();
+	public synchronized List<? extends Annotation<Sentence>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
+		List<Annotation<Sentence>> annotations = new ArrayList<Annotation<Sentence>>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		int offset = 0;
 		for(int i = 0; i < sentPos.length; i++){
@@ -63,9 +63,9 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 		return sentencetagger != null;
 	}
 
-	public List<? extends IAnnotation<Sentence>> annotate(Sentence sentence)
+	public List<? extends Annotation<Sentence>> annotate(Sentence sentence)
 			throws IncompatibleAnnotationException {
-		return new ArrayList<IAnnotation<Sentence>>(Arrays.asList(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd())));
+		return new ArrayList<Annotation<Sentence>>(Arrays.asList(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd())));
 	}
 	
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import uk.ac.susx.tag.dependencyparser.Parser;
 import uk.ac.susx.tag.dependencyparser.datastructures.Token;
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.DepRelTokenAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -35,8 +35,8 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 		uk.ac.susx.tag.dependencyparser.datastructures.Sentence parserSent = new uk.ac.susx.tag.dependencyparser.datastructures.Sentence();
 		ArrayList<DepRelTokenAnnotation> annotations = new ArrayList<DepRelTokenAnnotation>();
 		try {
-			List<IAnnotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
-			List<IAnnotation<String>> pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
+			List<Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
+			List<Annotation<String>> pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
 			for(int i = 0; i < tokens.size(); i++) {
 				parserSent.add(tokens.get(i).getAnnotation(),pos.get(i).getAnnotation());
 			}
@@ -62,7 +62,7 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 	/**
 	 * Needs to be a sentence.
 	 */
-	public List<? extends DepRelTokenAnnotation> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<? extends DepRelTokenAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

@@ -1,5 +1,6 @@
 package ac.uk.susx.tag.configuration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -7,6 +8,7 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.filter.IFilter;
 import ac.uk.susx.tag.formatting.document.input.IInputDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
+import ac.uk.susx.tag.writer.OutputWriter;
 
 /**
  * The interace class for a global config file.
@@ -63,12 +65,12 @@ public interface IConfiguration {
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputWriter(IOutputDocumentFormatter outputWriter);
+	public void setOutputFormatter(IOutputDocumentFormatter outputWriter);
 	
 	/**
 	 * Get the document output writer.
 	 */
-	public IOutputDocumentFormatter getOutputWriter();
+	public IOutputDocumentFormatter getOutputFormatter();
 	
 	/**
 	 * Set the Document object builder.
@@ -92,5 +94,15 @@ public interface IConfiguration {
 	 * @return
 	 */
 	public String getOutputSuff();
+	
+	/**
+	 * Get an OutputWriter for file location.
+	 */
+	public OutputWriter getWriter(String outputLoc);
+	
+	/**
+	 * Get an OutputWriter for file.
+	 */
+	public OutputWriter getWriter(File outFile);
 
 }

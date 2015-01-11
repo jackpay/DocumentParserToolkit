@@ -40,7 +40,7 @@
   	<version>1.0.3</version>
   	<groupId>uk.ac.susx.tag</groupId>
   	<artifactId>tag-dist</artifactId>
-  	<relativePath>../tag-dist</relativePath>
+  	<relativePath>./resources/tag-dist</relativePath>
   </parent>
   <dependencies>
       <dependency>

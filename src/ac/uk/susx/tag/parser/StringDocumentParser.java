@@ -21,9 +21,9 @@ import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
-import ac.uk.susx.tag.formatting.document.input.BasicInputDocumentFormatter;
+import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
-import ac.uk.susx.tag.formatting.document.output.BagOfWordsOutputDocumentFormatter;
+import ac.uk.susx.tag.formatting.document.output.BagOfWordsOutputFormatter;
 import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
 import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
@@ -57,9 +57,9 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-		IOutputDocumentFormatter outputWriter = new BagOfWordsOutputDocumentFormatter();
+		IOutputDocumentFormatter outputWriter = new BagOfWordsOutputFormatter();
 		config.setOutputWriter(outputWriter);
-		config.setDocumentBuilder(new BasicInputDocumentFormatter());
+		config.setDocumentBuilder(new StandardInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
 		anns.add("DT");
 		anns.add("CC");

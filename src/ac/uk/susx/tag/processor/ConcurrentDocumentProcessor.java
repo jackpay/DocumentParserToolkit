@@ -63,7 +63,7 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 			}
 			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + fileName, document);
+			config.getOutputFormatter().processDocument(new OutputWriter(config.getOutputLocation() + "/" + document.getName()), document);
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

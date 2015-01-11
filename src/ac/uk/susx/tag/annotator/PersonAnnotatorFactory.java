@@ -2,7 +2,7 @@ package ac.uk.susx.tag.annotator;
 
 import java.util.List;
 
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -36,8 +36,8 @@ public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnn
 	}
 
 	@Override
-	public List<? extends IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<? extends IAnnotation<String>> tokens = null;
+	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) getTokeniser());
 			if(tokens == null) {
@@ -52,7 +52,7 @@ public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnn
 		}
 		//List<IAnnotation<String>> annos = annotate(sentence.getSentence());
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
-		List<IAnnotation<String>> annos = findNames(strToks,sentence.getSentence());
+		List<Annotation<String>> annos = findNames(strToks,sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 	}

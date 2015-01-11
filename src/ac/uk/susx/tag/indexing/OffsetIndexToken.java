@@ -27,7 +27,6 @@ public class OffsetIndexToken implements IIndexToken{
 	public int hashCode(){
 		int prime = 3;
 		int hash = prime * startOffset;
-		//hash = 3 * endOffset;
 		return hash;
 	}
 
@@ -39,10 +38,10 @@ public class OffsetIndexToken implements IIndexToken{
 		if(obj == null){
 			return false;
 		}
-		if(obj.getClass() != this.getClass()){
+		if(!(obj instanceof OffsetIndexToken)){
 			return false;
 		}
-		if(obj.getClass() == this.getClass()){
+		else {
 			OffsetIndexToken pos = (OffsetIndexToken) obj;
 			if(this.startOffset == pos.startOffset && this.endOffset == pos.endOffset){
 				return true;

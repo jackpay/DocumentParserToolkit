@@ -8,7 +8,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
@@ -21,9 +21,9 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 	/**
 	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
 	 */
-	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> annotation) throws IncompatibleAnnotationException{
+	public synchronized List<Annotation<String>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException{
 		
-		List<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		List<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		String docStr = annotation.getAnnotation();
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
@@ -56,8 +56,8 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 		}
 	}
 
-	public List<IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<IAnnotation<String>> tokens = annotate(sentence.getSentence());
+	public List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+		List<Annotation<String>> tokens = annotate(sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), tokens);
 		return tokens;
 	}

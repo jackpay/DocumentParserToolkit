@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.util.InvalidFormatException;
-import ac.uk.susx.tag.annotation.IAnnotation;
+import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
@@ -32,15 +32,15 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		this.tokeniser = tokeniser;
 	}
 
-	public synchronized List<IAnnotation<String>> annotate(IAnnotation<String> sentence) throws IncompatibleAnnotationException {
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
-		List<? extends IAnnotation<String>> tokens = null;
+	public synchronized List<Annotation<String>> annotate(Annotation<String> sentence) throws IncompatibleAnnotationException {
+		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		List<? extends IAnnotation<String>> postags = null;
+		List<? extends Annotation<String>> postags = null;
 		try {
 			postags = AnnotatorRegistry.getAnnotator(postagger).annotate(sentence);
 		} catch (Exception e) {
@@ -68,9 +68,9 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		return chunker != null;
 	}
 	
-	private List<IAnnotation<String>> chunk(String[] toks, String[] pos, IAnnotation<String> sentence){
+	private List<Annotation<String>> chunk(String[] toks, String[] pos, Annotation<String> sentence){
 		
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		String[] chunkTags = chunker.chunk(toks, pos);
 		
 		int begin = 0;
@@ -87,12 +87,12 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		return annotations;
 	}
 
-	public List<IAnnotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		
-		ArrayList<IAnnotation<String>> annotations = new ArrayList<IAnnotation<String>>();
+		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		
-		List<? extends IAnnotation<String>> tokens = null;
-		List<? extends IAnnotation<String>> postags = null;
+		List<? extends Annotation<String>> tokens = null;
+		List<? extends Annotation<String>> postags = null;
 		
 		try {
 			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) tokeniser);
@@ -119,7 +119,7 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		
 		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
 		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);	
-		List<IAnnotation<String>> annos = chunk(strToks,strTags,sentence.getSentence());
+		List<Annotation<String>> annos = chunk(strToks,strTags,sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;
 		
