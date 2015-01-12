@@ -9,7 +9,7 @@ public class DepRelTokenAnnotation extends Annotation<Token> {
 	}
 	
 	public String toString() {
-		getAnnotation().getDeprel();
+		return getAnnotation().getDeprel();
 	}
 
 }

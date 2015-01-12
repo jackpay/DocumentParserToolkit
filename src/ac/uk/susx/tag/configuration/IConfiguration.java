@@ -65,7 +65,7 @@ public interface IConfiguration {
 	/**
 	 * Set the document output writer.
 	 */
-	public void setOutputFormatter(IOutputDocumentFormatter outputWriter);
+	public void setOutputFormatter(IOutputDocumentFormatter outputFormatter);
 	
 	/**
 	 * Get the document output writer.

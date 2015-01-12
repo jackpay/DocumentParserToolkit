@@ -1,6 +1,7 @@
 package ac.uk.susx.tag.processor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -19,6 +20,7 @@ import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
+import ac.uk.susx.tag.writer.OutputWriter;
 
 public class ConcurrentSentenceProcessor implements IProcessor {
 	
@@ -35,7 +37,7 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 		Iterator<File> iter = FileUtils.iterateFiles(new File(fileDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){
 			File next = iter.next();
-			Document document = config.getDocumentBuilder().createDocument(next.getAbsolutePath());
+			Document document = config.getDocumentBuilder().createDocument(next);
 			final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 			try {
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
@@ -64,7 +66,12 @@ public class ConcurrentSentenceProcessor implements IProcessor {
 			}
 			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputWriter().processDocument(config.getOutputLocation() + "/" + next.getName(), document);
+			try {
+				config.getOutputFormatter().processDocument(new OutputWriter(config.getOutputLocation() + "/" + document.getName()), document);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		executor.shutdown();
 	}

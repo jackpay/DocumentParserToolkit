@@ -17,12 +17,19 @@ public abstract class AbstractAnnotator <AT,ACT> implements IAnnotator<AT,ACT> {
 	private Class<? extends IAnnotatorFactory<Sentence,String>> sentence = SentenceAnnotatorFactory.class;
 
 	public Document annotate(Document document) throws IncompatibleAnnotationException {
+		System.out.println("Starting document: " + document.getName());
 		if(document.isEmpty()){
 			try {
+				System.out.println("Sentences before: " + document.getName());
 				AnnotatorRegistry.getAnnotator(sentence).annotate(document);
+				System.out.println("Sentences after: " + document.getName());
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		else{
+			System.out.println("Document isn't empty: " + document.getName());
 		}
 		Iterator<Sentence> sentences = document.iterator();
 		while(sentences.hasNext()){

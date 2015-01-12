@@ -57,8 +57,8 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-		IOutputDocumentFormatter outputWriter = new BagOfWordsOutputFormatter();
-		config.setOutputWriter(outputWriter);
+		IOutputDocumentFormatter outputFormatter = new BagOfWordsOutputFormatter();
+		config.setOutputFormatter(outputFormatter);
 		config.setDocumentBuilder(new StandardInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
 		anns.add("DT");
@@ -79,7 +79,7 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		if(config == null){
 			throw new IOException("Configuration object file not initialised. Must process input parameters.");
 		}
-		if(config.getOutputWriter() == null){
+		if(config.getOutputFormatter() == null){
 			throw new IOException("Output writer not initialised.");
 		}
 		if(config.getDocumentBuilder() == null){

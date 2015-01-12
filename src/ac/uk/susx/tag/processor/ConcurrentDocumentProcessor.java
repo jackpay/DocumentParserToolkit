@@ -14,6 +14,7 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
+import ac.uk.susx.tag.writer.OutputWriter;
 
 public class ConcurrentDocumentProcessor implements IProcessor {
 	
@@ -26,10 +27,11 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 	
 	public void processFiles(String filesDir){
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
+//		final ExecutorService 
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){
-			Document doc = config.getDocumentBuilder().createDocument(iter.next().getAbsolutePath());
+			Document doc = config.getDocumentBuilder().createDocument(iter.next());
 			Callable<Boolean> docCaller = new DocumentCallable(doc, iter.next().getName());
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.

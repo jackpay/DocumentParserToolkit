@@ -25,7 +25,7 @@ public class StandardConfiguration implements IConfiguration {
 	private String inputSuff;
 	private String outputSuff;
 	private boolean singleFile;
-	private IOutputDocumentFormatter outputWriter;
+	private IOutputDocumentFormatter outputFormatter;
 	private IInputDocumentFormatter docBuilder;
 	private ArrayList<IFilter<?>> filters;
 	private final DocumentWriterFactory writerFactory;
@@ -94,14 +94,14 @@ public class StandardConfiguration implements IConfiguration {
 	 * Set the document output writer.
 	 */
 	public void setOutputWriter(IOutputDocumentFormatter outputWriter){
-		this.outputWriter = outputWriter;
+		this.outputFormatter = outputWriter;
 	}
 	
 	/**
 	 * Get the document output writer.
 	 */
 	public IOutputDocumentFormatter getOutputWriter(){
-		return outputWriter;
+		return outputFormatter;
 	}
 	
 	/**
@@ -160,6 +160,16 @@ public class StandardConfiguration implements IConfiguration {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void setOutputFormatter(IOutputDocumentFormatter outputFormatter) {
+		this.outputFormatter = outputFormatter;
+	}
+
+	@Override
+	public IOutputDocumentFormatter getOutputFormatter() {
+		return outputFormatter;
 	}
 	
 }

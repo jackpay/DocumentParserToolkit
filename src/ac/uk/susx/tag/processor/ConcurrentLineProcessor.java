@@ -30,7 +30,7 @@ public class ConcurrentLineProcessor implements IProcessor {
 	
 	public ConcurrentLineProcessor(IConfiguration config) {
 		this.config = config;
-		queue = new ArrayBlockingQueue<Future<Document>>(NTHREADS*2);
+		queue = new ArrayBlockingQueue<Future<Document>>(NTHREADS);
 	}
 
 	public void processFiles(String filesDir) {
@@ -70,31 +70,43 @@ public class ConcurrentLineProcessor implements IProcessor {
 			while(iter.hasNext()){
 				try {
 					File next = iter.next();
+					System.out.println(next.getName());
 					BufferedReader br = new BufferedReader(new FileReader(next));
 					String currLine = br.readLine();
 					int lineCount = 0;
 					while(currLine != null){
+						System.out.println(next.getName() + " begin processing");
 						String line = new String(currLine).trim();
-						if(line.length() > 0) {
-							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line));
-							queue.put(executor.submit(docCaller));
+						System.out.println(next.getName() + " trimmed");
+						if(line != null && line.length() > 0 && !line.isEmpty()) {
+							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line, next.getName()));
+							System.out.println(next.getName() + " doc callable");
+							try {
+								queue.put(executor.submit(docCaller));
+							} catch(Exception e) {
+								e.printStackTrace();
+							}
+							System.out.println(next.getName() + " queued");
 						}
+						System.out.println(next.getName() + " submitted");
+
 						currLine = br.readLine();
 						lineCount++;
-						if(lineCount % 1000 == 0){
+						if(lineCount % 1000 == 0) {
 							System.err.println("Processing line: " + lineCount + " of File: " + next.getName());
 						}
 					}
-					executor.shutdown();
-					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
 					br.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 					break;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					break;
 				}
+			}
+			executor.shutdown();
+			try {
+				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -115,18 +127,24 @@ public class ConcurrentLineProcessor implements IProcessor {
 					}
 					Future<Document> out = queue.take();
 					Document doc = out.get();
-					OutputWriter writer = null;
+//					OutputWriter writer = null;
+//					try {
+//						writer = new OutputWriter(config.getOutputLocation() + "/" + doc.getName());
+//						System.out.println(doc.getName());
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
 					try {
-						writer = new OutputWriter(config.getOutputLocation() + "/" + doc.getName());
-					} catch (IOException e) {
-						e.printStackTrace();
+//						System.out.println(doc.getName());
+						config.getOutputFormatter().processDocument(new OutputWriter(config.getOutputLocation() + "/" + doc.getName()), doc);
+					} catch (IOException e1) {
+						e1.printStackTrace();
 					}
-					config.getOutputFormatter().processDocument(writer, doc);
-					try {
-						writer.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+//					try {
+//						writer.close();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -155,8 +173,14 @@ public class ConcurrentLineProcessor implements IProcessor {
 						e.printStackTrace();
 					}
 				}
-				document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
-				document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+				System.out.println("HERE 0: " + document.getName());
+				try {
+					document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
+					document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
+					System.out.println("HERE: " + document.getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				return document;
 			}
 	}

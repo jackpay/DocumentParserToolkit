@@ -35,6 +35,11 @@ public class BagOfWordsOutputFormatter implements IOutputDocumentFormatter {
 				}
 			}
 		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
