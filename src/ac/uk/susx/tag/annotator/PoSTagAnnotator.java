@@ -83,6 +83,9 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence.getSentence());
 			}
 			String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+			if(strToks == null) {
+				System.out.println("Toks are null; " + sentence.getSentence().getAnnotation());
+			}
 			String[] strTags = postagger.tag(strToks);
 			for(int i = 0; i < strTags.length; i++) {
 				StringAnnotation annotation = new StringAnnotation(strTags[i], tokens.get(i).getStart(),tokens.get(i).getEnd());

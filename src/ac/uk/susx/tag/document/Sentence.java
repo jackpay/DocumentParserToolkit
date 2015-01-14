@@ -119,6 +119,7 @@ public final class Sentence {
 	 * @throws IllegalAnnotationStorageException
 	 */
 	public <AT> List<Annotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> class1) throws IllegalAnnotationStorageException {
+		System.out.println(class1.toString());
 		try{
 			return annotations.get(class1).getClass().cast(annotations.get(class1));
 		} catch (ClassCastException ex) {
