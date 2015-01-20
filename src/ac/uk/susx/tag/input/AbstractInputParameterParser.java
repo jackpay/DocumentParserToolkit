@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import net.didion.jwnl.util.factory.ParamList;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
@@ -18,7 +17,7 @@ import com.beust.jcommander.Parameter;
  * @author jackpay
  *
  */
-public abstract class AbstractInputParameterParser implements IInputParameterParser{
+public abstract class AbstractInputParameterParser {
 	
 	static {
 		AnnotatorRegistry.register();

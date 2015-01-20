@@ -8,7 +8,7 @@ import ac.uk.susx.tag.annotation.Annotation;
  *
  * @param <A>
  */
-public class AnnotationIndexToken <A> implements IIndexToken {
+public class AnnotationIndexToken <A> extends IndexToken {
 
 	private final A annotation;
 	

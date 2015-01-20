@@ -13,6 +13,7 @@ import ac.uk.susx.tag.annotator.PoSTagAnnotatorFactory;
 import ac.uk.susx.tag.annotator.PorterStemmerAnnotatorFactory;
 import ac.uk.susx.tag.annotator.SentenceAnnotatorFactory;
 import ac.uk.susx.tag.annotator.TokenAnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.StandardConfiguration;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
@@ -217,7 +218,7 @@ public class GrammaticalInputParser extends AbstractInputParameterParser {
 			for(String s : reader.getAnnotatorsandParams().keySet()){
 				try {
 					System.err.println("Additional annotator " + s +  "detected.");
-					gc.addAnnotator(AnnotatorRegistry.getAnnotator(s,reader.getAnnotatorsandParams().get(s)));
+					gc.addAnnotator(AnnotatorRegistry.getAnnotator(s,reader.getAnnotatorsandParams().get(s)),true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

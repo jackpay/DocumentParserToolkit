@@ -8,7 +8,7 @@ import java.util.Map;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.IAnnotator;
-import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
 
@@ -37,12 +37,12 @@ public class AnnotationUtils {
 		}
 	}
 	
-	public static Map<IIndexToken, Annotation<?>> annotationsToMap(List<? extends Annotation<?>> annotations){
+	public static Map<IndexToken, Annotation<?>> annotationsToMap(List<? extends Annotation<?>> annotations){
 		return annotationsToMap(annotations, OffsetIndexToken.class);
 	}
 	
-	public static Map<IIndexToken, Annotation<?>> annotationsToMap(List<? extends Annotation<?>> annotations, Class<? extends IIndexToken> index){
-		Map<IIndexToken, Annotation<?>> annoMap = new HashMap<IIndexToken, Annotation<?>>();
+	public static Map<IndexToken, Annotation<?>> annotationsToMap(List<? extends Annotation<?>> annotations, Class<? extends IndexToken> index){
+		Map<IndexToken, Annotation<?>> annoMap = new HashMap<IndexToken, Annotation<?>>();
 		Iterator<? extends Annotation<?>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			Annotation<?> next = iter.next();
@@ -55,12 +55,12 @@ public class AnnotationUtils {
 		return annoMap;
 	}
 	
-	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, Annotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations){
+	public static Map<Class<? extends IAnnotator<?,?>>, Map<IndexToken, Annotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations){
 		return annotationsToMap(annotations, OffsetIndexToken.class);
 	}
 	
-	public static Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, Annotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations, Class<? extends IIndexToken> index){
-		Map<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, Annotation<?>>> annoMap = new HashMap<Class<? extends IAnnotator<?,?>>, Map<IIndexToken, Annotation<?>>>();
+	public static Map<Class<? extends IAnnotator<?,?>>, Map<IndexToken, Annotation<?>>> annotationsToMap(Map<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations, Class<? extends IndexToken> index){
+		Map<Class<? extends IAnnotator<?,?>>, Map<IndexToken, Annotation<?>>> annoMap = new HashMap<Class<? extends IAnnotator<?,?>>, Map<IndexToken, Annotation<?>>>();
 		for(Class<? extends IAnnotator<?,?>> annotator : annotations.keySet()){
 			annoMap.put(annotator, annotationsToMap(annotations.get(annotator),index));
 		}

@@ -37,6 +37,10 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 		try {
 			List<Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
 			List<Annotation<String>> pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
+			if(pos == null) {
+				AnnotatorRegistry.getAnnotator(postagger).annotate(sentence);
+				pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
+			}
 			for(int i = 0; i < tokens.size(); i++) {
 				parserSent.add(tokens.get(i).getAnnotation(),pos.get(i).getAnnotation());
 			}
@@ -48,10 +52,8 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 				i++;
 			}
 		} catch (IllegalAnnotationStorageException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		sentence.addAnnotations(this.getClass(), annotations);

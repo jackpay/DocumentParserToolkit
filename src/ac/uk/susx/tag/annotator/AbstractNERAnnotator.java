@@ -13,6 +13,8 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
+import ac.uk.susx.tag.document.Sentence;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 import ac.uk.susx.tag.utils.AnnotationUtils;
 
@@ -41,13 +43,13 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 		return findNames(strToks,sentence);
 	}
 	
-	protected Class<? extends IAnnotatorFactory<String,String>> getTokeniser() {
-		return tokeniser;
-	}
-	
 	protected List<Annotation<String>> findNames(String[] tokens,Annotation<String> sentence) {
 		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
 		Span[] peopleSpans = nameFinder.find(tokens);
+		
+		if(peopleSpans == null || peopleSpans.length == 0) {
+			return annotations;
+		}
 		
 		for(Span span : peopleSpans){
 			StringAnnotation annotation = new StringAnnotation(buildAnnotation(Arrays.copyOfRange(tokens, span.getStart(), span.getEnd()),span.getType()), sentence.getStart() + span.getStart(), sentence.getStart() + span.getEnd());
@@ -76,6 +78,25 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@Override
+	public List<? extends Annotation<String>> annotate(final Sentence sentence) throws IncompatibleAnnotationException {
+		List<? extends Annotation<String>> tokens = null;
+		try {
+			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
+			if(tokens == null || tokens.isEmpty()) {
+				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
+			}
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		List<Annotation<String>> annos = findNames(strToks,sentence.getSentence());
+		sentence.addAnnotations(this.getClass(), annos);
+		return annos;
 	}
 
 	public boolean modelStarted() {

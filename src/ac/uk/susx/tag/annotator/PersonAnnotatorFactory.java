@@ -1,16 +1,8 @@
 package ac.uk.susx.tag.annotator;
 
-import java.util.List;
-
-import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
-import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
-import ac.uk.susx.tag.document.Sentence;
-import ac.uk.susx.tag.input.CommandLineOption;
-import ac.uk.susx.tag.utils.AnnotationUtils;
-import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
-import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 @AnnotatorFactory
 public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnnotatorFactory<String,String>{
@@ -33,28 +25,6 @@ public class PersonAnnotatorFactory extends AbstractNERAnnotator implements IAnn
 	@Override
 	public IAnnotator<String, String> create(String[] params) {
 		return create();
-	}
-
-	@Override
-	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<? extends Annotation<String>> tokens = null;
-		try {
-			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) getTokeniser());
-			if(tokens == null) {
-				tokens = AnnotatorRegistry.getAnnotator(getTokeniser()).annotate(sentence);
-			}
-		} catch (IllegalAnnotationStorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//List<IAnnotation<String>> annos = annotate(sentence.getSentence());
-		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
-		List<Annotation<String>> annos = findNames(strToks,sentence.getSentence());
-		sentence.addAnnotations(this.getClass(), annos);
-		return annos;
 	}
 
 	@Override

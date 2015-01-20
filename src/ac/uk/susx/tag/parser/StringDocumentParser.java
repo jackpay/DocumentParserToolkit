@@ -16,10 +16,10 @@ import java.util.concurrent.Callable;
 //import com.sleepycat.persist.EntityCursor;
 
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
-import ac.uk.susx.tag.annotator.TokenAnnotator;
+//import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
-import ac.uk.susx.tag.filter.CanonicaliseFilter;
+//import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
@@ -34,7 +34,7 @@ import ac.uk.susx.tag.processor.IProcessor;
  * The main calling class for using the parsing system. Acts as a container for all of the main objects of the system.
  * @author jp242
  */
-public class StringDocumentParser extends AbstractParser<String,String> {
+public class StringDocumentParser extends AbstractParser {
 	
 	private ConcurrentLineProcessor parser;
 //	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
@@ -66,8 +66,8 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		anns.add("CD");
 		anns.add("NNP");
 		anns.add("JJ");
-		String repl = "POOOOOOOPOOOOOO";
-		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
+//		String repl = "POOOOOOOPOOOOOO";
+//		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 		parser = new ConcurrentLineProcessor(config);
 //		indexer = new TFDFIndexer();
@@ -88,10 +88,12 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 		if(parser == null){
 			throw new IOException("Parser not initialised.");
 		}
-		
-		//ArrayList<File> files = FileUtils.getFiles(config.getInputLocation(), config.getInputSuff());
+
 		parser.processFiles(config.getInputLocation());
 		System.err.println("Finished all parsing.");
+		
+		return true;
+	}
 		
 //        System.err.println("Started pre-processing");
 //		ExecutorService es = Executors.newSingleThreadExecutor();
@@ -165,9 +167,6 @@ public class StringDocumentParser extends AbstractParser<String,String> {
 //		indexer.entityStore().close();
         //indexer.getUnigramIndexer().entityStore().close();
 //		DatabaseEnvironment.getInstance().close();
-		
-		return true;
-	}
 	
 	private class ProcessorCallable implements Callable<Void> {
 		

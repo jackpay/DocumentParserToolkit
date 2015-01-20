@@ -6,7 +6,7 @@ package ac.uk.susx.tag.indexing;
  * @author jp242
  *
  */
-public class OffsetIndexToken implements IIndexToken{
+public class OffsetIndexToken extends IndexToken{
 	
 	private final int startOffset; // Start position in document 
 	private final int endOffset; // End position in document

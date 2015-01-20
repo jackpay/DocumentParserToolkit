@@ -27,7 +27,6 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 	
 	public void processFiles(String filesDir){
 		final ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-//		final ExecutorService 
 		final ArrayList<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 		Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){

@@ -12,6 +12,7 @@ import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.annotation.StringAnnotation;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.indexing.PositionIndexToken;
+import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
 public class TokenAnnotator extends AbstractAnnotator<String,String>{
@@ -57,8 +58,12 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 	}
 
 	public List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		List<Annotation<String>> tokens = annotate(sentence.getSentence());
-		sentence.addAnnotations(this.getClass(), tokens);
-		return tokens;
+		sentence.addAnnotations(this.getClass(), annotate(sentence.getSentence()));
+		try {
+			return sentence.getSentenceAnnotations(this.getClass());
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

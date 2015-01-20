@@ -3,7 +3,7 @@ package ac.uk.susx.tag.annotation;
 import java.util.HashMap;
 
 import ac.uk.susx.tag.indexing.AnnotationIndexToken;
-import ac.uk.susx.tag.indexing.IIndexToken;
+import ac.uk.susx.tag.indexing.IndexToken;
 import ac.uk.susx.tag.indexing.OffsetIndexToken;
 
 
@@ -15,12 +15,12 @@ public abstract class Annotation<A>{
 	
 	private AnnotationIndexToken<A> annotation;
 	private final OffsetIndexToken offset;
-	private final HashMap<Class<? extends IIndexToken>, IIndexToken> index;
+	private final HashMap<Class<? extends IndexToken>, IndexToken> index;
 	
 	public Annotation(A annotation, int start, int end){
 		this.annotation = (annotation == null)? null : new AnnotationIndexToken<A>(annotation);
 		this.offset = new OffsetIndexToken(start,end);
-		this.index = new HashMap<Class<? extends IIndexToken>, IIndexToken>();
+		this.index = new HashMap<Class<? extends IndexToken>, IndexToken>();
 		index.put(this.annotation.getClass(), this.annotation);
 		index.put(this.offset.getClass(), this.offset);
 	}
@@ -45,11 +45,11 @@ public abstract class Annotation<A>{
 		return offset;
 	}
 	
-	public void addIndex(IIndexToken token) {
+	public void addIndex(IndexToken token) {
 		index.put(token.getClass(), token);
 	}
 	
-	public <IT extends IIndexToken> IT getIndex(Class<IT> indexClass) throws Exception {
+	public <IT extends IndexToken> IT getIndex(Class<IT> indexClass) throws Exception {
 		if(index.get(indexClass) != null){
 			if(!index.get(indexClass).getClass().equals(indexClass)){
 				throw new Exception("The class of the stored index token does not match the required class. Check how IIndexToken objects are added.");

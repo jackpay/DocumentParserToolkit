@@ -1,7 +1,6 @@
 package ac.uk.susx.tag.annotator.factory;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
-import ac.uk.susx.tag.input.CommandLineOption;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
 
 /**

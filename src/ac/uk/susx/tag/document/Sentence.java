@@ -21,13 +21,13 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
  * The class used to represent a single sentence. Stores and maintains and index of all tokens and annotations.
  * @author jp242
  */
-public final class Sentence {
+public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotation<?>>> {
 	
+	private static final long serialVersionUID = -2695404603211419648L;
 	private final Annotation<String> sentence;
 	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations;
 	private final HashMap<OffsetIndexToken, List<? extends Annotation<?>>> indexAnnotations;
 	private final OffsetIndexToken offset;
-	private final CharSequence docId;
 
 	/**
 	 * @param sentence The raw sentence string.
@@ -39,21 +39,6 @@ public final class Sentence {
 		indexAnnotations = Maps.newHashMap();
 		this.sentence = sentence;
 		this.offset = new OffsetIndexToken(start,end);
-		docId = null;
-	}
-	
-	/**
-	 * @param sentence The raw sentence string.
-	 * @param start The index of the sentence start point in the document.
-	 * @param end  The index of the sentence end point in the document.
-	 * @param docId The id of the document the senetence comes from.
-	 */
-	public Sentence(Annotation<String> sentence, int start, int end, CharSequence docId) {
-		annotations = Maps.newHashMap();
-		indexAnnotations = Maps.newHashMap();
-		this.sentence = sentence;
-		this.offset = new OffsetIndexToken(start,end);
-		this.docId = docId;
 	}
 	
 	/**
@@ -61,15 +46,7 @@ public final class Sentence {
 	 * @param annos The annotations to be indexed.
 	 */
 	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends Annotation<AT>> annos) {
-		List<Annotation<AT>> anns = (List<Annotation<AT>>) annotations.get(annotator);
-		if(anns == null){
-			annotations.put(annotator, new ArrayList<Annotation<AT>>());
-			anns = (List<Annotation<AT>>) annotations.get(annotator);
-			anns.addAll(annos);
-		}
-		else{
-			anns.addAll(annos);
-		}
+		annotations.put(annotator, annos);
 		try {
 			sortAnnotations(annotator);
 		} catch (IllegalAnnotationStorageException e) {
@@ -119,7 +96,9 @@ public final class Sentence {
 	 * @throws IllegalAnnotationStorageException
 	 */
 	public <AT> List<Annotation<AT>> getSentenceAnnotations(Class<? extends IAnnotator<AT,?>> class1) throws IllegalAnnotationStorageException {
-		System.out.println(class1.toString());
+		if(annotations.get(class1) == null) {
+			return null;
+		}
 		try{
 			return annotations.get(class1).getClass().cast(annotations.get(class1));
 		} catch (ClassCastException ex) {
@@ -229,13 +208,6 @@ public final class Sentence {
 	 */
 	public OffsetIndexToken getOffsetIndex() {
 		return offset;
-	}
-	
-	/**
-	 * @return The doc id this sentence comes from (if one exists).
-	 */
-	public CharSequence docReference() {
-		return docId;
 	}
 
 }

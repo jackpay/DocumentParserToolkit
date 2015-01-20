@@ -75,17 +75,14 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 		return postagger != null;
 	}
 
-	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public synchronized List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Annotation<String>> postagged = new ArrayList<Annotation<String>>();
 		try {
 			List<? extends Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
 			if(tokens == null) {
-				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence.getSentence());
+				tokens = AnnotatorRegistry.getAnnotator(tokeniser).annotate(sentence);
 			}
 			String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
-			if(strToks == null) {
-				System.out.println("Toks are null; " + sentence.getSentence().getAnnotation());
-			}
 			String[] strTags = postagger.tag(strToks);
 			for(int i = 0; i < strTags.length; i++) {
 				StringAnnotation annotation = new StringAnnotation(strTags[i], tokens.get(i).getStart(),tokens.get(i).getEnd());
@@ -94,11 +91,15 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 		} catch (IllegalAnnotationStorageException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		sentence.addAnnotations(this.getClass(), postagged);
-		return postagged;
+		try {
+			return sentence.getSentenceAnnotations(this.getClass());
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

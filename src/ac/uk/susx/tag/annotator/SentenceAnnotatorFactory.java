@@ -1,9 +1,9 @@
 package ac.uk.susx.tag.annotator;
 
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.document.Sentence;
-import ac.uk.susx.tag.input.CommandLineOption;
 
 @AnnotatorFactory
 public class SentenceAnnotatorFactory implements IAnnotatorFactory<Sentence,String> {

@@ -5,8 +5,10 @@ package ac.uk.susx.tag.indexing;
  * @author jp242
  *
  */
-public interface IIndexToken {
+public abstract class IndexToken {
 	
-	public boolean equals(Object obj);
+	public abstract boolean equals(Object obj);
+	
+	public abstract int hashCode();
 
 }

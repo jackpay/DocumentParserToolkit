@@ -18,12 +18,6 @@ import ac.uk.susx.tag.writer.OutputWriter;
 public interface IConfiguration {	
 	
 	/**
-	 * Add an annotator to the collection of annotators to use.
-	 * @param annotator
-	 */
-	public void addAnnotator(IAnnotator<?,?> annotator);
-	
-	/**
 	 * Add an annotator to the collection of annotators and specify if its annotations will be included in the output.
 	 * @param annotator
 	 * @param include

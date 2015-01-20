@@ -26,8 +26,7 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 	private final Class<? extends IAnnotatorFactory<String,String>> tokeniser;
 	private final Class<? extends IAnnotatorFactory<String,String>> postagger;
 	
-	public ChunkTagAnnotator(Class<? extends IAnnotatorFactory<String,String>> tokeniser,
-			Class<? extends IAnnotatorFactory<String,String>> postagger) {
+	public ChunkTagAnnotator(Class<? extends IAnnotatorFactory<String,String>> tokeniser, Class<? extends IAnnotatorFactory<String,String>> postagger) {
 		this.postagger = postagger;
 		this.tokeniser = tokeniser;
 	}
@@ -52,31 +51,15 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		return chunk(strToks,strTags,sentence);
 	}
 	
-	public void startModel() {
-		if(!modelStarted()){
-			try {
-				chunker = new ChunkerME(new ChunkerModel(this.getClass().getClassLoader().getResourceAsStream("enchunker.bin")));
-			} catch (InvalidFormatException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public boolean modelStarted() {
-		return chunker != null;
-	}
-	
-	private List<Annotation<String>> chunk(String[] toks, String[] pos, Annotation<String> sentence){
+	private synchronized List<Annotation<String>> chunk(final String[] toks, final String[] pos, final Annotation<String> sentence){
 		
 		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
-		String[] chunkTags = chunker.chunk(toks, pos);
+		final String[] chunkTags = chunker.chunk(toks, pos);
 		
 		int begin = 0;
 		for(int i = 0; i < chunkTags.length; i++){
-			Pattern pattern = Pattern.compile(Pattern.quote(toks[i]));
-			Matcher matcher = pattern.matcher(sentence.getAnnotation());
+			final Pattern pattern = Pattern.compile(Pattern.quote(toks[i]));
+			final Matcher matcher = pattern.matcher(sentence.getAnnotation());
 			matcher.find(begin);
 			String chunk = chunkTags[i].replace(INCHUNK, "");
 			chunk = chunk.replace(CHUNKSTART, "");
@@ -87,19 +70,19 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 		return annotations;
 	}
 
-	public List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
-		
-		ArrayList<Annotation<String>> annotations = new ArrayList<Annotation<String>>();
+	public synchronized List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		
 		List<? extends Annotation<String>> tokens = null;
 		List<? extends Annotation<String>> postags = null;
 		
 		try {
-			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) tokeniser);
-			postags = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) postagger);
+			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
+			postags = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
 		} catch (IllegalAnnotationStorageException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		if(tokens == null){
@@ -117,12 +100,32 @@ public final class ChunkTagAnnotator extends AbstractAnnotator<String,String>{
 			}
 		}
 		
-		String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
-		String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);	
-		List<Annotation<String>> annos = chunk(strToks,strTags,sentence.getSentence());
-		sentence.addAnnotations(this.getClass(), annos);
-		return annos;
-		
+		final String[] strToks = AnnotationUtils.annotationsToArray(tokens, new String[tokens.size()]);
+		final String[] strTags = AnnotationUtils.annotationsToArray(postags, new String[postags.size()]);	
+		sentence.addAnnotations(this.getClass(), chunk(strToks,strTags,sentence.getSentence()));
+		try {
+			return sentence.getSentenceAnnotations(this.getClass());
+		} catch (IllegalAnnotationStorageException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public void startModel() {
+		if(!modelStarted()){
+			try {
+				chunker = new ChunkerME(new ChunkerModel(this.getClass().getClassLoader().getResourceAsStream("enchunker.bin")));
+			} catch (InvalidFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean modelStarted() {
+		return chunker != null;
 	}
 
 }

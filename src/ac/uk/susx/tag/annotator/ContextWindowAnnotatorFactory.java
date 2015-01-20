@@ -1,8 +1,8 @@
 package ac.uk.susx.tag.annotator;
 
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
-import ac.uk.susx.tag.input.CommandLineOption;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
 
 @AnnotatorFactory
@@ -30,7 +30,12 @@ public class ContextWindowAnnotatorFactory implements IAnnotatorFactory<String,S
 			return new ContextWindowAnnotator(window);
 		}
 		catch(Exception e) {
-			throw new IllegalInputParamsException(this.getClass());
+			try{
+				return new ContextWindowAnnotator(DEFAULT_WINDOW);
+			}
+			catch(Exception e1) {
+				throw new IllegalInputParamsException(this.getClass());
+			}
 		}
 	}
 

@@ -2,8 +2,8 @@ package ac.uk.susx.tag.annotator;
 
 import uk.ac.susx.tag.dependencyparser.datastructures.Token;
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
-import ac.uk.susx.tag.input.CommandLineOption;
 import ac.uk.susx.tag.utils.IllegalInputParamsException;
 
 @AnnotatorFactory

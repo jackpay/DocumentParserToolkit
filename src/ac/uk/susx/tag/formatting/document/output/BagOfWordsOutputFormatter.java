@@ -3,6 +3,7 @@ package ac.uk.susx.tag.formatting.document.output;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import ac.uk.susx.tag.annotation.Annotation;
 import ac.uk.susx.tag.document.Document;

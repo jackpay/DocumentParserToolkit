@@ -10,9 +10,9 @@ import org.reflections.Reflections;
 import com.google.common.collect.Maps;
 
 import ac.uk.susx.tag.annotator.IAnnotator;
+import ac.uk.susx.tag.annotator.factory.CommandLineOption;
 import ac.uk.susx.tag.annotator.factory.IAnnotatorFactory;
 import ac.uk.susx.tag.annotator.factory.AnnotatorFactory;
-import ac.uk.susx.tag.input.CommandLineOption;
 
 public final class AnnotatorRegistry {
 	

@@ -79,10 +79,6 @@ public class StandardConfiguration implements IConfiguration {
 		return includedAnnotators;
 	}
 	
-	public void addAnnotator(IAnnotator<?,?> annotator){
-		annotators.add(annotator);
-	}
-	
 	public void addAnnotator(IAnnotator<?,?> annotator, boolean include){
 		annotators.add(annotator);
 		if(include){

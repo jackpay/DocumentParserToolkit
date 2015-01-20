@@ -25,14 +25,6 @@ public interface IAnnotator <AT,ACT> {
 	public Document annotate(Document doc) throws IncompatibleAnnotationException;
 	
 	/**
-	 * Annotate a list of exisiting annotations.
-	 * @param annotations The list of annotations to annotate
-	 * @return A list of newly created annotations corresponding to the annotated input list.
-	 * @throws IncompatibleAnnotationException
-	 */
-	public List<? extends Annotation<AT>> annotate(List<? extends Annotation<ACT>> annotations) throws IncompatibleAnnotationException;
-	
-	/**
 	 * Annotate a single SentenceAnnotation object
 	 * @param sentence The sentence to annotate
 	 * @return The list of newly created annotations
@@ -41,7 +33,7 @@ public interface IAnnotator <AT,ACT> {
 	public List<? extends Annotation<AT>> annotate(Sentence sentence) throws IncompatibleAnnotationException;
 	
 	/**
-	 * Annotate a single annotation
+	 * Annotate a single annotation.
 	 * @param annotation The Annotation
 	 * @return A list of Annotations born
 	 * @throws IncompatibleAnnotationException
