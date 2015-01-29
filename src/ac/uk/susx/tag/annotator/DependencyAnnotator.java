@@ -28,12 +28,12 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 	}
 
 	@Override
-	public synchronized List<? extends DepRelTokenAnnotation> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public synchronized List<Annotation<Token>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		if(!modelStarted()) {
 			startModel();
 		}
 		uk.ac.susx.tag.dependencyparser.datastructures.Sentence parserSent = new uk.ac.susx.tag.dependencyparser.datastructures.Sentence();
-		ArrayList<DepRelTokenAnnotation> annotations = new ArrayList<DepRelTokenAnnotation>();
+		List<Annotation<Token>> annotations = new ArrayList<Annotation<Token>>();
 		try {
 			List<Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());
 			List<Annotation<String>> pos = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(postagger).getClass());
@@ -64,7 +64,7 @@ public class DependencyAnnotator extends AbstractAnnotator<Token,String> {
 	/**
 	 * Needs to be a sentence.
 	 */
-	public List<? extends DepRelTokenAnnotation> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<Annotation<Token>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

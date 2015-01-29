@@ -42,5 +42,10 @@ public class PositionIndexToken extends IndexToken {
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "{pos=" + docPosition + "}";
+	}
 	
 }

@@ -52,7 +52,7 @@ public class PorterStemmerAnnotator extends AbstractAnnotator<String,String> {
 		return true;
 	}
 
-	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Annotation<String>> annos = annotate(sentence.getSentence());
 		sentence.addAnnotations(this.getClass(), annos);
 		return annos;

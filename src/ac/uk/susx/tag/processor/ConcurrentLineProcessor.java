@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -24,12 +25,16 @@ import ac.uk.susx.tag.writer.OutputWriter;
 public class ConcurrentLineProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 10;
+	private final String singDocName;
 	private final IConfiguration config;
 	private final ArrayBlockingQueue<Future<Document>> queue;
 	private boolean complete;
+	private boolean singleFile;
 	
-	public ConcurrentLineProcessor(IConfiguration config) {
+	public ConcurrentLineProcessor(IConfiguration config, boolean singleFile) {
+		this.singDocName = "output-file-" + ((new Date().getTime())/1000);
 		this.config = config;
+		this.singleFile = singleFile;
 		queue = new ArrayBlockingQueue<Future<Document>>(NTHREADS*2);
 	}
 
@@ -79,7 +84,13 @@ public class ConcurrentLineProcessor implements IProcessor {
 					while(currLine != null){
 						final String line = new String(currLine).trim();
 						if(line != null && line.length() > 0 && !line.isEmpty()) {
-							DocumentCallable docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line, next.getName()));
+							final DocumentCallable docCaller;
+							if(!singleFile) {
+								docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line, next.getName()));
+							}
+							else{ // Writes all output to one file.
+								docCaller = new DocumentCallable(config.getDocumentBuilder().createDocument(line, singDocName));
+							}
 							try {
 								queue.put(executor.submit(docCaller));
 							} catch(Exception e) {

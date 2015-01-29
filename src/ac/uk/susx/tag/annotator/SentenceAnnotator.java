@@ -32,7 +32,7 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 		return doc;
 	}
 	
-	public synchronized List<? extends Annotation<Sentence>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
+	public synchronized List<Annotation<Sentence>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		List<Annotation<Sentence>> annotations = new ArrayList<Annotation<Sentence>>();
 		Span[] sentPos = sentencetagger.sentPosDetect(annotation.getAnnotation());
 		int offset = 0;
@@ -63,7 +63,7 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 		return sentencetagger != null;
 	}
 
-	public List<? extends Annotation<Sentence>> annotate(Sentence sentence)
+	public List<Annotation<Sentence>> annotate(Sentence sentence)
 			throws IncompatibleAnnotationException {
 		return new ArrayList<Annotation<Sentence>>(Arrays.asList(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd())));
 	}

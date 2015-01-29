@@ -15,17 +15,23 @@ import java.util.concurrent.Callable;
 //import com.sleepycat.je.DatabaseException;
 //import com.sleepycat.persist.EntityCursor;
 
+
+
+
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 //import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
 //import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.formatting.document.input.MedlineAbstractDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.output.BagOfWordsOutputFormatter;
+import ac.uk.susx.tag.formatting.document.output.BybloOutputFormatter;
 import ac.uk.susx.tag.formatting.document.output.IOutputDocumentFormatter;
 import ac.uk.susx.tag.input.GrammaticalInputParser;
+import ac.uk.susx.tag.processor.ConcurrentDocumentProcessor;
 import ac.uk.susx.tag.processor.ConcurrentLineProcessor;
 import ac.uk.susx.tag.processor.IProcessor;
 //import ac.uk.susx.tag.utils.FileUtils;
@@ -36,7 +42,7 @@ import ac.uk.susx.tag.processor.IProcessor;
  */
 public class StringDocumentParser extends AbstractParser {
 	
-	private ConcurrentLineProcessor parser;
+	private ConcurrentDocumentProcessor parser;
 //	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
 	private IConfiguration config;
 //	private TFDFIndexer indexer;
@@ -57,9 +63,10 @@ public class StringDocumentParser extends AbstractParser {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-		IOutputDocumentFormatter outputFormatter = new BagOfWordsOutputFormatter();
+		IOutputDocumentFormatter outputFormatter = new BybloOutputFormatter();
 		config.setOutputFormatter(outputFormatter);
-		config.setDocumentBuilder(new StandardInputDocumentFormatter());
+		config.setDocumentBuilder(new  MedlineAbstractDocumentFormatter());
+//		config.setDocumentBuilder(new StandardInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
 		anns.add("DT");
 		anns.add("CC");
@@ -69,7 +76,7 @@ public class StringDocumentParser extends AbstractParser {
 //		String repl = "POOOOOOOPOOOOOO";
 //		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
 		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
-		parser = new ConcurrentLineProcessor(config);
+		parser = new ConcurrentDocumentProcessor(config, true);
 //		indexer = new TFDFIndexer();
 //		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
@@ -88,7 +95,7 @@ public class StringDocumentParser extends AbstractParser {
 		if(parser == null){
 			throw new IOException("Parser not initialised.");
 		}
-
+		
 		parser.processFiles(config.getInputLocation());
 		System.err.println("Finished all parsing.");
 		

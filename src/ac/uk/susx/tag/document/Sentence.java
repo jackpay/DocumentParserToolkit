@@ -26,7 +26,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	private static final long serialVersionUID = -2695404603211419648L;
 	private final Annotation<String> sentence;
 	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations;
-	private final HashMap<OffsetIndexToken, List<? extends Annotation<?>>> indexAnnotations;
+	private final HashMap<OffsetIndexToken, List<Annotation<?>>> indexAnnotations;
 	private final OffsetIndexToken offset;
 
 	/**
@@ -56,7 +56,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 		for(Annotation<AT> annotation : annos) {
 			try {
 				if(indexAnnotations.get(annotation.getOffset()) == null){
-					indexAnnotations.put(annotation.getOffset(), new ArrayList<Annotation<AT>>(Arrays.asList(annotation)));
+					indexAnnotations.put(annotation.getOffset(), new ArrayList<Annotation<?>>(Arrays.asList(annotation)));
 				}
 				else {
 					List<Annotation<?>> list = (List<Annotation<?>>) indexAnnotations.get(annotation.getOffset());
@@ -72,7 +72,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	 * @param index The index of the annotations required.
 	 * @return All annotations associated with the given index.
 	 */
-	public List<? extends Annotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
+	public List<Annotation<?>> getIndexedAnnotations(OffsetIndexToken index) {
 		return indexAnnotations.get(index);
 	}
 	
@@ -86,7 +86,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	/**
 	 * @return All indexed annotations contained in the Sentence.
 	 */
-	public Collection<List<? extends Annotation<?>>> getAllIndexedAnnotations() {
+	public Collection<List<Annotation<?>>> getAllIndexedAnnotations() {
 		return indexAnnotations.values();
 	}
 	

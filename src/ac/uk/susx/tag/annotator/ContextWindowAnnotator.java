@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.StringAnnotation;
+import ac.uk.susx.tag.annotation.AnnotationListAnnotation;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
+public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>>,String> {
 	
 	private final int windowSize;
 	private static final Class<TokenAnnotator> DEFAULT_ANNOTATOR = TokenAnnotator.class;
@@ -26,34 +26,41 @@ public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
 	}
 
 	@Override
-	public List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public List<Annotation<List<Annotation<?>>>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Class<IAnnotator<String,String>>> contextAnnos = (List<Class<IAnnotator<String, String>>>) ((annotators == null) ? Arrays.asList(DEFAULT_ANNOTATOR) : annotators);
 		for(Class<IAnnotator<String,String>> annotator : contextAnnos) {
 			try {
 				List<Annotation<String>> annos = sentence.getSentenceAnnotations(DEFAULT_ANNOTATOR);
 				for(int i = 0; i < annos.size(); i++){
-					sentence.addAnnotations(this.getClass(), getContextWindow(annos,i));
+					sentence.addAnnotations(this.getClass(), getContextWindow(annos, sentence, i));
 				}
 			} catch (IllegalAnnotationStorageException e) {
 				e.printStackTrace();
 			}
 		}
+		try {
+			return sentence.getSentenceAnnotations(this.getClass());
+		} catch (IllegalAnnotationStorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
-	private List<Annotation<String>> getContextWindow(List<Annotation<String>> annotations, int index) {
+	private List<AnnotationListAnnotation> getContextWindow(List<Annotation<String>> annotations, Sentence sentence, int index) {
 		int start = index-windowSize;
 		int end = index+(windowSize+1);
 
 		end = end > annotations.size() ?  annotations.size() : end;
 		start = start < 0 ? 0 : start;
 		
-		List<Annotation<String>> subList = annotations.subList(start, end);
-		Annotation<String> current = subList.remove((subList.size()/2));
-		List<Annotation<String>> window = new ArrayList<Annotation<String>>();
+		List<Annotation<String>> subList = new ArrayList<>(annotations.subList(start, end));
+		subList.remove(annotations.get(index));
+		List<AnnotationListAnnotation> window = new ArrayList<AnnotationListAnnotation>();
 		for(Annotation<String> anno : subList) {
-			StringAnnotation sa = new StringAnnotation(anno.getAnnotation(),current.getStart(),current.getEnd());
-			window.add(sa);
+			AnnotationListAnnotation ala = new AnnotationListAnnotation(sentence.getIndexedAnnotations(anno.getOffset()),annotations.get(index).getStart(), annotations.get(index).getEnd());
+			System.err.println(ala.toString());
+			window.add(ala);
 		}
 		return window;
 	}
@@ -65,7 +72,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<String,String> {
 	 * @return
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<? extends Annotation<String>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<Annotation<List<Annotation<?>>>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

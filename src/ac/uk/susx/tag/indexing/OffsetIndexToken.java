@@ -49,5 +49,10 @@ public class OffsetIndexToken extends IndexToken{
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "{" + startOffset + "," + endOffset + "}";
+	}
 	
 }

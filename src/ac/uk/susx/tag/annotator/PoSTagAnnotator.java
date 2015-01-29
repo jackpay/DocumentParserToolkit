@@ -75,7 +75,7 @@ public final class PoSTagAnnotator extends AbstractAnnotator<String,String> {
 		return postagger != null;
 	}
 
-	public synchronized List<? extends Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public synchronized List<Annotation<String>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Annotation<String>> postagged = new ArrayList<Annotation<String>>();
 		try {
 			List<? extends Annotation<String>> tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());

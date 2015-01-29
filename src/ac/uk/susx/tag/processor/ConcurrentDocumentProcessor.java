@@ -2,6 +2,7 @@ package ac.uk.susx.tag.processor;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -20,8 +21,12 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 	
 	private static final int NTHREADS = (Runtime.getRuntime().availableProcessors()) * 3;
 	private final IConfiguration config;
+	private final boolean singleFile;
+	private final String singDocName;
 	
-	public ConcurrentDocumentProcessor(IConfiguration config){
+	public ConcurrentDocumentProcessor(IConfiguration config, boolean singleFile){
+		this.singDocName = "output-file-" + ((new Date().getTime())/1000);
+		this.singleFile = singleFile;
 		this.config = config;
 	}
 	
@@ -31,7 +36,13 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 		Iterator<File> iter = FileUtils.iterateFiles(new File(filesDir), new String[] {config.getInputSuff()}, true);
 		while(iter.hasNext()){
 			Document doc = config.getDocumentBuilder().createDocument(iter.next());
-			Callable<Boolean> docCaller = new DocumentCallable(doc, iter.next().getName());
+			Callable<Boolean> docCaller;
+			if(singleFile == false) {
+				docCaller = new DocumentCallable(doc, iter.next().getName());
+			}
+			else{
+				docCaller = new DocumentCallable(doc, singDocName);
+			}
 			Future<Boolean> future = executor.submit(docCaller);
 			futures.add(future); // Only really there to allow return values in the future.
 		}
@@ -64,7 +75,7 @@ public class ConcurrentDocumentProcessor implements IProcessor {
 			}
 			document.retainDocumentAnnotations(config.getOutputIncludedAnnotators()); // Create subset of annotations to be present in the output.
 			document.filterDocumentAnnotations(config.getFilters()); // Remove the annotations specified by the filters.
-			config.getOutputFormatter().processDocument(new OutputWriter(config.getOutputLocation() + "/" + document.getName()), document);
+			config.getOutputFormatter().processDocument(new OutputWriter(config.getOutputLocation() + "/" + fileName), document);
 			System.err.println("Processed file: " + fileName);
 			return true;
 		}

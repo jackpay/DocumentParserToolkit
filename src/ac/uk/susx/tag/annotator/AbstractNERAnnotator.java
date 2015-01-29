@@ -81,7 +81,7 @@ public abstract class AbstractNERAnnotator extends AbstractAnnotator<String,Stri
 	}
 	
 	@Override
-	public List<? extends Annotation<String>> annotate(final Sentence sentence) throws IncompatibleAnnotationException {
+	public List<Annotation<String>> annotate(final Sentence sentence) throws IncompatibleAnnotationException {
 		List<? extends Annotation<String>> tokens = null;
 		try {
 			tokens = sentence.getSentenceAnnotations((Class<? extends IAnnotator<String, ?>>) AnnotatorRegistry.getAnnotator(tokeniser).getClass());

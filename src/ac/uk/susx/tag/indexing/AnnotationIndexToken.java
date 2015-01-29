@@ -54,4 +54,9 @@ public class AnnotationIndexToken <A> extends IndexToken {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return annotation.toString();
+	}
+
 }
