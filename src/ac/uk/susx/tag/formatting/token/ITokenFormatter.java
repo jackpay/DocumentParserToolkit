@@ -11,6 +11,6 @@ import ac.uk.susx.tag.annotation.Annotation;
  */
 public interface ITokenFormatter<A> {
 
-	public A createToken(Collection<? extends Annotation<?>> tokens);
+	public A createToken(Collection<Annotation<?>> tokens);
 	
 }

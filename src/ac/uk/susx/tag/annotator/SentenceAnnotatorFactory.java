@@ -12,7 +12,7 @@ public class SentenceAnnotatorFactory implements IAnnotatorFactory<Sentence,Stri
 	private static final String DESC = "A sentence annotator, which splits a given document by its discovered sentence bourndaries.";
 
 	public IAnnotator<Sentence,String> create() {
-		return new SentenceAnnotator();
+		return new SentenceAnnotator(true);
 	}
 
 	public CommandLineOption getCommandLineOption() {

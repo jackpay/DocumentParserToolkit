@@ -28,7 +28,8 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 		String docStr = annotation.getAnnotation();
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
-			StringAnnotation token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
+			StringAnnotation token;
+			token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
 			token.addIndex(new PositionIndexToken(i));
 			annotations.add(token);
 		}

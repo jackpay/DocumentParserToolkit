@@ -26,7 +26,7 @@ public class BagOfWordsOutputFormatter implements IOutputDocumentFormatter {
 		StandardTokenFormatter tokenMaker = new StandardTokenFormatter();
 		for(Sentence sent : document) {
 			Collection<List<Annotation<?>>> groupedAnnotations = sent.getAllIndexedAnnotations();
-			for(List<? extends Annotation<?>> annotations : groupedAnnotations){
+			for(List<Annotation<?>> annotations : groupedAnnotations){
 				CharSequence token = tokenMaker.createToken(annotations);
 				try {
 					writer.write(new StringBuilder().append(token).append(TOKEN_DELIM).toString());

@@ -11,6 +11,7 @@ public class TokenAnnotatorFactory implements IAnnotatorFactory<String,String>{
 	private static final String DESC = "A tokeniser which splits a given text into the individual tokens.";
 
 	public IAnnotator<String,String> create() {
+		
 		return new TokenAnnotator();
 	}
 

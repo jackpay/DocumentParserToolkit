@@ -59,7 +59,6 @@ public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>
 		List<AnnotationListAnnotation> window = new ArrayList<AnnotationListAnnotation>();
 		for(Annotation<String> anno : subList) {
 			AnnotationListAnnotation ala = new AnnotationListAnnotation(sentence.getIndexedAnnotations(anno.getOffset()),annotations.get(index).getStart(), annotations.get(index).getEnd());
-			System.err.println(ala.toString());
 			window.add(ala);
 		}
 		return window;

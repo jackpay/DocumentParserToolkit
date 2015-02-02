@@ -18,12 +18,20 @@ import java.util.concurrent.Callable;
 
 
 
+
+
+
+
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
+import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
+import ac.uk.susx.tag.filter.PunctuationFilter;
+import ac.uk.susx.tag.filter.RegexFilter;
 //import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.filter.StopWordFilter;
 import ac.uk.susx.tag.formatting.document.input.MedlineAbstractDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
@@ -71,11 +79,11 @@ public class StringDocumentParser extends AbstractParser {
 		anns.add("DT");
 		anns.add("CC");
 		anns.add("CD");
-		anns.add("NNP");
-		anns.add("JJ");
 //		String repl = "POOOOOOOPOOOOOO";
 //		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
-		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
+		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
+		config.addFilter(new StopWordFilter(TokenAnnotator.class));
+		config.addFilter(new RegexFilter(".*[a-zA-Z]+.*",TokenAnnotator.class,false));
 		parser = new ConcurrentDocumentProcessor(config, true);
 //		indexer = new TFDFIndexer();
 //		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());

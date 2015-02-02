@@ -20,6 +20,15 @@ import opennlp.tools.util.Span;
 public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 
 	private SentenceDetectorME sentencetagger;
+	private final boolean lowerCase;
+	
+	public SentenceAnnotator() {
+		lowerCase = false;
+	}
+	
+	public SentenceAnnotator(boolean lower) {
+		this.lowerCase = lower;
+	}
 	
 	public Document annotate(Document doc) throws IncompatibleAnnotationException {
 		CharSequence docStr = doc.getDocument();
@@ -39,7 +48,13 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 		for(int i = 0; i < sentPos.length; i++){
 			int startOffset = sentPos[i].getStart() + offset;
 			int endOffset = sentPos[i].getEnd() + offset;
-			Sentence sentence = new Sentence(new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),startOffset,endOffset),startOffset,endOffset);
+			Sentence sentence;
+			if(lowerCase) {
+				sentence = new Sentence(new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()).toLowerCase(),startOffset,endOffset),startOffset,endOffset);
+			}
+			else {
+				sentence = new Sentence(new StringAnnotation(annotation.getAnnotation().substring(sentPos[i].getStart(),sentPos[i].getEnd()),startOffset,endOffset),startOffset,endOffset);
+			}
 			sentence.getSentence().addIndex(new PositionIndexToken(i));
 			annotations.add(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd()));
 			offset = sentPos[i].getEnd();
@@ -63,8 +78,7 @@ public class SentenceAnnotator extends AbstractAnnotator <Sentence,String>{
 		return sentencetagger != null;
 	}
 
-	public List<Annotation<Sentence>> annotate(Sentence sentence)
-			throws IncompatibleAnnotationException {
+	public List<Annotation<Sentence>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		return new ArrayList<Annotation<Sentence>>(Arrays.asList(new SentenceAnnotation(sentence,sentence.getSentence().getStart(),sentence.getSentence().getEnd())));
 	}
 	

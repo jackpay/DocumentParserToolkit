@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import ac.uk.susx.tag.annotation.Annotation;
+import ac.uk.susx.tag.annotation.AnnotationListAnnotation;
 
 public class StandardTokenFormatter implements ITokenFormatter<CharSequence>{
 	
@@ -20,9 +21,9 @@ public class StandardTokenFormatter implements ITokenFormatter<CharSequence>{
 	/**
 	 * Used to create a token assuming there is no empty annotations contained within the input collection.
 	 */
-	public CharSequence createToken(Collection<? extends Annotation<?>> tokens) {
+	public CharSequence createToken(Collection<Annotation<?>> tokens) {
 		StringBuilder sb = new StringBuilder();
-		Iterator<? extends Annotation<?>> iter = tokens.iterator();
+		Iterator<Annotation<?>> iter = tokens.iterator();
 		for(int i = 0; i < tokens.size(); i++){
 			Annotation<?> token = iter.next();
 			sb.append(token.toString());

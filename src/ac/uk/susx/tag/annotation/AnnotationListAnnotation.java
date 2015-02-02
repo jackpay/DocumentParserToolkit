@@ -11,7 +11,7 @@ public class AnnotationListAnnotation extends Annotation<List<Annotation<?>>>{
 
 	public AnnotationListAnnotation(List<Annotation<?>> annotation, int start,int end) {
 		super(annotation, start, end);
-		this.DELIM = "_";
+		this.DELIM = "/";
 		tokenMaker = new StandardTokenFormatter("/");
 	}
 	
@@ -23,10 +23,13 @@ public class AnnotationListAnnotation extends Annotation<List<Annotation<?>>>{
 
 	@Override
 	public String toString() {
-		for(Annotation<?> ann : this.getAnnotation()) {
-			System.out.println(ann.getAnnotation().toString());
+		final StringBuilder sb = new StringBuilder();
+		for(Annotation<?> an : this.getAnnotation()) {
+			if(!(an instanceof AnnotationListAnnotation)) {
+				sb.append(an.toString() + DELIM);
+			}
 		}
-		return tokenMaker.createToken(this.getAnnotation()).toString();
+		return sb.toString();
 	}
 
 }
