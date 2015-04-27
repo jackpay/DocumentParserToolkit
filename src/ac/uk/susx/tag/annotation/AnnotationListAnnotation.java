@@ -29,7 +29,7 @@ public class AnnotationListAnnotation extends Annotation<List<Annotation<?>>>{
 				sb.append(an.toString() + DELIM);
 			}
 		}
-		return sb.toString();
+		return sb.substring(0, sb.length()-2);
 	}
 
 }

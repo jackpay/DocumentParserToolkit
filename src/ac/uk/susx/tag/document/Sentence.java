@@ -209,5 +209,9 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	public OffsetIndexToken getOffsetIndex() {
 		return offset;
 	}
+	
+	public String toString() {
+		return sentence.getAnnotation();
+	}
 
 }

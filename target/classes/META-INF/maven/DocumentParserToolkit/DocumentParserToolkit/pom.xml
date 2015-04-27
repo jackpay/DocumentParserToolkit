@@ -49,6 +49,11 @@
   		<version>1.30</version>
 	  </dependency>
 	  <dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.0</version>
+	  </dependency>
+	  <dependency>
   		<groupId>org.apache.opennlp</groupId>
   		<artifactId>opennlp-tools</artifactId>
   		<version>1.5.3</version>

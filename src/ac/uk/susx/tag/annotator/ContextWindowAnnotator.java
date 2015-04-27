@@ -5,12 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.AnnotationListAnnotation;
+import ac.uk.susx.tag.annotation.SentenceOffsetPairAnnotation;
 import ac.uk.susx.tag.document.Sentence;
+import ac.uk.susx.tag.indexing.OffsetIndexToken;
 import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 
-public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>>,String> {
+import org.apache.commons.lang3.tuple.Pair;
+
+public class ContextWindowAnnotator extends AbstractAnnotator<Pair<Sentence,OffsetIndexToken>,String> {
 	
 	private final int windowSize;
 	private static final Class<TokenAnnotator> DEFAULT_ANNOTATOR = TokenAnnotator.class;
@@ -26,7 +29,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>
 	}
 
 	@Override
-	public List<Annotation<List<Annotation<?>>>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
+	public List<Annotation<Pair<Sentence, OffsetIndexToken>>> annotate(Sentence sentence) throws IncompatibleAnnotationException {
 		List<Class<IAnnotator<String,String>>> contextAnnos = (List<Class<IAnnotator<String, String>>>) ((annotators == null) ? Arrays.asList(DEFAULT_ANNOTATOR) : annotators);
 		for(Class<IAnnotator<String,String>> annotator : contextAnnos) {
 			try {
@@ -47,7 +50,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>
 		return null;
 	}
 	
-	private List<AnnotationListAnnotation> getContextWindow(List<Annotation<String>> annotations, Sentence sentence, int index) {
+	private List<SentenceOffsetPairAnnotation> getContextWindow(List<Annotation<String>> annotations, Sentence sentence, int index) {
 		int start = index-windowSize;
 		int end = index+(windowSize+1);
 
@@ -56,10 +59,11 @@ public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>
 		
 		List<Annotation<String>> subList = new ArrayList<>(annotations.subList(start, end));
 		subList.remove(annotations.get(index));
-		List<AnnotationListAnnotation> window = new ArrayList<AnnotationListAnnotation>();
+		List<SentenceOffsetPairAnnotation> window = new ArrayList<SentenceOffsetPairAnnotation>();
 		for(Annotation<String> anno : subList) {
-			AnnotationListAnnotation ala = new AnnotationListAnnotation(sentence.getIndexedAnnotations(anno.getOffset()),annotations.get(index).getStart(), annotations.get(index).getEnd());
-			window.add(ala);
+			window.add(new SentenceOffsetPairAnnotation(Pair.of(sentence, anno.getOffset()), annotations.get(index).getStart(),annotations.get(index).getEnd()));
+//			AnnotationListAnnotation ala = new AnnotationListAnnotation(sentence.getIndexedAnnotations(anno.getOffset()),annotations.get(index).getStart(), annotations.get(index).getEnd());
+//			window.add(ala);
 		}
 		return window;
 	}
@@ -71,7 +75,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<List<Annotation<?>
 	 * @return
 	 * @throws IncompatibleAnnotationException
 	 */
-	public List<Annotation<List<Annotation<?>>>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
+	public List<Annotation<Pair<Sentence, OffsetIndexToken>>> annotate(Annotation<String> annotation) throws IncompatibleAnnotationException {
 		return null;
 	}
 

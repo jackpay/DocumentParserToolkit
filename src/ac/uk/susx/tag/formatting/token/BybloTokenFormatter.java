@@ -3,7 +3,7 @@ package ac.uk.susx.tag.formatting.token;
 import java.util.Collection;
 
 import ac.uk.susx.tag.annotation.Annotation;
-import ac.uk.susx.tag.annotation.AnnotationListAnnotation;
+import ac.uk.susx.tag.annotation.SentenceOffsetPairAnnotation;
 
 public class BybloTokenFormatter implements ITokenFormatter<CharSequence> {
 	
@@ -11,17 +11,19 @@ public class BybloTokenFormatter implements ITokenFormatter<CharSequence> {
 	private static final CharSequence CON = "/";
 
 	@Override
-	public CharSequence createToken(Collection<Annotation<?>> tokens) {
+	public String createToken(Collection<Annotation<?>> tokens) {
 		final StringBuilder sb = new StringBuilder();
 		for(Annotation<?> a : tokens) {
-			if(a instanceof AnnotationListAnnotation){
-				sb.append(DELIM).append(a.toString());
+			if(a instanceof SentenceOffsetPairAnnotation){
+				if(a.toString().length() > 0 && a.toString() != null){
+					sb.append(DELIM).append(a.toString());
+				}
 			}
 			else{
-				sb.append(a.toString()).append(CON);
+				sb.append(CON).append(a.toString());
 			}
 		}
-		return sb.toString();
+		return sb.substring(1, sb.length());
 	}
 
 }

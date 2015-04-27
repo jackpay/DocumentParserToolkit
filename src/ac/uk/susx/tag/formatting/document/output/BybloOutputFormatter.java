@@ -9,7 +9,6 @@ import ac.uk.susx.tag.annotator.TokenAnnotator;
 import ac.uk.susx.tag.document.Document;
 import ac.uk.susx.tag.document.Sentence;
 import ac.uk.susx.tag.formatting.token.BybloTokenFormatter;
-import ac.uk.susx.tag.formatting.token.StandardTokenFormatter;
 import ac.uk.susx.tag.writer.OutputWriter;
 
 public class BybloOutputFormatter implements IOutputDocumentFormatter {
@@ -23,11 +22,13 @@ public class BybloOutputFormatter implements IOutputDocumentFormatter {
 		for(Sentence sent : document) {
 			Collection<List<Annotation<?>>> groupedAnnotations = sent.getAllIndexedAnnotations();
 			for(List<Annotation<?>> annotations : groupedAnnotations){
-				CharSequence token = tokenMaker.createToken(annotations);
-				try {
-					writer.write(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
-				} catch (IOException e) {
-					e.printStackTrace();
+				String token = tokenMaker.createToken(annotations);
+				if(token.contains("\t")){
+					try {
+						writer.write(new StringBuilder().append(token).append(TOKEN_DELIM).toString());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

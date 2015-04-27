@@ -22,6 +22,8 @@ import java.util.concurrent.Callable;
 
 
 
+
+
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.TokenAnnotator;
@@ -31,7 +33,9 @@ import ac.uk.susx.tag.filter.PunctuationFilter;
 import ac.uk.susx.tag.filter.RegexFilter;
 //import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
+import ac.uk.susx.tag.filter.RetainAnnotationFilter;
 import ac.uk.susx.tag.filter.StopWordFilter;
+import ac.uk.susx.tag.filter.VerbAndLeftNounFilter;
 import ac.uk.susx.tag.formatting.document.input.MedlineAbstractDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
@@ -50,8 +54,9 @@ import ac.uk.susx.tag.processor.IProcessor;
  */
 public class StringDocumentParser extends AbstractParser {
 	
-	private ConcurrentDocumentProcessor parser;
+//	private ConcurrentDocumentProcessor parser;
 //	private ConcurrentLinePreProcessor<IAnnotation<String>, DocumentFreqUnigramEntity> preparser;
+	private ConcurrentLineProcessor parser;
 	private IConfiguration config;
 //	private TFDFIndexer indexer;
 
@@ -71,20 +76,38 @@ public class StringDocumentParser extends AbstractParser {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
+//		IOutputDocumentFormatter outputFormatter = new BagOfWordsOutputFormatter();
 		IOutputDocumentFormatter outputFormatter = new BybloOutputFormatter();
 		config.setOutputFormatter(outputFormatter);
 		config.setDocumentBuilder(new  MedlineAbstractDocumentFormatter());
 //		config.setDocumentBuilder(new StandardInputDocumentFormatter());
 		ArrayList<String> anns = new ArrayList<String>();
-		anns.add("DT");
-		anns.add("CC");
-		anns.add("CD");
+//		anns.add("DT"); //Remove all tokens with this pos tag
+//		anns.add("CC");
+//		anns.add("CD");
+//		anns.add("POS");
+		
+		
+		anns.add("NN"); // Retain all nouns and verbs.	
+		anns.add("NNS");
+		anns.add("NNP");
+		anns.add("NNPS");
+		anns.add("VB");
+		anns.add("VBZ");
+		anns.add("VBP");
+		anns.add("VBD");
+		anns.add("VBN");
+		anns.add("VBG");
+
+
 //		String repl = "POOOOOOOPOOOOOO";
 //		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
-		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, false));
+		config.addFilter(new RetainAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
+//		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 		config.addFilter(new StopWordFilter(TokenAnnotator.class));
 		config.addFilter(new RegexFilter(".*[a-zA-Z]+.*",TokenAnnotator.class,false));
-		parser = new ConcurrentDocumentProcessor(config, true);
+		config.addFilter(new VerbAndLeftNounFilter());
+		parser = new ConcurrentLineProcessor(config, true);
 //		indexer = new TFDFIndexer();
 //		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
