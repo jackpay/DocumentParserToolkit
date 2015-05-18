@@ -21,7 +21,7 @@ public class CanonicaliseFilter<AT> implements IFilter<AT> {
 	}
 
 	@Override
-	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> list) {
+	public List<Annotation<AT>> filterList(List<Annotation<AT>> list) {
 		for(Annotation<AT> anno : list) {
 			if(Pattern.matches(pattern, anno.toString())){
 				anno.setAnnotation(swapToken);

@@ -24,18 +24,19 @@ import java.util.concurrent.Callable;
 
 
 
+
 import ac.uk.susx.tag.annotator.PoSTagAnnotator;
 import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.TokenAnnotator;
 //import ac.uk.susx.tag.annotator.registry.AnnotatorRegistry;
 import ac.uk.susx.tag.configuration.IConfiguration;
+import ac.uk.susx.tag.filter.CollocationFilter;
 import ac.uk.susx.tag.filter.PunctuationFilter;
 import ac.uk.susx.tag.filter.RegexFilter;
 //import ac.uk.susx.tag.filter.CanonicaliseFilter;
 import ac.uk.susx.tag.filter.RemoveAnnotationFilter;
 import ac.uk.susx.tag.filter.RetainAnnotationFilter;
 import ac.uk.susx.tag.filter.StopWordFilter;
-import ac.uk.susx.tag.filter.VerbAndLeftNounFilter;
 import ac.uk.susx.tag.formatting.document.input.MedlineAbstractDocumentFormatter;
 import ac.uk.susx.tag.formatting.document.input.StandardInputDocumentFormatter;
 //import ac.uk.susx.tag.formatting.document.input.HTMLStripperDocumentFormatter;
@@ -76,8 +77,8 @@ public class StringDocumentParser extends AbstractParser {
 	public void init(String[] args) {
 		GrammaticalInputParser gip = new GrammaticalInputParser();
 		config = gip.parseInputParameters(args);
-//		IOutputDocumentFormatter outputFormatter = new BagOfWordsOutputFormatter();
-		IOutputDocumentFormatter outputFormatter = new BybloOutputFormatter();
+		IOutputDocumentFormatter outputFormatter = new BagOfWordsOutputFormatter();
+//		IOutputDocumentFormatter outputFormatter = new BybloOutputFormatter();
 		config.setOutputFormatter(outputFormatter);
 		config.setDocumentBuilder(new  MedlineAbstractDocumentFormatter());
 //		config.setDocumentBuilder(new StandardInputDocumentFormatter());
@@ -102,12 +103,14 @@ public class StringDocumentParser extends AbstractParser {
 
 //		String repl = "POOOOOOOPOOOOOO";
 //		config.addFilter(new CanonicaliseFilter<String>(repl,"DICTIONARY",TokenAnnotator.class));
-		config.addFilter(new RetainAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
+//		config.addFilter(new RetainAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 //		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
+		String loc = "/Volumes/BackupHD/Phd-LDA/Experiment-1/PMI-Ouput/pmiScores.txt";
+//		config.addFilter(new CollocationFilter(loc,TokenAnnotator.class));
 		config.addFilter(new StopWordFilter(TokenAnnotator.class));
-		config.addFilter(new RegexFilter(".*[a-zA-Z]+.*",TokenAnnotator.class,false));
-		config.addFilter(new VerbAndLeftNounFilter());
-		parser = new ConcurrentLineProcessor(config, true);
+		config.addFilter(new RegexFilter(".*[a-zA-Z]+.*",TokenAnnotator.class));
+//		config.addFilter(new VerbAndLeftNounFilter());
+		parser = new ConcurrentLineProcessor(config, false);
 //		indexer = new TFDFIndexer();
 //		preparser = new ConcurrentLinePreProcessor<IAnnotation<String>,DocumentFreqUnigramEntity>(indexer, new DocFreqUnigramJobFactory());
 	}
@@ -132,79 +135,6 @@ public class StringDocumentParser extends AbstractParser {
 		
 		return true;
 	}
-		
-//        System.err.println("Started pre-processing");
-//		ExecutorService es = Executors.newSingleThreadExecutor();
-//        ProcessorCallable pc = new ProcessorCallable(preparser,files);
-//		es.submit(pc);
-//		try {
-//			es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-//		} catch (InterruptedException e2) {
-//			e2.printStackTrace();
-//		}
-////        try {
-////            int freq = 0;
-////            EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
-////            for(UnigramEntity entity : ec){
-////                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
-////                freq += entity.getFrequency();
-////            }
-////            ec.close();
-////        } catch (DatabaseException e) {
-////            // TODO Auto-generated catch block
-////            e.printStackTrace();
-////        }
-//		System.err.println("Finished pre-processing");
-//		FrequencyAnnotator anno = null;
-//		try {
-//			anno = (FrequencyAnnotator) AnnotatorRegistry.getAnnotator(FrequencyAnnotatorFactory.class);
-//		} catch (Exception e1) {
-//			e1.printStackTrace();
-//		}
-//		ExecutorService pr = Executors.newSingleThreadExecutor();
-//		pr.submit(new ProcessorCallable(parser, files));
-//		pr.shutdown();
-//		try {
-//			pr.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
-//		} catch (InterruptedException e2) {
-//			e2.printStackTrace();
-//		}
-//		try {
-//			System.err.println(preparser.getDocumentIndex().getIdIndex().get(3));
-//		} catch (DatabaseException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		for(String token : indexer.getFailed().keySet()) {
-//			try {
-//				System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getFailed().get(token));
-//				System.err.println(preparser.getDocumentIndex().getIdIndex().get(indexer.getFailed().get(token)).name());
-//			} catch (DatabaseException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		int freq = 0;
-//		try {
-//			EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
-//			for(UnigramEntity entity : ec){
-//                System.err.println(entity.getUnigram() + " " + entity.getFrequency());
-//				freq += entity.getFrequency();
-//			}
-//			ec.close();
-//		} catch (DatabaseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		try {
-//			System.out.println("SumFreq: " + freq + " Freq: " + indexer.getIndex().g.get("and").getFrequency());
-//		} catch (DatabaseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		preparser.getDocumentIndex().entityStore().close();
-//		indexer.entityStore().close();
-        //indexer.getUnigramIndexer().entityStore().close();
-//		DatabaseEnvironment.getInstance().close();
 	
 	private class ProcessorCallable implements Callable<Void> {
 		
@@ -221,6 +151,79 @@ public class StringDocumentParser extends AbstractParser {
 			processor.processFiles(filesDir);
 			return null;
 		}
-		
 	}
+	
+//	NONSENSE LEFT OVER FROM FAILED DATABASE INTEGRATION.....
+//  System.err.println("Started pre-processing");
+//	ExecutorService es = Executors.newSingleThreadExecutor();
+//  ProcessorCallable pc = new ProcessorCallable(preparser,files);
+//	es.submit(pc);
+//	try {
+//		es.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+//	} catch (InterruptedException e2) {
+//		e2.printStackTrace();
+//	}
+////  try {
+////      int freq = 0;
+////      EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
+////      for(UnigramEntity entity : ec){
+////          System.err.println(entity.getUnigram() + " " + entity.getFrequency());
+////          freq += entity.getFrequency();
+////      }
+////      ec.close();
+////  } catch (DatabaseException e) {
+////      // TODO Auto-generated catch block
+////      e.printStackTrace();
+////  }
+//	System.err.println("Finished pre-processing");
+//	FrequencyAnnotator anno = null;
+//	try {
+//		anno = (FrequencyAnnotator) AnnotatorRegistry.getAnnotator(FrequencyAnnotatorFactory.class);
+//	} catch (Exception e1) {
+//		e1.printStackTrace();
+//	}
+//	ExecutorService pr = Executors.newSingleThreadExecutor();
+//	pr.submit(new ProcessorCallable(parser, files));
+//	pr.shutdown();
+//	try {
+//		pr.awaitTermination(Long.MAX_VALUE, TimeUnit.HOURS);
+//	} catch (InterruptedException e2) {
+//		e2.printStackTrace();
+//	}
+//	try {
+//		System.err.println(preparser.getDocumentIndex().getIdIndex().get(3));
+//	} catch (DatabaseException e) {
+//		e.printStackTrace();
+//	}
+//	
+//	for(String token : indexer.getFailed().keySet()) {
+//		try {
+//			System.err.println("AVERTED token: " + token + " id: " + indexer.getFailed().get(token) + " freq: " + indexer.getFailed().get(token));
+//			System.err.println(preparser.getDocumentIndex().getIdIndex().get(indexer.getFailed().get(token)).name());
+//		} catch (DatabaseException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	int freq = 0;
+//	try {
+//		EntityCursor<UnigramEntity> ec = indexer.getUnigramIndexer().getIndex().entities();
+//		for(UnigramEntity entity : ec){
+//          System.err.println(entity.getUnigram() + " " + entity.getFrequency());
+//			freq += entity.getFrequency();
+//		}
+//		ec.close();
+//	} catch (DatabaseException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	try {
+//		System.out.println("SumFreq: " + freq + " Freq: " + indexer.getIndex().g.get("and").getFrequency());
+//	} catch (DatabaseException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	preparser.getDocumentIndex().entityStore().close();
+//	indexer.entityStore().close();
+  //indexer.getUnigramIndexer().entityStore().close();
+//	DatabaseEnvironment.getInstance().close();
 }

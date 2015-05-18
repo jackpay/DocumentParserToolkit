@@ -50,7 +50,7 @@ public class ContextWindowAnnotator extends AbstractAnnotator<Pair<Sentence,Offs
 		return null;
 	}
 	
-	private List<SentenceOffsetPairAnnotation> getContextWindow(List<Annotation<String>> annotations, Sentence sentence, int index) {
+	private List<Annotation<Pair<Sentence,OffsetIndexToken>>> getContextWindow(List<Annotation<String>> annotations, Sentence sentence, int index) {
 		int start = index-windowSize;
 		int end = index+(windowSize+1);
 
@@ -59,11 +59,9 @@ public class ContextWindowAnnotator extends AbstractAnnotator<Pair<Sentence,Offs
 		
 		List<Annotation<String>> subList = new ArrayList<>(annotations.subList(start, end));
 		subList.remove(annotations.get(index));
-		List<SentenceOffsetPairAnnotation> window = new ArrayList<SentenceOffsetPairAnnotation>();
+		List<Annotation<Pair<Sentence, OffsetIndexToken>>> window = new ArrayList<Annotation<Pair<Sentence, OffsetIndexToken>>>();
 		for(Annotation<String> anno : subList) {
 			window.add(new SentenceOffsetPairAnnotation(Pair.of(sentence, anno.getOffset()), annotations.get(index).getStart(),annotations.get(index).getEnd()));
-//			AnnotationListAnnotation ala = new AnnotationListAnnotation(sentence.getIndexedAnnotations(anno.getOffset()),annotations.get(index).getStart(), annotations.get(index).getEnd());
-//			window.add(ala);
 		}
 		return window;
 	}

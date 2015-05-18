@@ -9,12 +9,12 @@ import ac.uk.susx.tag.annotator.IAnnotator;
 
 public class RegexFilter extends AbstractAnnotationFilter<String>{
 
-	public RegexFilter(List<String> filterAnnotations,Class<? extends IAnnotator<String,?>> annotator, boolean remove) {
-		super(filterAnnotations, annotator, true,remove);
+	public RegexFilter(List<String> filterAnnotations,Class<? extends IAnnotator<String,?>> annotator) {
+		super(filterAnnotations, annotator, true,true);
 	}
 
-	public RegexFilter(String pattern, Class<? extends IAnnotator<String,?>> annotator, boolean remove) {
-		super(pattern, annotator,true, remove);
+	public RegexFilter(String pattern, Class<? extends IAnnotator<String,?>> annotator) {
+		super(pattern, annotator,true, true);
 	}
 
 	public boolean matchAnnotation(Annotation<String> annotation){
@@ -22,10 +22,10 @@ public class RegexFilter extends AbstractAnnotationFilter<String>{
 			Pattern patt = Pattern.compile(fAnn);
 			Matcher matcher = patt.matcher(annotation.getAnnotation());
 			if(matcher.matches()){
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 }

@@ -18,6 +18,7 @@ import ac.uk.susx.tag.utils.IncompatibleAnnotationException;
 public class TokenAnnotator extends AbstractAnnotator<String,String>{
 	
 	private TokenizerME tokeniser;
+	private boolean lower = true;
 	
 	/**
 	 * Creates token annotations for a single annotation. Applying a document position annotation for each token in order. 
@@ -29,11 +30,20 @@ public class TokenAnnotator extends AbstractAnnotator<String,String>{
 		Span[] tokenSpans = tokeniser.tokenizePos(docStr);
 		for(int i = 0; i < tokenSpans.length; i++){
 			StringAnnotation token;
-			token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
+			if(lower) {
+				token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()).toLowerCase(), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
+			}
+			else{
+				token = new StringAnnotation(docStr.substring(tokenSpans[i].getStart(),tokenSpans[i].getEnd()), tokenSpans[i].getStart() + annotation.getStart(), tokenSpans[i].getEnd() + annotation.getStart());
+			}
 			token.addIndex(new PositionIndexToken(i));
 			annotations.add(token);
 		}
 		return annotations;
+	}
+	
+	public void setLower(boolean lower) {
+		this.lower = lower;
 	}
 	
 	/**

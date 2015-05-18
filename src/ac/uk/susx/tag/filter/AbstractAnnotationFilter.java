@@ -37,7 +37,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		filterAnnotations.add(annotation);
 	}
 	
-	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> annotations) {
+	public List<Annotation<AT>> filterList(List<Annotation<AT>> annotations) {
 		Iterator<? extends Annotation<AT>> iter = annotations.iterator();
 		while(iter.hasNext()){
 			Annotation<AT> anno = iter.next();
@@ -59,7 +59,7 @@ public abstract class AbstractAnnotationFilter<AT>  implements IFilter<AT>{
 		}
 		if(!remAllTok){
 			try {
-				sentence.addAnnotations(annotator, filterList((List<Annotation<AT>>) sentence.getSentenceAnnotations(annotator)));
+				filterList((List<Annotation<AT>>) sentence.getSentenceAnnotations(annotator));
 			} catch (IllegalAnnotationStorageException e) {
 				e.printStackTrace();
 			}

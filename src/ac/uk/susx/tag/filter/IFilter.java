@@ -18,7 +18,7 @@ public interface IFilter<AT> {
 	 * @param list
 	 * @return
 	 */
-	public List<? extends Annotation<AT>> filterList(List<? extends Annotation<AT>> list);
+	public List<Annotation<AT>> filterList(List<Annotation<AT>> list);
 	
 	/**
 	 * Filter an entire collection of annotations.

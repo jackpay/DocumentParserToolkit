@@ -25,7 +25,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	
 	private static final long serialVersionUID = -2695404603211419648L;
 	private final Annotation<String> sentence;
-	private final HashMap<Class<? extends IAnnotator<?,?>>, List<? extends Annotation<?>>> annotations;
+	private final HashMap<Class<? extends IAnnotator<?,?>>, List<Annotation<?>>> annotations;
 	private final HashMap<OffsetIndexToken, List<Annotation<?>>> indexAnnotations;
 	private final OffsetIndexToken offset;
 
@@ -42,11 +42,18 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	}
 	
 	/**
+	 * TODO: 
 	 * @param annotator The class of the annotator which produced the annotations.
 	 * @param annos The annotations to be indexed.
 	 */
-	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<? extends Annotation<AT>> annos) {
-		annotations.put(annotator, annos);
+	public <AT> void addAnnotations(Class<? extends IAnnotator<AT,?>> annotator, List<Annotation<AT>> annos) {
+		List<? extends Annotation<?>> cAnno = annos;
+		if(annotations.get(annotator) == null) {
+			annotations.put(annotator, (List<Annotation<?>>) cAnno);
+		}
+		else{
+			annotations.get(annotator).addAll(annos);
+		}
 		try {
 			sortAnnotations(annotator);
 		} catch (IllegalAnnotationStorageException e) {
@@ -116,7 +123,7 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	/**
 	 * @return All annotations contained in this Sentence.
 	 */
-	public Collection<List<? extends Annotation<?>>> getSentenceAllAnnotations() {
+	public Collection<List<Annotation<?>>> getSentenceAllAnnotations() {
 		return annotations.values();
 	}
 	
@@ -183,7 +190,11 @@ public final class Sentence extends HashMap<Class<IAnnotator<?,?>>, List<Annotat
 	public <AT> void filterAnnotation(Collection<IFilter<AT>> filters, Class<? extends IAnnotator<AT,?>> annotator) {
 		if(filters != null && !filters.isEmpty()){
 			for(IFilter<AT> filter : filters){
-				filter.filterList((List<? extends Annotation<AT>>) annotations.get(annotator));
+				try {
+					filter.filterList(getSentenceAnnotations(annotator));
+				} catch (IllegalAnnotationStorageException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
