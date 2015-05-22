@@ -24,15 +24,18 @@ import ac.uk.susx.tag.utils.IllegalAnnotationStorageException;
 
 public class CollocationFilter implements IFilter<String> {
 	
+	private static final String DELIM = "_";
 	private HashSet<String> stopWords;
 	private Map<String, List<String>> colls;
 	private Class<? extends IAnnotator<String,?>> annotator;
+	private boolean removeToks;
 	
 	
-	public CollocationFilter(String collsLoc, Class<? extends IAnnotator<String,?>> annotator) {
+	public CollocationFilter(String collsLoc, Class<? extends IAnnotator<String,?>> annotator, boolean removeToks) {
 		stopWords = getStopWords();
 		colls = getCollocations(new File(collsLoc));
 		this.annotator = annotator;
+		this.removeToks = removeToks;
 	}
 
 	@Override
@@ -67,7 +70,41 @@ public class CollocationFilter implements IFilter<String> {
 	@Override
 	public Sentence filterSentence(Sentence sentence) {
 		try {
-			sentence.addAnnotations(annotator, filterList(sentence.getSentenceAnnotations(annotator)));
+			if(removeToks) {
+				List<Annotation<String>> newAnns = new ArrayList<Annotation<String>>();
+				List<Annotation<String>> list = sentence.getSentenceAnnotations(annotator);
+				for(Annotation<String> anno : list) {
+					if(colls.containsKey(anno.getAnnotation())) {
+						int i;
+						boolean match = true;
+						List<Annotation<String>> matchList = new ArrayList<Annotation<String>>();
+						matchList.add(anno);
+						for(i = 0; i < colls.get(anno.getAnnotation()).size(); i++) {
+							if(list.indexOf(anno) + (i+1) >= list.size()) {
+								match = false;
+								break;
+							}
+							if(!list.get(list.indexOf(anno) + (i+1)).getAnnotation().equals(colls.get(anno.getAnnotation()).get(i)) && !stopWords.contains(list.get(list.indexOf(anno)+(i+1)))) {
+								match = false;
+								break;
+							}
+							else{
+								matchList.add(list.get(list.indexOf(anno)+1));
+							}
+						}
+						if(match) {
+							newAnns.add(collocation(matchList));
+							for(Annotation<String> an : matchList) {
+								sentence.removeAnnotation(an.getOffset());
+							}
+						}
+					}
+				}
+				sentence.addAnnotations(annotator, newAnns);
+			}
+			else {
+				sentence.addAnnotations(annotator, filterList(sentence.getSentenceAnnotations(annotator)));
+			}
 		} catch (IllegalAnnotationStorageException e) {
 			e.printStackTrace();
 		}
@@ -107,6 +144,14 @@ public class CollocationFilter implements IFilter<String> {
 			words.add(str.toLowerCase());
 		}
 		return words;
+	}
+	
+	private StringAnnotation collocation(List<Annotation<String>> list) {
+		StringBuilder sb = new StringBuilder();
+		for(Annotation<String> anno : list) {
+			sb.append(anno.getAnnotation()).append("_");
+		}
+		return new StringAnnotation(sb.substring(0, sb.length()-1),list.get(0).getStart(),list.get(list.size()-1).getEnd());
 	}
 
 }

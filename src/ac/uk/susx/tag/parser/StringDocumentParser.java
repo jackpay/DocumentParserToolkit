@@ -106,7 +106,7 @@ public class StringDocumentParser extends AbstractParser {
 //		config.addFilter(new RetainAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 //		config.addFilter(new RemoveAnnotationFilter<String>(anns, PoSTagAnnotator.class, true));
 		String loc = "/Volumes/BackupHD/Phd-LDA/Experiment-1/PMI-Ouput/pmiScores.txt";
-//		config.addFilter(new CollocationFilter(loc,TokenAnnotator.class));
+		config.addFilter(new CollocationFilter(loc,TokenAnnotator.class,true));
 		config.addFilter(new StopWordFilter(TokenAnnotator.class));
 		config.addFilter(new RegexFilter(".*[a-zA-Z]+.*",TokenAnnotator.class));
 //		config.addFilter(new VerbAndLeftNounFilter());
